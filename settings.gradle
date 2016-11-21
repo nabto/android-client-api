@@ -1,1 +1,1 @@
-include ':nabto-api'
+rootProject.name = "nabto-api" 
