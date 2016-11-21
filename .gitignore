@@ -44,5 +44,5 @@ captures/
 *.jks
 
 # Nabto assets and libs
-src/main/assets/
-src/main/jniLibs/
+src/main/assets/*/
+src/main/jniLibs/*/
