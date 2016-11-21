@@ -159,6 +159,16 @@ public enum NabtoStatus {
     RPC_NO_SUCH_REQUEST,
 
     /**
+     * Requested device is offline
+     */
+    RPC_DEVICE_OFFLINE,
+
+    /**
+     * Response could not be decoded.
+     */
+    RPC_RESPONSE_DECODE_FAILURE,
+
+    /**
      * Number of possible error codes. This must always be last!
      */
     ERROR_CODE_COUNT;
