@@ -18,6 +18,7 @@ class NabtoCApiWrapper {
     static native String nabtoLookupExistingProfile();
     static native String[] nabtoGetCertificates();
     static native int nabtoCreateProfile(String email, String password);
+    static native int nabtoCreateSelfSignedProfile(String email, String password);
     static native int nabtoSignup(String email, String password);
     static native int nabtoResetAccountPassword(String email);
 
