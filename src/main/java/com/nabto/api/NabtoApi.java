@@ -331,16 +331,21 @@ public class NabtoApi {
         }
         return status;
     }
+
     /**
-     * Creates a Nabto client profile (private key + self signed certificate) on this
-     * computer for specified registered Nabto user.
+     * Creates a Nabto self signed profile.
      * <p>
      *     The {@link #startup()} function must have been called prior to calling this
      *     function.
      * </p>
      *
-     * @param email     Email address of user, as registered on portal.
-     * @param password  Password for accessing portal for specified user.
+     * This creates a self signed certificate. The identity of such certificate cannot be trusted
+     * but the fingerprint of the certificate can be trusted in the device. This does not rely on
+     * the {@link #signup(String, String)} function. After the profile has been created it can
+     * be used in the open session function.
+     *
+     * @param commonName  The common name part of the selfsigned certificate which is going to be made.
+     * @param password    The password which protects the private key.
      * @return  If the function succeeds, the return value is {@link NabtoStatus#OK}.
      *          If the function fails, the return value is one of the
      *          following values.
@@ -354,15 +359,14 @@ public class NabtoApi {
      *              <li>{@link NabtoStatus#FAILED}: Lookup failed for some unspecified reason.</li>
      *          </ul>
      */
-    public NabtoStatus createSelfSignedProfile(String email, String password) {
+    public NabtoStatus createSelfSignedProfile(String commonName, String password) {
         NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoCreateSelfSignedProfile(email, password));
+                .nabtoCreateSelfSignedProfile(commonName, password));
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to create profile: " + status);
         }
         return status;
     }
-
 
     /**
      * Signs up for a Nabto account on the portal (host name defined in the
@@ -443,7 +447,7 @@ public class NabtoApi {
      *     this function.
      * </p>
      *
-     * @param email      The id of an existing certificate.
+     * @param id         The id of an existing certificate. Either an email address or commonName.
      * @param password   Password for encrypted private key file. Specify
      *                   an empty string for an unencrypted key file.
      * @return  A {@link Session} object. If the function succeeds, the return value of
@@ -459,8 +463,8 @@ public class NabtoApi {
      *              <li>{@link NabtoStatus#FAILED}: The login failed for some unspecified reason.</li>
      *          </ul>
      */
-    public Session openSession(String email, String password) {
-        Session session = NabtoCApiWrapper.nabtoOpenSession(email, password);
+    public Session openSession(String id, String password) {
+        Session session = NabtoCApiWrapper.nabtoOpenSession(id, password);
         if(session == null) {
             session = new Session(null, NabtoStatus.FAILED.toInteger());
         }

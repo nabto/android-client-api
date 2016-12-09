@@ -17,12 +17,12 @@ class NabtoCApiWrapper {
     // The portal API
     static native String[] nabtoGetCertificates();
     static native int nabtoCreateProfile(String email, String password);
-    static native int nabtoCreateSelfSignedProfile(String email, String password);
+    static native int nabtoCreateSelfSignedProfile(String commonName, String password);
     static native int nabtoSignup(String email, String password);
     static native int nabtoResetAccountPassword(String email);
 
     // The session API
-    static native Session nabtoOpenSession(String email, String password);
+    static native Session nabtoOpenSession(String id, String password);
     static native Session nabtoOpenSessionBare();
     static native int nabtoCloseSession(Object session);
     static native RpcResult nabtoRpcSetDefaultInterface(String interfaceDefinition, Object session);
