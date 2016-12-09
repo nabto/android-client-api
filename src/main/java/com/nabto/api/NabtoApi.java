@@ -1,5 +1,10 @@
 package com.nabto.api;
 
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.res.AssetManager;
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -10,11 +15,6 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
-
-import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.res.AssetManager;
-import android.util.Log;
 
 /**
  * Nabto client API.
