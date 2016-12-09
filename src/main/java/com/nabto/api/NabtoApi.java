@@ -863,7 +863,7 @@ public class NabtoApi {
                     "Failed to open stream (invalid session object).");
             return new Stream(null, NabtoStatus.INVALID_SESSION.toInteger());
         }
-        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(session.getSession(), nabtoHost);
+        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(nabtoHost, session.getSession());
         if (stream == null) {
             stream = new Stream(null, NabtoStatus.FAILED.toInteger());
         }
@@ -1011,7 +1011,7 @@ public class NabtoApi {
             return NabtoStatus.INVALID_STREAM;
         }
         NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoStreamWrite(stream.getStream(), data));
+                .nabtoStreamWrite(data, stream.getStream()));
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to write to stream: " + status);
         }
@@ -1071,7 +1071,7 @@ public class NabtoApi {
         ByteBuffer byteBuffer = ByteBuffer.allocate(4);
         byteBuffer.putInt(value);
         NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoStreamSetOption(stream.getStream(), option.toInteger(), byteBuffer.array()));
+                .nabtoStreamSetOption(option.toInteger(), byteBuffer.array(), stream.getStream()));
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),  "Failed to set stream option: " + status);
         }

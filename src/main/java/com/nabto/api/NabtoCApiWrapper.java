@@ -33,12 +33,12 @@ class NabtoCApiWrapper {
     static native String nabtoGetSessionToken(Object session);
 
     // The streaming API
-    static native Stream nabtoStreamOpen(Object session, String nabtoHost);
+    static native Stream nabtoStreamOpen(String nabtoHost, Object session);
     static native int nabtoStreamClose(Object Stream);
     static native StreamReadResult nabtoStreamRead(Object Stream);
-    static native int nabtoStreamWrite(Object stream, byte[] data);
+    static native int nabtoStreamWrite(byte[] data, Object stream);
     static native int nabtoStreamConnectionType(Object stream);
-    static native int nabtoStreamSetOption(Object stream, int optionName, byte[] option);
+    static native int nabtoStreamSetOption(int optionName, byte[] option, Object stream);
 
     // The tunnel API
     static native Tunnel nabtoTunnelOpenTcp(int localPort, String nabtoHost, String remoteHost, int remotePort, Object session);
