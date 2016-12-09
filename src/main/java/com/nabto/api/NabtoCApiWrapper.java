@@ -15,7 +15,6 @@ class NabtoCApiWrapper {
     static native int nabtoProbeNetwork(int timeoutMillis, String hostname);
 
     // The portal API
-    static native String nabtoLookupExistingProfile();
     static native String[] nabtoGetCertificates();
     static native int nabtoCreateProfile(String email, String password);
     static native int nabtoCreateSelfSignedProfile(String email, String password);

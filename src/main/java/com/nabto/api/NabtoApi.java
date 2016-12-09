@@ -264,31 +264,6 @@ public class NabtoApi {
     }
 
     /**
-     * Retrieves email address of installed Nabto client profile.
-     * <p>
-     *     The {@link #startup()} function must have been called prior to calling this
-     *     function.
-     * </p>
-     *
-     * @deprecated  Use {@link #getCertificates()} instead since this function
-     *              just returns one email address out of potentially many
-     *              possible addresses.
-
-     * @return  If the function succeeds, the return value is the email address of the
-     *          installed Nabto client profile.
-     *          If the function fails, the return value is NULL. This can occur of the Nabto
-     *          client is not initialized (see {@link #startup()}), no profiles exist,
-     *          or there was an error in the C API wrapper.
-     */
-    @Deprecated public String lookupExistingProfile() {
-        String email = NabtoCApiWrapper.nabtoLookupExistingProfile();
-        if(email == null) {
-            Log.d(this.getClass().getSimpleName(), "Failed to lookup existing profile.");
-        }
-        return email;
-    }
-
-    /**
      * Returns a collection of currently known certificates on the system.
      * <p>
      *     The {@link #startup()} function must have been called prior to calling this
@@ -1237,12 +1212,12 @@ public class NabtoApi {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to get tunnel info (invalid tunnel object).");
             return new TunnelInfoResult(
-                    NabtoTunnelState.INVALID.toInteger(), -1, NabtoStatus.INVALID_TUNNEL.toInteger());
+                    -1, NabtoTunnelState.INVALID.toInteger(), -1, -1, NabtoStatus.INVALID_TUNNEL.toInteger());
         }
         TunnelInfoResult info = NabtoCApiWrapper.nabtoTunnelInfo(tunnel.getTunnel());
         if(info == null) {
             info = new TunnelInfoResult(
-                    NabtoTunnelState.INVALID.toInteger(), -1, NabtoStatus.FAILED.toInteger());
+                    -1, NabtoTunnelState.INVALID.toInteger(), -1, -1, NabtoStatus.FAILED.toInteger());
         }
         if(info.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
