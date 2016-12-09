@@ -4,18 +4,36 @@ package com.nabto.api;
  * Result object of the function {@link NabtoApi#tunnelInfo(Tunnel)}.
  * <p>
  *     If {@link #getStatus()} is different from {@link NabtoStatus#OK}, the return values of
- *     both {@link #getTunnelState()} and {@link #getPort()} are undefined.
+ *     all {@link #getVersion()}, {@link #getTunnelState()}, {@link #getLastError()}, and
+ *     {@link #getPort()} are undefined.
  * </p>
  */
 public class TunnelInfoResult {
     private NabtoStatus status;
+    private int version;
     private NabtoTunnelState tunnelState;
+    private int lastError;
     private int port;
 
-    TunnelInfoResult(int nabtoTunnelState, int port, int nabtoStatus) {
+    TunnelInfoResult(int version, int nabtoTunnelState, int lastError, int port, int nabtoStatus) {
         this.status = NabtoStatus.fromInteger(nabtoStatus);
+        this.version = version;
         this.tunnelState = NabtoTunnelState.fromInteger(nabtoTunnelState);
+        this.lastError = lastError;
         this.port = port;
+    }
+
+    /**
+     * The protocol version of the tunnel.
+     * <p>
+     *     If {@link #getStatus()} is different from {@link NabtoStatus#OK}, the return value
+     *     is undefined.
+     * </p>
+     *
+     * @return The protocol version of the tunnel.
+     */
+    public int getVersion() {
+        return version;
     }
 
     /**
@@ -29,6 +47,19 @@ public class TunnelInfoResult {
      */
     public NabtoTunnelState getTunnelState() {
         return tunnelState;
+    }
+
+    /**
+     * The error code of the last error.
+     * <p>
+     *     If {@link #getStatus()} is different from {@link NabtoStatus#OK}, the return value
+     *     is undefined.
+     * </p>
+     *
+     * @return The error code of the last error.
+     */
+    public int getLastError() {
+        return lastError;
     }
 
     /**
