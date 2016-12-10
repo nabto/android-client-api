@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 2.6)
+project(nabto_client_api_jni)
+
+find_package(JNI) # requires JAVA_HOME to be set
+
+include_directories(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${JNI_INCLUDE_DIRS}
+)
+
+set(src
+  nabto_client_api_jni.c
+  nabto_client_api_stub.cpp
+  nabto_client_api_stub_controller_jni.cpp
+)
+
+add_library(${PROJECT_NAME} SHARED ${src})
+target_compile_features(${PROJECT_NAME} PRIVATE cxx_range_for)

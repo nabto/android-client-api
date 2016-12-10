@@ -46,3 +46,8 @@ captures/
 # Nabto assets and libs
 src/main/assets/*/
 src/main/jniLibs/*/
+
+# Nabto test lib
+src/test/jniLibs/nabto_client_api_jni_stub/build/*
+src/test/jniLibs/nabto_client_api_jni_stub/com_nabto_api_NabtoCApiWrapper.h
+src/test/jniLibs/nabto_client_api_jni_stub/com_nabto_api_NabtoCApiWrapperStubController.h
