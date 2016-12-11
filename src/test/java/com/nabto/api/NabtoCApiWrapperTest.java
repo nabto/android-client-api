@@ -137,6 +137,9 @@ public class NabtoCApiWrapperTest {
 
         Map paramVals = stringToMap(NabtoCApiWrapperStubController.getParameterValues());
         assertEquals("dir", paramVals.get("resourceDir"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoSetStaticResourceDir(null);
     }
 
     @Test
@@ -234,6 +237,9 @@ public class NabtoCApiWrapperTest {
         status = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoProbeNetwork(1, "host"));
 
         assertEquals(NabtoStatus.API_NOT_INITIALIZED, status);
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoProbeNetwork(-1, null);
     }
 
     @Test
@@ -286,6 +292,9 @@ public class NabtoCApiWrapperTest {
         Map paramVals = stringToMap(NabtoCApiWrapperStubController.getParameterValues());
         assertEquals(DUMMY_EMAIL, paramVals.get("email"));
         assertEquals(DUMMY_PASSWORD, paramVals.get("password"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoCreateProfile(null, null);
     }
 
     @Test
@@ -302,6 +311,9 @@ public class NabtoCApiWrapperTest {
         Map paramVals = stringToMap(NabtoCApiWrapperStubController.getParameterValues());
         assertEquals(DUMMY_EMAIL, paramVals.get("commonName"));
         assertEquals(DUMMY_PASSWORD, paramVals.get("password"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoCreateSelfSignedProfile(null, null);
     }
 
     @Test
@@ -318,6 +330,9 @@ public class NabtoCApiWrapperTest {
         Map paramVals = stringToMap(NabtoCApiWrapperStubController.getParameterValues());
         assertEquals(DUMMY_EMAIL, paramVals.get("email"));
         assertEquals(DUMMY_PASSWORD, paramVals.get("password"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoSignup(null, null);
     }
 
     @Test
@@ -333,6 +348,9 @@ public class NabtoCApiWrapperTest {
 
         Map paramVals = stringToMap(NabtoCApiWrapperStubController.getParameterValues());
         assertEquals(DUMMY_EMAIL, paramVals.get("email"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoResetAccountPassword(null);
     }
 
     @Test
@@ -359,7 +377,10 @@ public class NabtoCApiWrapperTest {
         session = NabtoCApiWrapper.nabtoOpenSession(DUMMY_EMAIL, DUMMY_PASSWORD);
 
         assertEquals(NabtoStatus.FAILED, session.getStatus());
-        assertThat(session.getSession(), instanceOf(ByteBuffer.class));
+        assertNull(session.getSession());
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoOpenSession(null, null);
     }
 
     @Test
@@ -382,7 +403,7 @@ public class NabtoCApiWrapperTest {
         session = NabtoCApiWrapper.nabtoOpenSessionBare();
 
         assertEquals(NabtoStatus.FAILED, session.getStatus());
-        assertThat(session.getSession(), instanceOf(ByteBuffer.class));
+        assertNull(session.getSession());
     }
 
     @Test
@@ -398,6 +419,9 @@ public class NabtoCApiWrapperTest {
         assertEquals(NabtoStatus.OK, status);
         Map paramVals = stringToMap(NabtoCApiWrapperStubController.getParameterValues());
         assertEquals("42", paramVals.get("sessionHandle"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoCloseSession(null);
     }
 
     @Test
@@ -437,6 +461,9 @@ public class NabtoCApiWrapperTest {
 
         assertEquals(NabtoStatus.FAILED_WITH_JSON_MESSAGE, result.getStatus());
         assertEquals("error", result.getJson());
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoRpcSetDefaultInterface(null, null);
     }
 
     @Test
@@ -477,6 +504,9 @@ public class NabtoCApiWrapperTest {
 
         assertEquals(NabtoStatus.FAILED_WITH_JSON_MESSAGE, result.getStatus());
         assertEquals("error", result.getJson());
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoRpcSetInterface(null, null, null);
     }
 
     @Test
@@ -505,6 +535,9 @@ public class NabtoCApiWrapperTest {
 
         assertEquals(NabtoStatus.FAILED, result.getStatus());
         assertNull(result.getJson());
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoRpcInvoke(null, null);
     }
 
     @Test
@@ -535,6 +568,9 @@ public class NabtoCApiWrapperTest {
         assertEquals(NabtoStatus.FAILED, result.getStatus());
         assertNull(result.getResult());
         assertNull(result.getMimeType());
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoFetchUrl(null, null);
     }
 
     @Test
@@ -570,6 +606,9 @@ public class NabtoCApiWrapperTest {
         assertEquals(NabtoStatus.FAILED, result.getStatus());
         assertNull(result.getResult());
         assertNull(result.getMimeType());
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoSubmitPostData(null, null, null, null);
     }
 
     @Test
@@ -588,6 +627,9 @@ public class NabtoCApiWrapperTest {
         Map paramVals = stringToMap(NabtoCApiWrapperStubController.getParameterValues());
         assertEquals("42", paramVals.get("sessionHandle"));
         assertEquals("65", paramVals.get("bufLen"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoGetSessionToken(null);
     }
 
     @Test
@@ -615,7 +657,10 @@ public class NabtoCApiWrapperTest {
         stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
 
         assertEquals(NabtoStatus.FAILED, stream.getStatus());
-        assertThat(stream.getStream(), instanceOf(ByteBuffer.class));
+        assertNull(stream.getStream());
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoStreamOpen(null, null);
     }
 
     @Test
@@ -633,6 +678,9 @@ public class NabtoCApiWrapperTest {
         assertEquals(NabtoStatus.OK, status);
         Map paramVals = stringToMap(NabtoCApiWrapperStubController.getParameterValues());
         assertEquals("43", paramVals.get("streamHandle"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoStreamClose(null);
     }
 
     @Test
@@ -662,6 +710,9 @@ public class NabtoCApiWrapperTest {
 
         assertEquals(NabtoStatus.FAILED, result.getStatus());
         assertNull(result.getData());
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoStreamRead(null);
     }
 
     @Test
@@ -683,6 +734,9 @@ public class NabtoCApiWrapperTest {
         assertEquals("43", paramVals.get("streamHandle"));
         assertEquals("data", paramVals.get("buf"));
         assertEquals("4", paramVals.get("len"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoStreamWrite(null, null);
     }
 
     @Test
@@ -712,6 +766,9 @@ public class NabtoCApiWrapperTest {
                 NabtoCApiWrapper.nabtoStreamConnectionType(stream.getStream()));
 
         assertEquals(NabtoConnectionType.UNKNOWN, type);
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoStreamConnectionType(null);
     }
 
     @Test
@@ -737,6 +794,9 @@ public class NabtoCApiWrapperTest {
                 paramVals.get("optionName"));
         assertEquals("option", paramVals.get("optionValue"));
         assertEquals("6", paramVals.get("optionLength"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoStreamSetOption(-1, null, null);
     }
 
     @Test
@@ -769,7 +829,10 @@ public class NabtoCApiWrapperTest {
                 11, "nabto host", "remote host", 22, session.getSession());
 
         assertEquals(NabtoStatus.FAILED, tunnel.getStatus());
-        assertThat(tunnel.getTunnel(), instanceOf(ByteBuffer.class));
+        assertNull(tunnel.getTunnel());
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoTunnelOpenTcp(-1, null, null, -1, null);
     }
 
     @Test
@@ -788,6 +851,9 @@ public class NabtoCApiWrapperTest {
         assertEquals(NabtoStatus.OK, status);
         Map paramVals = stringToMap(NabtoCApiWrapperStubController.getParameterValues());
         assertEquals("44", paramVals.get("tunnelHandle"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoTunnelClose(null);
     }
 
     @Test
@@ -810,5 +876,8 @@ public class NabtoCApiWrapperTest {
 
         Map paramVals = stringToMap(NabtoCApiWrapperStubController.getParameterValues());
         assertEquals("44", paramVals.get("tunnelHandle"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoTunnelInfo(null);
     }
 }

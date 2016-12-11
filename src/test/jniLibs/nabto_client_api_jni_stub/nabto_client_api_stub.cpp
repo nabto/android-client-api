@@ -1,5 +1,5 @@
 #include "nabto_client_api_stub_controller.hpp"
-#include "nabto_client_api.h"
+#include "nabto_client_api.hpp"
 
 #include <string>
 #include <string.h>
@@ -41,7 +41,7 @@ nabto_status_t NABTOAPI nabtoShutdown()
 nabto_status_t NABTOAPI nabtoSetStaticResourceDir(const char* resourceDir)
 {
     parameterValues.clear();
-    parameterValues["resourceDir"] = resourceDir;
+    if(resourceDir != NULL) parameterValues["resourceDir"] = resourceDir;
     return NABTO_OK;
 }
 
@@ -77,7 +77,7 @@ nabto_status_t NABTOAPI nabtoProbeNetwork(size_t timeoutMillis, const char* host
 {
     parameterValues.clear();
     parameterValues["timeoutMillis"] = std::to_string(timeoutMillis);
-    parameterValues["host"] = host;
+    if(host != NULL) parameterValues["host"] = host;
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
@@ -99,31 +99,31 @@ nabto_status_t NABTOAPI nabtoGetCertificates(char*** certificates, int* certific
 nabto_status_t NABTOAPI nabtoCreateProfile(const char* email, const char* password)
 {
     parameterValues.clear();
-    parameterValues["email"] = email;
-    parameterValues["password"] = password;
+    if(email != NULL) parameterValues["email"] = email;
+    if(password != NULL) parameterValues["password"] = password;
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
 nabto_status_t NABTOAPI nabtoCreateSelfSignedProfile(const char* commonName, const char* password)
 {
     parameterValues.clear();
-    parameterValues["commonName"] = commonName;
-    parameterValues["password"] = password;
+    if(commonName != NULL) parameterValues["commonName"] = commonName;
+    if(password != NULL) parameterValues["password"] = password;
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
 nabto_status_t NABTOAPI nabtoSignup(const char* email, const char* password)
 {
     parameterValues.clear();
-    parameterValues["email"] = email;
-    parameterValues["password"] = password;
+    if(email != NULL) parameterValues["email"] = email;
+    if(password != NULL) parameterValues["password"] = password;
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
 nabto_status_t NABTOAPI nabtoResetAccountPassword(const char* email)
 {
     parameterValues.clear();
-    parameterValues["email"] = email;
+    if(email != NULL) parameterValues["email"] = email;
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
@@ -132,19 +132,31 @@ nabto_status_t NABTOAPI nabtoOpenSession(nabto_handle_t* session,
                                          const char* password)
 {
     parameterValues.clear();
-    parameterValues["id"] = id;
-    parameterValues["password"] = password;
-    size_t handle = 42;
-    *session = reinterpret_cast<nabto_handle_t>(handle);
-    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
+    if(id != NULL) parameterValues["id"] = id;
+    if(password != NULL) parameterValues["password"] = password;
+
+    nabto_status status = static_cast<nabto_status>(std::stoi(returnValues["status"]));
+
+    if(status == NABTO_OK) {
+        size_t handle = 42;
+        *session = reinterpret_cast<nabto_handle_t>(handle);
+    }
+
+    return status;
 }
 
 nabto_status_t NABTOAPI nabtoOpenSessionBare(nabto_handle_t* session)
 {
     parameterValues.clear();
-    size_t handle = 42;
-    *session = reinterpret_cast<nabto_handle_t>(handle);
-    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
+
+    nabto_status status = static_cast<nabto_status>(std::stoi(returnValues["status"]));
+
+    if(status == NABTO_OK) {
+        size_t handle = 42;
+        *session = reinterpret_cast<nabto_handle_t>(handle);
+    }
+
+    return status;
 }
 
 nabto_status_t NABTOAPI nabtoCloseSession(nabto_handle_t session)
@@ -162,7 +174,7 @@ nabto_status_t NABTOAPI nabtoRpcSetDefaultInterface(nabto_handle_t session,
     parameterValues.clear();
     size_t handle = reinterpret_cast<size_t>(session);
     parameterValues["sessionHandle"] = std::to_string(handle);
-    parameterValues["interfaceDefinition"] = interfaceDefinition;
+    if(interfaceDefinition != NULL) parameterValues["interfaceDefinition"] = interfaceDefinition;
 
     nabto_status status = static_cast<nabto_status>(std::stoi(returnValues["status"]));
 
@@ -183,8 +195,8 @@ nabto_status_t NABTOAPI nabtoRpcSetInterface(nabto_handle_t session,
     parameterValues.clear();
     size_t handle = reinterpret_cast<size_t>(session);
     parameterValues["sessionHandle"] = std::to_string(handle);
-    parameterValues["host"] = host;
-    parameterValues["interfaceDefinition"] = interfaceDefinition;
+    if(host != NULL) parameterValues["host"] = host;
+    if(interfaceDefinition != NULL) parameterValues["interfaceDefinition"] = interfaceDefinition;
 
     nabto_status status = static_cast<nabto_status>(std::stoi(returnValues["status"]));
 
@@ -204,7 +216,7 @@ nabto_status_t NABTOAPI nabtoRpcInvoke(nabto_handle_t session,
     parameterValues.clear();
     size_t handle = reinterpret_cast<size_t>(session);
     parameterValues["sessionHandle"] = std::to_string(handle);
-    parameterValues["nabtoUrl"] = nabtoUrl;
+    if(nabtoUrl != NULL) parameterValues["nabtoUrl"] = nabtoUrl;
 
     nabto_status status = static_cast<nabto_status>(std::stoi(returnValues["status"]));
 
@@ -226,7 +238,7 @@ nabto_status_t NABTOAPI nabtoFetchUrl(nabto_handle_t session,
     parameterValues.clear();
     size_t handle = reinterpret_cast<size_t>(session);
     parameterValues["sessionHandle"] = std::to_string(handle);
-    parameterValues["nabtoUrl"] = nabtoUrl;
+    if(nabtoUrl != NULL) parameterValues["nabtoUrl"] = nabtoUrl;
 
     nabto_status status = static_cast<nabto_status>(std::stoi(returnValues["status"]));
 
@@ -257,10 +269,10 @@ nabto_status_t NABTOAPI nabtoSubmitPostData(nabto_handle_t session,
     parameterValues.clear();
     size_t handle = reinterpret_cast<size_t>(session);
     parameterValues["sessionHandle"] = std::to_string(handle);
-    parameterValues["nabtoUrl"] = nabtoUrl;
+    if(nabtoUrl != NULL) parameterValues["nabtoUrl"] = nabtoUrl;
     parameterValues["postBuffer"] = std::string(postBuffer, postLen);
     parameterValues["postLen"] = std::to_string(postLen);
-    parameterValues["postMimeType"] = postMimeType;
+    if(postMimeType != NULL) parameterValues["postMimeType"] = postMimeType;
 
     nabto_status status = static_cast<nabto_status>(std::stoi(returnValues["status"]));
 
@@ -309,7 +321,7 @@ nabto_status_t NABTOAPI nabtoStreamOpen(nabto_stream_t* stream,
     size_t sessionHandle = reinterpret_cast<size_t>(session);
     parameterValues["sessionHandle"] = std::to_string(sessionHandle);
 
-    parameterValues["serverId"] = serverId;
+    if(serverId != NULL) parameterValues["serverId"] = serverId;
 
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
@@ -393,8 +405,8 @@ nabto_status_t NABTOAPI nabtoTunnelOpenTcp(nabto_tunnel_t* tunnel,
     parameterValues["sessionHandle"] = std::to_string(sessionHandle);
 
     parameterValues["localPort"] = std::to_string(localPort);
-    parameterValues["nabtoHost"] = nabtoHost;
-    parameterValues["remoteHost"] = remoteHost;
+    if(nabtoHost != NULL) parameterValues["nabtoHost"] = nabtoHost;
+    if(remoteHost != NULL) parameterValues["remoteHost"] = remoteHost;
     parameterValues["remotePort"] = std::to_string(remotePort);
 
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));

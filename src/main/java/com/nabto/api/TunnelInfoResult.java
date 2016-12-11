@@ -65,8 +65,10 @@ public class TunnelInfoResult {
     /**
      * The local listening port of the tunnel.
      * <p>
-     *     If {@link #getStatus()} is different from {@link NabtoStatus#OK}, the return value
-     *     is undefined.
+     *     If {@link #getStatus()} is different from {@link NabtoStatus#OK}, or the tunnel wasn't
+     *     successfully established ({@link #getTunnelState()} is {@link NabtoTunnelState#LOCAL},
+     *     {@link NabtoTunnelState#REMOTE_P2P}, {@link NabtoTunnelState#REMOTE_RELAY}, etc.) the
+     *     return value is undefined.
      * </p>
      *
      * @return The local listening port of the tunnel.

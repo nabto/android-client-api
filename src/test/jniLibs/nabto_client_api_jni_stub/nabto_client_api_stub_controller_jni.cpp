@@ -1,5 +1,6 @@
 #include "nabto_client_api_stub_controller.hpp"
 #include "com_nabto_api_NabtoCApiWrapperStubController.h"
+#include "jni_string.hpp"
 
 #include <jni.h>
 #include <regex>
@@ -13,7 +14,7 @@ void JNICALL Java_com_nabto_api_NabtoCApiWrapperStubController_setReturnValues(J
                                                                                jclass thiz, 
                                                                                jstring jstr) 
 {
-    const char* str = (env)->GetStringUTFChars(jstr, NULL);
+    jni_string str(env, jstr);
     std::string s(str);
     std::regex e("[^,]+\\=[^,]+");
     std::regex_iterator<std::string::iterator> rit ( s.begin(), s.end(), e );
@@ -26,7 +27,6 @@ void JNICALL Java_com_nabto_api_NabtoCApiWrapperStubController_setReturnValues(J
         returnValues[key] = value;
         ++rit;
     }
-    (env)->ReleaseStringUTFChars(jstr, str);
 }
 
 jstring JNICALL Java_com_nabto_api_NabtoCApiWrapperStubController_getParameterValues(JNIEnv* env, 
@@ -40,5 +40,5 @@ jstring JNICALL Java_com_nabto_api_NabtoCApiWrapperStubController_getParameterVa
     }    
     std::string s = ss.str();
     const char* str = s.c_str();
-    return (env)->NewStringUTF(str);     
+    return env->NewStringUTF(str);
 }
