@@ -1,6 +1,8 @@
 #ifndef _JNI_BYTE_ARRAY_HPP
 #define _JNI_BYTE_ARRAY_HPP
 
+#include <jni.h>
+
 class jni_byte_array {
  public:
     jni_byte_array(JNIEnv *env, jbyteArray javaByteArray)

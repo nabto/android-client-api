@@ -1,6 +1,8 @@
 #ifndef _JNI_STRING_HPP
 #define _JNI_STRING_HPP
 
+#include <jni.h>
+
 class jni_string {
  public:
     jni_string(JNIEnv *env, jstring javaString)
