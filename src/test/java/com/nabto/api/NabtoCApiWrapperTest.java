@@ -279,7 +279,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void createProfileTest() {
+    public void nabtoCreateProfileTest() {
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValues(mapToString(retVals));
@@ -298,7 +298,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void createSelfSignedProfileTest() {
+    public void nabtoCreateSelfSignedProfileTest() {
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValues(mapToString(retVals));
@@ -317,7 +317,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void signupTest() {
+    public void nabtoSignupTest() {
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValues(mapToString(retVals));
@@ -336,7 +336,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void resetAccountPasswordTest() {
+    public void nabtoResetAccountPasswordTest() {
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValues(mapToString(retVals));
@@ -354,7 +354,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void openSessionTest() {
+    public void nabtoOpenSessionTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -384,7 +384,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void openSessionBareTest() {
+    public void nabtoOpenSessionBareTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -407,7 +407,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void closeSessionTest() {
+    public void nabtoCloseSessionTest() {
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValues(mapToString(retVals));
@@ -425,7 +425,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void rpcSetDefaultInterfaceTest() {
+    public void nabtoRpcSetDefaultInterfaceTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -467,7 +467,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void rpcSetInterfaceTest() {
+    public void nabtoRpcSetInterfaceTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -510,7 +510,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void rpcInvokeTest() {
+    public void nabtoRpcInvokeTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -541,7 +541,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void fetchUrlTest() {
+    public void nabtoFetchUrlTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -574,7 +574,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void submitPostDataTest() {
+    public void nabtoSubmitPostDataTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -612,7 +612,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void getSessionTokenTest() {
+    public void nabtoGetSessionTokenTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -633,7 +633,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void streamOpenTest() {
+    public void nabtoStreamOpenTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -664,7 +664,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void streamCloseTest() {
+    public void nabtoStreamCloseTest() {
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValues(mapToString(retVals));
@@ -684,7 +684,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void streamReadTest() {
+    public void nabtoStreamReadTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -716,7 +716,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void streamWriteTest() {
+    public void nabtoStreamWriteTest() {
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValues(mapToString(retVals));
@@ -740,7 +740,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void streamConnectionTypeTest() {
+    public void nabtoStreamConnectionTypeTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -772,7 +772,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void streamSetOptionTest() {
+    public void nabtoStreamSetOptionTest() {
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValues(mapToString(retVals));
@@ -800,7 +800,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void tunnelOpenTcpTest() {
+    public void nabtoTunnelOpenTcpTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
@@ -836,7 +836,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void tunnelCloseTest() {
+    public void nabtoTunnelCloseTest() {
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValues(mapToString(retVals));
@@ -857,7 +857,7 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
-    public void tunnelInfoTest() {
+    public void nabtoTunnelInfoTest() {
         Map retVals = new HashMap<String, String>();
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValues(mapToString(retVals));
