@@ -54,9 +54,18 @@ jobject toNabtoConnectionType(JNIEnv* env, int connectionType) {
 }
 
 template<typename T>
-T getHandle(JNIEnv* env, jobject handleObject)
-{
+T getHandle(JNIEnv* env, jobject object) {
+    if(object == NULL) return NULL;
+
+    jclass cls = env->GetObjectClass(object);
+    if (cls == NULL) return NULL;
+
+    jmethodID getHandleMethod = env->GetMethodID(cls, "getHandle", "()Ljava/lang/Object;");
+    if (getHandleMethod == NULL) return NULL;
+
+    jobject handleObject = env->CallObjectMethod(object, getHandleMethod);
     if(handleObject == NULL) return NULL;
+
     return static_cast<T>(env->GetDirectBufferAddress(handleObject));
 }
 
@@ -123,21 +132,23 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoOpenSessionBare(JNIEnv* env, jc
     return env->NewObject(sessionClass, constructor, sessionHandleObject, status);
 }
 
+
+
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoCloseSession(JNIEnv* env,
                                                            jclass thiz,
-                                                           jobject sessionHandleObject)
+                                                           jobject sessionObject)
 {
-    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionHandleObject);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
     return toNabtoStatus(env, nabtoCloseSession(sessionHandle));
 }
 
 jobject JNICALL Java_com_nabto_api_NabtoCApiWrapper_nabtoRpcSetDefaultInterface(JNIEnv* env,
                                                                                 jclass thiz,
                                                                                 jstring interfaceDefinition,
-                                                                                jobject sessionHandleObject)
+                                                                                jobject sessionObject)
 {
     jni_string interfaceDefinitionNative(env, interfaceDefinition);
-    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionHandleObject);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
 
     char* errorMessageNative;
     nabto_status_t status = nabtoRpcSetDefaultInterface(
@@ -160,11 +171,11 @@ jobject JNICALL Java_com_nabto_api_NabtoCApiWrapper_nabtoRpcSetInterface(JNIEnv*
                                                                          jclass thiz,
                                                                          jstring host,
                                                                          jstring interfaceDefinition,
-                                                                         jobject sessionHandleObject)
+                                                                         jobject sessionObject)
 {
     jni_string hostNative(env, host);
     jni_string interfaceDefinitionNative(env, interfaceDefinition);
-    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionHandleObject);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
 
     char* errorMessageNative;
     nabto_status_t status = nabtoRpcSetInterface(
@@ -186,10 +197,10 @@ jobject JNICALL Java_com_nabto_api_NabtoCApiWrapper_nabtoRpcSetInterface(JNIEnv*
 jobject JNICALL Java_com_nabto_api_NabtoCApiWrapper_nabtoRpcInvoke(JNIEnv* env,
                                                                    jclass thiz,
                                                                    jstring nabtoUrl,
-                                                                   jobject sessionHandleObject)
+                                                                   jobject sessionObject)
 {
     jni_string nabtoUrlNative(env, nabtoUrl);
-    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionHandleObject);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
 
     char* jsonResponseNative;
     nabto_status_t status = nabtoRpcInvoke(sessionHandle, nabtoUrlNative, &jsonResponseNative);
@@ -210,10 +221,10 @@ jobject JNICALL Java_com_nabto_api_NabtoCApiWrapper_nabtoRpcInvoke(JNIEnv* env,
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoFetchUrl(JNIEnv* env,
                                                           jclass thiz,
                                                           jstring nabtoUrl,
-                                                          jobject sessionHandleObject)
+                                                          jobject sessionObject)
 {
     jni_string nabtoUrlNative(env, nabtoUrl);
-    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionHandleObject);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
 
     char* resultBufferNative;
     size_t resultLen;
@@ -290,12 +301,12 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSubmitPostData(JNIEnv* env,
                                                                 jstring nabtoUrl,
                                                                 jbyteArray postData,
                                                                 jstring postMimeType,
-                                                                jobject sessionHandleObject)
+                                                                jobject sessionObject)
 {
     jni_string nabtoUrlNative(env, nabtoUrl);
     jni_string postMimeTypeNative(env, postMimeType);
     jni_byte_array postDataNative(env, postData);
-    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionHandleObject);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
 
     char* resultBufferNative;
     size_t resultLen;
@@ -355,9 +366,9 @@ jobjectArray Java_com_nabto_api_NabtoCApiWrapper_nabtoGetCertificates(JNIEnv* en
 
 jstring Java_com_nabto_api_NabtoCApiWrapper_nabtoGetSessionToken(JNIEnv* env,
                                                                  jclass thiz,
-                                                                 jobject sessionHandleObject)
+                                                                 jobject sessionObject)
 {
-    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionHandleObject);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
 
     char bufferNative[65]; // 64 + 1
     const size_t bufLen = 65;
@@ -378,11 +389,11 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelOpenTcp(JNIEnv* env,
                                                                jstring nabtoHost,
                                                                jstring remoteHost,
                                                                jint remotePort,
-                                                               jobject sessionHandleObject)
+                                                               jobject sessionObject)
 {
     jni_string nabtoHostNative(env, nabtoHost);
     jni_string remoteHostNative(env, remoteHost);
-    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionHandleObject);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
 
     nabto_tunnel_t tunnelHandle;
     nabto_status_t status = nabtoTunnelOpenTcp(
@@ -403,17 +414,17 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelOpenTcp(JNIEnv* env,
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelClose(JNIEnv* env,
                                                           jclass thiz,
-                                                          jobject tunnelHandleObject)
+                                                          jobject tunnelObject)
 {
-    nabto_tunnel_t tunnelHandle = getHandle<nabto_tunnel_t>(env, tunnelHandleObject);
+    nabto_tunnel_t tunnelHandle = getHandle<nabto_tunnel_t>(env, tunnelObject);
     return toNabtoStatus(env, nabtoTunnelClose(tunnelHandle));
 }
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelInfo(JNIEnv* env,
                                                             jclass thiz,
-                                                            jobject tunnelHandleObject)
+                                                            jobject tunnelObject)
 {
-    nabto_tunnel_t tunnelHandle = getHandle<nabto_tunnel_t>(env, tunnelHandleObject);
+    nabto_tunnel_t tunnelHandle = getHandle<nabto_tunnel_t>(env, tunnelObject);
 
     nabto_tunnel_state_t state = NTCS_UNKNOWN;
     nabto_status_t status = nabtoTunnelInfo(tunnelHandle, NTI_STATUS, sizeof(state), &state);
@@ -438,11 +449,11 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelInfo(JNIEnv* env,
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamOpen(JNIEnv* env,
                                                             jclass thiz,
                                                             jstring nabtoHost,
-                                                            jobject sessionHandleObject)
+                                                            jobject sessionObject)
 {
     jni_string nabtoHostNative(env, nabtoHost);
 
-    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionHandleObject);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
     nabto_stream_t streamHandle;
     nabto_status_t status = nabtoStreamOpen(&streamHandle, sessionHandle, nabtoHostNative);
 
@@ -461,17 +472,17 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamOpen(JNIEnv* env,
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamClose(JNIEnv* env,
                                                           jclass thiz,
-                                                          jobject streamHandleObject)
+                                                          jobject streamObject)
 {
-    nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamHandleObject);
+    nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamObject);
     return toNabtoStatus(env, nabtoStreamClose(streamHandle));
 }
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamRead(JNIEnv* env,
                                                             jclass thiz,
-                                                            jobject streamHandleObject)
+                                                            jobject streamObject)
 {
-    nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamHandleObject);
+    nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamObject);
 
     char* resultBufferNative;
     size_t resultBufferLength;
@@ -493,19 +504,19 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamRead(JNIEnv* env,
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamWrite(JNIEnv* env,
                                                           jclass thiz,
                                                           jbyteArray data,
-                                                          jobject streamHandleObject)
+                                                          jobject streamObject)
 {
     jni_byte_array bufferNative(env, data);
-    nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamHandleObject);
+    nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamObject);
 
     return toNabtoStatus(env, nabtoStreamWrite(streamHandle, bufferNative, bufferNative.length()));
 }
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamConnectionType(JNIEnv* env,
                                                                    jclass thiz,
-                                                                   jobject streamHandleObject)
+                                                                   jobject streamObject)
 {
-    nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamHandleObject);
+    nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamObject);
 
     nabto_connection_type_t type;
     nabto_status status = nabtoStreamConnectionType(streamHandle, &type);
@@ -516,11 +527,11 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamSetOption(JNIEnv* env,
                                                               jclass thiz,
                                                               jint optionName,
                                                               jbyteArray option,
-                                                              jobject streamHandleObject)
+                                                              jobject streamObject)
 {
     jni_byte_array optionNative(env, option);
     nabto_stream_option_t streamOption = static_cast<nabto_stream_option_t>(optionName);
-    nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamHandleObject);
+    nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamObject);
 
     return toNabtoStatus(env, nabtoStreamSetOption(streamHandle, streamOption,
             reinterpret_cast<void*>(optionNative.data()), optionNative.length()));

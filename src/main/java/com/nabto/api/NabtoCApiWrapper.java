@@ -24,24 +24,24 @@ class NabtoCApiWrapper {
     // The session API
     static native Session nabtoOpenSession(String id, String password);
     static native Session nabtoOpenSessionBare();
-    static native NabtoStatus nabtoCloseSession(Object session);
-    static native RpcResult nabtoRpcSetDefaultInterface(String interfaceDefinition, Object session);
-    static native RpcResult nabtoRpcSetInterface(String host, String interfaceDefinition, Object session);
-    static native RpcResult nabtoRpcInvoke(String nabtoUrl, Object session);
-    static native UrlResult nabtoFetchUrl(String url, Object session);
-    static native UrlResult nabtoSubmitPostData(String nabtoUrl, byte[] postData, String postMimeType, Object session);
-    static native String nabtoGetSessionToken(Object session);
+    static native NabtoStatus nabtoCloseSession(Session session);
+    static native RpcResult nabtoRpcSetDefaultInterface(String interfaceDefinition, Session session);
+    static native RpcResult nabtoRpcSetInterface(String host, String interfaceDefinition, Session session);
+    static native RpcResult nabtoRpcInvoke(String nabtoUrl, Session session);
+    static native UrlResult nabtoFetchUrl(String url, Session session);
+    static native UrlResult nabtoSubmitPostData(String nabtoUrl, byte[] postData, String postMimeType, Session session);
+    static native String nabtoGetSessionToken(Session session);
 
     // The streaming API
-    static native Stream nabtoStreamOpen(String nabtoHost, Object session);
-    static native NabtoStatus nabtoStreamClose(Object Stream);
-    static native StreamReadResult nabtoStreamRead(Object Stream);
-    static native NabtoStatus nabtoStreamWrite(byte[] data, Object stream);
-    static native NabtoConnectionType nabtoStreamConnectionType(Object stream);
-    static native NabtoStatus nabtoStreamSetOption(int optionName, byte[] option, Object stream);
+    static native Stream nabtoStreamOpen(String nabtoHost, Session session);
+    static native NabtoStatus nabtoStreamClose(Stream stream);
+    static native StreamReadResult nabtoStreamRead(Stream stream);
+    static native NabtoStatus nabtoStreamWrite(byte[] data, Stream stream);
+    static native NabtoConnectionType nabtoStreamConnectionType(Stream stream);
+    static native NabtoStatus nabtoStreamSetOption(int optionName, byte[] option, Stream stream);
 
     // The tunnel API
-    static native Tunnel nabtoTunnelOpenTcp(int localPort, String nabtoHost, String remoteHost, int remotePort, Object session);
-    static native NabtoStatus nabtoTunnelClose(Object tunnel);
-    static native TunnelInfoResult nabtoTunnelInfo(Object tunnel);
+    static native Tunnel nabtoTunnelOpenTcp(int localPort, String nabtoHost, String remoteHost, int remotePort, Session session);
+    static native NabtoStatus nabtoTunnelClose(Tunnel tunnel);
+    static native TunnelInfoResult nabtoTunnelInfo(Tunnel tunnel);
 }

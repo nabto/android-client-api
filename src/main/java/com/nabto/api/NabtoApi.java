@@ -454,12 +454,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus closeSession(Session session) {
-        if(session == null || session.getSession() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to close session (invalid session object).");
-            return NabtoStatus.INVALID_SESSION;
-        }
-        NabtoStatus status = NabtoCApiWrapper.nabtoCloseSession(session.getSession());
+        NabtoStatus status = NabtoCApiWrapper.nabtoCloseSession(session);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to close session: " + status);
         }
@@ -499,13 +494,8 @@ public class NabtoApi {
      *          </ul>
      */
     public RpcResult rpcSetDefaultInterface(String interfaceDefinition, Session session) {
-        if(session == null || session.getSession() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to set default RPC interface (invalid session object).");
-            return new RpcResult(null, NabtoStatus.INVALID_SESSION.toInteger());
-        }
         RpcResult rpcResult = NabtoCApiWrapper
-                .nabtoRpcSetDefaultInterface(interfaceDefinition, session.getSession());
+                .nabtoRpcSetDefaultInterface(interfaceDefinition, session);
         if(rpcResult.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to set default RPC interface: " + rpcResult.getStatus());
@@ -544,13 +534,8 @@ public class NabtoApi {
      *          </ul>
      */
     public RpcResult rpcSetInterface(String nabtoHost, String interfaceDefinition, Session session) {
-        if(session == null || session.getSession() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to set RPC interface (invalid session object).");
-            return new RpcResult(null, NabtoStatus.INVALID_SESSION.toInteger());
-        }
         RpcResult rpcResult = NabtoCApiWrapper
-                .nabtoRpcSetInterface(nabtoHost, interfaceDefinition, session.getSession());
+                .nabtoRpcSetInterface(nabtoHost, interfaceDefinition, session);
         if(rpcResult.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to set RPC interface: " + rpcResult.getStatus());
@@ -602,12 +587,7 @@ public class NabtoApi {
      *          </ul>
      */
     public RpcResult rpcInvoke(String nabtoUrl, Session session) {
-        if(session == null || session.getSession() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to invoke RPC (invalid session object).");
-            return new RpcResult(null, NabtoStatus.INVALID_SESSION.toInteger());
-        }
-        RpcResult rpcResult = NabtoCApiWrapper.nabtoRpcInvoke(nabtoUrl, session.getSession());
+        RpcResult rpcResult = NabtoCApiWrapper.nabtoRpcInvoke(nabtoUrl, session);
         if(rpcResult.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to invoke RPC: " + rpcResult.getStatus());
@@ -644,12 +624,7 @@ public class NabtoApi {
      *          </ul>
      */
     public UrlResult fetchUrl(String nabtoUrl, Session session) {
-        if(session == null || session.getSession() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to fetch URL (invalid session object).");
-            return new UrlResult(null, null, NabtoStatus.INVALID_SESSION.toInteger());
-        }
-        UrlResult result = NabtoCApiWrapper.nabtoFetchUrl(nabtoUrl, session.getSession());
+        UrlResult result = NabtoCApiWrapper.nabtoFetchUrl(nabtoUrl, session);
         if(result.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to fetch URL: " + result.getStatus());
@@ -694,13 +669,8 @@ public class NabtoApi {
      */
     public UrlResult submitPostData(String nabtoUrl, byte[] postData,
                                     String postMimeType, Session session) {
-        if(session == null || session.getSession() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to submit post data (invalid session object).");
-            return new UrlResult(null, null, NabtoStatus.INVALID_SESSION.toInteger());
-        }
         UrlResult result = NabtoCApiWrapper.nabtoSubmitPostData(nabtoUrl, postData,
-                postMimeType, session.getSession());
+                postMimeType, session);
         if(result.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to submit post data: " + result.getStatus());
@@ -718,12 +688,7 @@ public class NabtoApi {
      *          error occurred.
      */
     public String getSessionToken(Session session) {
-        if(session == null || session.getSession() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed get session token (invalid session object).");
-            return "";
-        }
-        String token = NabtoCApiWrapper.nabtoGetSessionToken(session.getSession());
+        String token = NabtoCApiWrapper.nabtoGetSessionToken(session);
         if(token == null) {
             Log.d(this.getClass().getSimpleName(), "Failed get session token.");
             token = "";
@@ -763,12 +728,7 @@ public class NabtoApi {
      *          </ul>
      */
     public Stream streamOpen(String nabtoHost, Session session) {
-        if(session == null || session.getSession() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to open stream (invalid session object).");
-            return new Stream(null, NabtoStatus.INVALID_SESSION.toInteger());
-        }
-        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(nabtoHost, session.getSession());
+        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(nabtoHost, session);
         if(stream.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to open stream: " + stream.getStatus());
         }
@@ -802,12 +762,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus streamClose(Stream stream) {
-        if(stream == null || stream.getStream() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to close stream (invalid stream object).");
-            return NabtoStatus.INVALID_STREAM;
-        }
-        NabtoStatus status = NabtoCApiWrapper.nabtoStreamClose(stream.getStream());
+        NabtoStatus status = NabtoCApiWrapper.nabtoStreamClose(stream);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to close stream: " + status);
         }
@@ -851,12 +806,7 @@ public class NabtoApi {
      *          </ul>
      */
     public StreamReadResult streamRead(Stream stream) {
-        if(stream == null || stream.getStream() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to read from stream (invalid stream object).");
-            return new StreamReadResult(null, NabtoStatus.INVALID_STREAM.toInteger());
-        }
-        StreamReadResult result = NabtoCApiWrapper.nabtoStreamRead(stream.getStream());
+        StreamReadResult result = NabtoCApiWrapper.nabtoStreamRead(stream);
         if(result.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to read from stream: " + result.getStatus());
@@ -904,12 +854,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus streamWrite(Stream stream, byte[] data) {
-        if(stream == null || stream.getStream() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to write to stream (invalid stream object).");
-            return NabtoStatus.INVALID_STREAM;
-        }
-        NabtoStatus status = NabtoCApiWrapper.nabtoStreamWrite(data, stream.getStream());
+        NabtoStatus status = NabtoCApiWrapper.nabtoStreamWrite(data, stream);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to write to stream: " + status);
         }
@@ -926,12 +871,7 @@ public class NabtoApi {
      *          {@link NabtoConnectionType#UNKNOWN} is returned.
      */
     public NabtoConnectionType streamConnectionType(Stream stream) {
-        if(stream == null || stream.getStream() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to get stream connection type (invalid stream object).");
-            return NabtoConnectionType.UNKNOWN;
-        }
-        return NabtoCApiWrapper.nabtoStreamConnectionType(stream.getStream());
+        return NabtoCApiWrapper.nabtoStreamConnectionType(stream);
     }
 
     /**
@@ -957,15 +897,10 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus streamSetOption(Stream stream, NabtoStreamOption option, int value) {
-        if(stream == null || stream.getStream() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to set stream option (invalid stream object).");
-            return NabtoStatus.INVALID_STREAM;
-        }
         ByteBuffer byteBuffer = ByteBuffer.allocate(4);
         byteBuffer.putInt(value);
         NabtoStatus status = NabtoCApiWrapper
-                .nabtoStreamSetOption(option.toInteger(), byteBuffer.array(), stream.getStream());
+                .nabtoStreamSetOption(option.toInteger(), byteBuffer.array(), stream);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),  "Failed to set stream option: " + status);
         }
@@ -1028,13 +963,8 @@ public class NabtoApi {
      *          </ul>
      */
     public Tunnel tunnelOpenTcp(int localPort, String nabtoHost, String remoteHost, int remotePort, Session session) {
-        if(session == null || session.getSession() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to open TCP tunnel (invalid session object).");
-            return new Tunnel(null, NabtoStatus.INVALID_SESSION.toInteger());
-        }
         Tunnel tunnel = NabtoCApiWrapper.nabtoTunnelOpenTcp(localPort, nabtoHost, remoteHost,
-                remotePort, session.getSession());
+                remotePort, session);
         if(tunnel.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to open TCP tunnel: " + tunnel.getStatus());
@@ -1063,12 +993,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus tunnelClose(Tunnel tunnel) {
-        if(tunnel == null || tunnel.getTunnel() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to close tunnel (invalid tunnel object).");
-            return NabtoStatus.INVALID_TUNNEL;
-        }
-        NabtoStatus status = NabtoCApiWrapper.nabtoTunnelClose(tunnel.getTunnel());
+        NabtoStatus status = NabtoCApiWrapper.nabtoTunnelClose(tunnel);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),  "Failed to close tunnel: " + status);
         }
@@ -1102,13 +1027,7 @@ public class NabtoApi {
      *          </ul>
      */
     public TunnelInfoResult tunnelInfo(Tunnel tunnel) {
-        if(tunnel == null || tunnel.getTunnel() == null) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to get tunnel info (invalid tunnel object).");
-            return new TunnelInfoResult(
-                    0, NabtoTunnelState.UNKNOWN.toInteger(), 0, 0, NabtoStatus.INVALID_TUNNEL.toInteger());
-        }
-        TunnelInfoResult info = NabtoCApiWrapper.nabtoTunnelInfo(tunnel.getTunnel());
+        TunnelInfoResult info = NabtoCApiWrapper.nabtoTunnelInfo(tunnel);
         if(info.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to get tunnel info: " + info.getStatus());

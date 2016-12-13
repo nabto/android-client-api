@@ -478,14 +478,14 @@ public class NabtoApiTest {
 
     @Test
     public void closeSessionSuccessTest() {
-        when(NabtoCApiWrapper.nabtoCloseSession(anyObject()))
+        when(NabtoCApiWrapper.nabtoCloseSession(any(Session.class)))
                 .thenReturn(NabtoStatus.OK);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.closeSession(session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoCloseSession(eq(session.getSession()));
+        NabtoCApiWrapper.nabtoCloseSession(eq(session));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -495,14 +495,14 @@ public class NabtoApiTest {
 
     @Test
     public void closeSessionFailedTest() {
-        when(NabtoCApiWrapper.nabtoCloseSession(anyObject()))
+        when(NabtoCApiWrapper.nabtoCloseSession(any(Session.class)))
                 .thenReturn(NabtoStatus.FAILED);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.closeSession(session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoCloseSession(eq(session.getSession()));
+        NabtoCApiWrapper.nabtoCloseSession(eq(session));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -511,33 +511,16 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void closeSessionFailedInvalidSessionTest() {
-        Session session = null;
-        NabtoStatus status = api.closeSession(session);
-        assertEquals(NabtoStatus.INVALID_SESSION, status);
-
-        session = new Session(null, NabtoStatus.OK.toInteger());
-        status = api.closeSession(session);
-        assertEquals(NabtoStatus.INVALID_SESSION, status);
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoCloseSession(anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void rpcSetDefaultInterfaceSuccessTest() {
         RpcResult wrapperRpcResult = new RpcResult("json", NabtoStatus.OK.toInteger());
-        when(NabtoCApiWrapper.nabtoRpcSetDefaultInterface(anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoRpcSetDefaultInterface(anyString(), any(Session.class)))
                 .thenReturn(wrapperRpcResult);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         RpcResult rpcResult = api.rpcSetDefaultInterface("interface", session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoRpcSetDefaultInterface(eq("interface"), eq(session.getSession()));
+        NabtoCApiWrapper.nabtoRpcSetDefaultInterface(eq("interface"), eq(session));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -548,14 +531,14 @@ public class NabtoApiTest {
     @Test
     public void rpcSetDefaultInterfaceFailedTest() {
         RpcResult wrapperRpcResult = new RpcResult(null, NabtoStatus.FAILED.toInteger());
-        when(NabtoCApiWrapper.nabtoRpcSetDefaultInterface(anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoRpcSetDefaultInterface(anyString(), any(Session.class)))
                 .thenReturn(wrapperRpcResult);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         RpcResult rpcResult = api.rpcSetDefaultInterface("interface", session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoRpcSetDefaultInterface(eq("interface"), eq(session.getSession()));
+        NabtoCApiWrapper.nabtoRpcSetDefaultInterface(eq("interface"), eq(session));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -564,35 +547,16 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void rpcSetDefaultInterfaceFailedInvalidSessionTest() {
-        Session session = null;
-        RpcResult rpcResult = api.rpcSetDefaultInterface("interface", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, rpcResult.getStatus());
-        assertEquals(null, rpcResult.getJson());
-
-        session = new Session(null, NabtoStatus.OK.toInteger());
-        rpcResult = api.rpcSetDefaultInterface("interface", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, rpcResult.getStatus());
-        assertEquals(null, rpcResult.getJson());
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoRpcSetDefaultInterface(anyString(), anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void rpcSetInterfaceSuccessTest() {
         RpcResult wrapperRpcResult = new RpcResult("json", NabtoStatus.OK.toInteger());
-        when(NabtoCApiWrapper.nabtoRpcSetInterface(anyString(), anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoRpcSetInterface(anyString(), anyString(), any(Session.class)))
                 .thenReturn(wrapperRpcResult);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         RpcResult rpcResult = api.rpcSetInterface("host", "interface", session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoRpcSetInterface(eq("host"), eq("interface"), eq(session.getSession()));
+        NabtoCApiWrapper.nabtoRpcSetInterface(eq("host"), eq("interface"), eq(session));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -603,14 +567,14 @@ public class NabtoApiTest {
     @Test
     public void rpcSetInterfaceFailedTest() {
         RpcResult wrapperRpcResult = new RpcResult(null, NabtoStatus.FAILED.toInteger());
-        when(NabtoCApiWrapper.nabtoRpcSetInterface(anyString(), anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoRpcSetInterface(anyString(), anyString(), any(Session.class)))
                 .thenReturn(wrapperRpcResult);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         RpcResult rpcResult = api.rpcSetInterface("host", "interface", session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoRpcSetInterface(eq("host"), eq("interface"), eq(session.getSession()));
+        NabtoCApiWrapper.nabtoRpcSetInterface(eq("host"), eq("interface"), eq(session));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -619,35 +583,16 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void rpcSetInterfaceFailedInvalidSessionTest() {
-        Session session = null;
-        RpcResult rpcResult = api.rpcSetInterface("host", "interface", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, rpcResult.getStatus());
-        assertEquals(null, rpcResult.getJson());
-
-        session = new Session(null, NabtoStatus.OK.toInteger());
-        rpcResult = api.rpcSetInterface("host", "interface", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, rpcResult.getStatus());
-        assertEquals(null, rpcResult.getJson());
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoRpcSetInterface(anyString(), anyString(), anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void rpcInvokeSuccessTest() {
         RpcResult wrapperRpcResult = new RpcResult("json", NabtoStatus.OK.toInteger());
-        when(NabtoCApiWrapper.nabtoRpcInvoke(anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoRpcInvoke(anyString(), any(Session.class)))
                 .thenReturn(wrapperRpcResult);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         RpcResult rpcResult = api.rpcInvoke("nabtoUrl", session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoRpcInvoke(eq("nabtoUrl"), eq(session.getSession()));
+        NabtoCApiWrapper.nabtoRpcInvoke(eq("nabtoUrl"), eq(session));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -658,14 +603,14 @@ public class NabtoApiTest {
     @Test
     public void rpcInvokeFailedTest() {
         RpcResult wrapperRpcResult = new RpcResult(null, NabtoStatus.FAILED.toInteger());
-        when(NabtoCApiWrapper.nabtoRpcInvoke(anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoRpcInvoke(anyString(), any(Session.class)))
                 .thenReturn(wrapperRpcResult);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         RpcResult rpcResult = api.rpcInvoke("nabtoUrl", session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoRpcInvoke(eq("nabtoUrl"), eq(session.getSession()));
+        NabtoCApiWrapper.nabtoRpcInvoke(eq("nabtoUrl"), eq(session));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -674,35 +619,16 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void rpcInvokeFailedInvalidSessionTest() {
-        Session session = null;
-        RpcResult rpcResult = api.rpcInvoke("nabtoUrl", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, rpcResult.getStatus());
-        assertEquals(null, rpcResult.getJson());
-
-        session = new Session(null, NabtoStatus.OK.toInteger());
-        rpcResult = api.rpcInvoke("nabtoUrl", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, rpcResult.getStatus());
-        assertEquals(null, rpcResult.getJson());
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoRpcInvoke(anyString(), anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void fetchUrlSuccessTest() {
         UrlResult wrapperUrlResult = new UrlResult(new byte[]{1,2}, "mime", NabtoStatus.OK.toInteger());
-        when(NabtoCApiWrapper.nabtoFetchUrl(anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoFetchUrl(anyString(), any(Session.class)))
                 .thenReturn(wrapperUrlResult);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         UrlResult urlResult = api.fetchUrl("nabtoUrl", session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoFetchUrl(eq("nabtoUrl"), eq(session.getSession()));
+        NabtoCApiWrapper.nabtoFetchUrl(eq("nabtoUrl"), eq(session));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -713,14 +639,14 @@ public class NabtoApiTest {
     @Test
     public void fetchUrlFailedTest() {
         UrlResult wrapperUrlResult = new UrlResult(null, null, NabtoStatus.FAILED.toInteger());
-        when(NabtoCApiWrapper.nabtoFetchUrl(anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoFetchUrl(anyString(), any(Session.class)))
                 .thenReturn(wrapperUrlResult);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         UrlResult urlResult = api.fetchUrl("nabtoUrl", session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoFetchUrl(eq("nabtoUrl"), eq(session.getSession()));
+        NabtoCApiWrapper.nabtoFetchUrl(eq("nabtoUrl"), eq(session));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -729,30 +655,9 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void fetchUrlFailedInvalidSessionTest() {
-        Session session = null;
-        UrlResult urlResult = api.fetchUrl("nabtoUrl", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, urlResult.getStatus());
-        assertEquals(null, urlResult.getMimeType());
-        assertEquals(null, urlResult.getResult());
-
-        session = new Session(null, NabtoStatus.OK.toInteger());
-        urlResult = api.fetchUrl("nabtoUrl", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, urlResult.getStatus());
-        assertEquals(null, urlResult.getMimeType());
-        assertEquals(null, urlResult.getResult());
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoFetchUrl(anyString(), anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void submitPostDataSuccessTest() {
         UrlResult wrapperUrlResult = new UrlResult(new byte[]{1,2}, "mime", NabtoStatus.OK.toInteger());
-        when(NabtoCApiWrapper.nabtoSubmitPostData(anyString(), any(byte[].class), anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoSubmitPostData(anyString(), any(byte[].class), anyString(), any(Session.class)))
                 .thenReturn(wrapperUrlResult);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
@@ -760,7 +665,7 @@ public class NabtoApiTest {
 
         PowerMockito.verifyStatic();
         NabtoCApiWrapper.nabtoSubmitPostData(
-                eq("nabtoUrl"), eq(new byte[]{1,2}), eq("post mime"), eq(session.getSession()));
+                eq("nabtoUrl"), eq(new byte[]{1,2}), eq("post mime"), eq(session));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -771,7 +676,7 @@ public class NabtoApiTest {
     @Test
     public void submitPostDataFailedTest() {
         UrlResult wrapperUrlResult = new UrlResult(null, null, NabtoStatus.FAILED.toInteger());
-        when(NabtoCApiWrapper.nabtoSubmitPostData(anyString(), any(byte[].class), anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoSubmitPostData(anyString(), any(byte[].class), anyString(), any(Session.class)))
                 .thenReturn(wrapperUrlResult);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
@@ -779,7 +684,7 @@ public class NabtoApiTest {
 
         PowerMockito.verifyStatic();
         NabtoCApiWrapper.nabtoSubmitPostData(
-                eq("nabtoUrl"), eq(new byte[]{1,2}), eq("post mime"), eq(session.getSession()));
+                eq("nabtoUrl"), eq(new byte[]{1,2}), eq("post mime"), eq(session));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -788,36 +693,15 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void submitPostDataFailedInvalidSessionTest() {
-        Session session = null;
-        UrlResult urlResult = api.submitPostData("nabtoUrl", new byte[]{1,2}, "post mime", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, urlResult.getStatus());
-        assertEquals(null, urlResult.getMimeType());
-        assertEquals(null, urlResult.getResult());
-
-        session = new Session(null, NabtoStatus.OK.toInteger());
-        urlResult = api.submitPostData("nabtoUrl", new byte[]{1,2}, "post mime", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, urlResult.getStatus());
-        assertEquals(null, urlResult.getMimeType());
-        assertEquals(null, urlResult.getResult());
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoSubmitPostData(anyString(), any(byte[].class), anyString(), anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void getSessionTokenSuccessTest() {
-        when(NabtoCApiWrapper.nabtoGetSessionToken(anyObject()))
+        when(NabtoCApiWrapper.nabtoGetSessionToken(any(Session.class)))
                 .thenReturn("token");
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         String token = api.getSessionToken(session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoGetSessionToken(session.getSession());
+        NabtoCApiWrapper.nabtoGetSessionToken(session);
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -827,14 +711,14 @@ public class NabtoApiTest {
 
     @Test
     public void getSessionTokenFailedTest() {
-        when(NabtoCApiWrapper.nabtoGetSessionToken(anyObject()))
+        when(NabtoCApiWrapper.nabtoGetSessionToken(any(Session.class)))
                 .thenReturn(null);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         String token = api.getSessionToken(session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoGetSessionToken(session.getSession());
+        NabtoCApiWrapper.nabtoGetSessionToken(session);
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -843,33 +727,16 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void getSessionTokenFailedInvalidSessionTest() {
-        Session session = null;
-        String token = api.getSessionToken(session);
-        assertEquals("", token);
-
-        session = new Session(null, NabtoStatus.OK.toInteger());
-        token = api.getSessionToken(session);
-        assertEquals("", token);
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoGetSessionToken(anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void streamOpenSuccessTest() {
         Stream wrapperStream = new Stream("handle", NabtoStatus.OK.toInteger());
-        when(NabtoCApiWrapper.nabtoStreamOpen(anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamOpen(anyString(), any(Session.class)))
                 .thenReturn(wrapperStream);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         Stream stream = api.streamOpen("nabtoHost", session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoStreamOpen(eq("nabtoHost"), eq(session.getSession()));
+        NabtoCApiWrapper.nabtoStreamOpen(eq("nabtoHost"), eq(session));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -880,14 +747,14 @@ public class NabtoApiTest {
     @Test
     public void streamOpenFailedTest() {
         Stream wrapperStream = new Stream("handle", NabtoStatus.FAILED.toInteger());
-        when(NabtoCApiWrapper.nabtoStreamOpen(anyString(), anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamOpen(anyString(), any(Session.class)))
                 .thenReturn(wrapperStream);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         Stream stream = api.streamOpen("nabtoHost", session);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoStreamOpen(eq("nabtoHost"), eq(session.getSession()));
+        NabtoCApiWrapper.nabtoStreamOpen(eq("nabtoHost"), eq(session));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -896,34 +763,15 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void streamOpenFailedInvalidSessionTest() {
-        Session session = null;
-        Stream stream = api.streamOpen("nabtoHost", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, stream.getStatus());
-        assertEquals(null, stream.getStream());
-
-        session = new Session(null, NabtoStatus.OK.toInteger());
-        stream = api.streamOpen("nabtoHost", session);
-        assertEquals(NabtoStatus.INVALID_SESSION, stream.getStatus());
-        assertEquals(null, stream.getStream());
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoStreamOpen(anyString(), anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void streamCloseSuccessTest() {
-        when(NabtoCApiWrapper.nabtoStreamClose(anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamClose(any(Stream.class)))
                 .thenReturn(NabtoStatus.OK);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.streamClose(stream);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoStreamClose(eq(stream.getStream()));
+        NabtoCApiWrapper.nabtoStreamClose(eq(stream));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -933,14 +781,14 @@ public class NabtoApiTest {
 
     @Test
     public void streamCloseFailedTest() {
-        when(NabtoCApiWrapper.nabtoStreamClose(anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamClose(any(Stream.class)))
                 .thenReturn(NabtoStatus.FAILED);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.streamClose(stream);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoStreamClose(eq(stream.getStream()));
+        NabtoCApiWrapper.nabtoStreamClose(eq(stream));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -949,33 +797,16 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void streamCloseFailedInvalidStreamTest() {
-        Stream stream = null;
-        NabtoStatus status = api.streamClose(stream);
-        assertEquals(NabtoStatus.INVALID_STREAM, status);
-
-        stream = new Stream(null, NabtoStatus.OK.toInteger());
-        status = api.streamClose(stream);
-        assertEquals(NabtoStatus.INVALID_STREAM, status);
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoStreamClose(anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void streamReadSuccessTest() {
         StreamReadResult wrapperReadResult = new StreamReadResult(new byte[]{1,2}, NabtoStatus.OK.toInteger());
-        when(NabtoCApiWrapper.nabtoStreamRead(anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamRead(any(Stream.class)))
                 .thenReturn(wrapperReadResult);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         StreamReadResult readResult = api.streamRead(stream);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoStreamRead(eq(stream.getStream()));
+        NabtoCApiWrapper.nabtoStreamRead(eq(stream));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -986,14 +817,14 @@ public class NabtoApiTest {
     @Test
     public void streamReadFailedTest() {
         StreamReadResult wrapperReadResult = new StreamReadResult(null, NabtoStatus.FAILED.toInteger());
-        when(NabtoCApiWrapper.nabtoStreamRead(anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamRead(any(Stream.class)))
                 .thenReturn(wrapperReadResult);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         StreamReadResult readResult = api.streamRead(stream);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoStreamRead(eq(stream.getStream()));
+        NabtoCApiWrapper.nabtoStreamRead(eq(stream));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -1002,34 +833,15 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void streamReadFailedInvalidStreamTest() {
-        Stream stream = null;
-        StreamReadResult readResult = api.streamRead(stream);
-        assertEquals(NabtoStatus.INVALID_STREAM, readResult.getStatus());
-        assertEquals(null, readResult.getData());
-
-        stream = new Stream(null, NabtoStatus.OK.toInteger());
-        readResult = api.streamRead(stream);
-        assertEquals(NabtoStatus.INVALID_STREAM, readResult.getStatus());
-        assertEquals(null, readResult.getData());
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoStreamRead(anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void streamWriteSuccessTest() {
-        when(NabtoCApiWrapper.nabtoStreamWrite(any(byte[].class), anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamWrite(any(byte[].class), any(Stream.class)))
                 .thenReturn(NabtoStatus.OK);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.streamWrite(stream, new byte[]{1,2});
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoStreamWrite(eq(new byte[]{1,2}), eq(stream.getStream()));
+        NabtoCApiWrapper.nabtoStreamWrite(eq(new byte[]{1,2}), eq(stream));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -1039,14 +851,14 @@ public class NabtoApiTest {
 
     @Test
     public void streamWriteFailedTest() {
-        when(NabtoCApiWrapper.nabtoStreamWrite(any(byte[].class), anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamWrite(any(byte[].class), any(Stream.class)))
                 .thenReturn(NabtoStatus.FAILED);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.streamWrite(stream, new byte[]{1,2});
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoStreamWrite(eq(new byte[]{1,2}), eq(stream.getStream()));
+        NabtoCApiWrapper.nabtoStreamWrite(eq(new byte[]{1,2}), eq(stream));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -1055,32 +867,15 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void streamWriteFailedInvalidStreamTest() {
-        Stream stream = null;
-        NabtoStatus status = api.streamWrite(stream, new byte[]{1,2});
-        assertEquals(NabtoStatus.INVALID_STREAM, status);
-
-        stream = new Stream(null, NabtoStatus.OK.toInteger());
-        status = api.streamWrite(stream, new byte[]{1,2});
-        assertEquals(NabtoStatus.INVALID_STREAM, status);
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoStreamWrite(any(byte[].class), anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void streamConnectionTypeSuccessTest() {
-        when(NabtoCApiWrapper.nabtoStreamConnectionType(anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamConnectionType(any(Stream.class)))
                 .thenReturn(NabtoConnectionType.RELAY_MICRO);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoConnectionType type = api.streamConnectionType(stream);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoStreamConnectionType(eq(stream.getStream()));
+        NabtoCApiWrapper.nabtoStreamConnectionType(eq(stream));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -1090,38 +885,21 @@ public class NabtoApiTest {
 
     @Test
     public void streamConnectionTypeFailedTest() {
-        when(NabtoCApiWrapper.nabtoStreamConnectionType(anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamConnectionType(any(Stream.class)))
                 .thenReturn(NabtoConnectionType.UNKNOWN);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoConnectionType type = api.streamConnectionType(stream);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoStreamConnectionType(eq(stream.getStream()));
+        NabtoCApiWrapper.nabtoStreamConnectionType(eq(stream));
 
         assertEquals(NabtoConnectionType.UNKNOWN, type);
-    }
-
-    @Test
-    public void streamConnectionTypeFailedInvalidStreamTest() {
-        Stream stream = null;
-        NabtoConnectionType type = api.streamConnectionType(stream);
-        assertEquals(NabtoConnectionType.UNKNOWN, type);
-
-        stream = new Stream(null, NabtoStatus.OK.toInteger());
-        type = api.streamConnectionType(stream);
-        assertEquals(NabtoConnectionType.UNKNOWN, type);
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoStreamConnectionType(anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
     }
 
     @Test
     public void streamSetOptionSuccessTest() {
-        when(NabtoCApiWrapper.nabtoStreamSetOption(anyInt(), any(byte[].class), anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamSetOption(anyInt(), any(byte[].class), any(Stream.class)))
                 .thenReturn(NabtoStatus.OK);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
@@ -1129,7 +907,7 @@ public class NabtoApiTest {
 
         PowerMockito.verifyStatic();
         NabtoCApiWrapper.nabtoStreamSetOption(eq(
-                NabtoStreamOption.SEND_TIMEOUT.toInteger()), eq(new byte[]{0,0,0,42}), eq(stream.getStream()));
+                NabtoStreamOption.SEND_TIMEOUT.toInteger()), eq(new byte[]{0,0,0,42}), eq(stream));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -1139,7 +917,7 @@ public class NabtoApiTest {
 
     @Test
     public void streamSetOptionFailedTest() {
-        when(NabtoCApiWrapper.nabtoStreamSetOption(anyInt(), any(byte[].class), anyObject()))
+        when(NabtoCApiWrapper.nabtoStreamSetOption(anyInt(), any(byte[].class), any(Stream.class)))
                 .thenReturn(NabtoStatus.FAILED);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
@@ -1147,7 +925,7 @@ public class NabtoApiTest {
 
         PowerMockito.verifyStatic();
         NabtoCApiWrapper.nabtoStreamSetOption(
-                eq(NabtoStreamOption.SEND_TIMEOUT.toInteger()), eq(new byte[]{0,0,0,42}), eq(stream.getStream()));
+                eq(NabtoStreamOption.SEND_TIMEOUT.toInteger()), eq(new byte[]{0,0,0,42}), eq(stream));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -1156,26 +934,9 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void streamSetOptionFailedInvalidStreamTest() {
-        Stream stream = null;
-        NabtoStatus status = api.streamSetOption(stream, NabtoStreamOption.SEND_TIMEOUT, 42);
-        assertEquals(NabtoStatus.INVALID_STREAM, status);
-
-        stream = new Stream(null, NabtoStatus.OK.toInteger());
-        status = api.streamSetOption(stream, NabtoStreamOption.SEND_TIMEOUT, 42);
-        assertEquals(NabtoStatus.INVALID_STREAM, status);
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoStreamSetOption(anyInt(), any(byte[].class), anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void tunnelOpenTcpSuccessTest() {
         Tunnel wrapperTunnel = new Tunnel("handle", NabtoStatus.OK.toInteger());
-        when(NabtoCApiWrapper.nabtoTunnelOpenTcp(anyInt(), anyString(), anyString(), anyInt(), anyObject()))
+        when(NabtoCApiWrapper.nabtoTunnelOpenTcp(anyInt(), anyString(), anyString(), anyInt(), any(Session.class)))
                 .thenReturn(wrapperTunnel);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
@@ -1183,7 +944,7 @@ public class NabtoApiTest {
 
         PowerMockito.verifyStatic();
         NabtoCApiWrapper.nabtoTunnelOpenTcp(
-                eq(42), eq("nabtoHost"), eq("remoteHost"), eq(24), eq(session.getSession()));
+                eq(42), eq("nabtoHost"), eq("remoteHost"), eq(24), eq(session));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -1194,7 +955,7 @@ public class NabtoApiTest {
     @Test
     public void tunnelOpenTcpFailedTest() {
         Tunnel wrapperTunnel = new Tunnel(null, NabtoStatus.FAILED.toInteger());
-        when(NabtoCApiWrapper.nabtoTunnelOpenTcp(anyInt(), anyString(), anyString(), anyInt(), anyObject()))
+        when(NabtoCApiWrapper.nabtoTunnelOpenTcp(anyInt(), anyString(), anyString(), anyInt(), any(Session.class)))
                 .thenReturn(wrapperTunnel);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
@@ -1202,7 +963,7 @@ public class NabtoApiTest {
 
         PowerMockito.verifyStatic();
         NabtoCApiWrapper.nabtoTunnelOpenTcp(
-                eq(42), eq("nabtoHost"), eq("remoteHost"), eq(24), eq(session.getSession()));
+                eq(42), eq("nabtoHost"), eq("remoteHost"), eq(24), eq(session));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -1211,34 +972,15 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void tunnelOpenTcpFailedInvalidSessionTest() {
-        Session session = null;
-        Tunnel tunnel = api.tunnelOpenTcp(42, "nabtoHost", "remoteHost", 24, session);
-        assertEquals(NabtoStatus.INVALID_SESSION, tunnel.getStatus());
-        assertEquals(null, tunnel.getTunnel());
-
-        session = new Session(null, NabtoStatus.OK.toInteger());
-        tunnel = api.tunnelOpenTcp(42, "nabtoHost", "remoteHost", 24, session);
-        assertEquals(NabtoStatus.INVALID_SESSION, tunnel.getStatus());
-        assertEquals(null, tunnel.getTunnel());
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoTunnelOpenTcp(anyInt(), anyString(), anyString(), anyInt(), anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void tunnelCloseSuccessTest() {
-        when(NabtoCApiWrapper.nabtoTunnelClose(anyObject()))
+        when(NabtoCApiWrapper.nabtoTunnelClose(any(Tunnel.class)))
                 .thenReturn(NabtoStatus.OK);
 
         Tunnel tunnel = new Tunnel("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.tunnelClose(tunnel);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoTunnelClose(eq(tunnel.getTunnel()));
+        NabtoCApiWrapper.nabtoTunnelClose(eq(tunnel));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -1248,14 +990,14 @@ public class NabtoApiTest {
 
     @Test
     public void tunnelCloseFailedTest() {
-        when(NabtoCApiWrapper.nabtoTunnelClose(anyObject()))
+        when(NabtoCApiWrapper.nabtoTunnelClose(any(Tunnel.class)))
                 .thenReturn(NabtoStatus.FAILED);
 
         Tunnel tunnel = new Tunnel("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.tunnelClose(tunnel);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoTunnelClose(eq(tunnel.getTunnel()));
+        NabtoCApiWrapper.nabtoTunnelClose(eq(tunnel));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
@@ -1264,34 +1006,17 @@ public class NabtoApiTest {
     }
 
     @Test
-    public void tunnelCloseFailedInvalidTunnelTest() {
-        Tunnel tunnel = null;
-        NabtoStatus status = api.tunnelClose(tunnel);
-        assertEquals(NabtoStatus.INVALID_TUNNEL, status);
-
-        tunnel = new Tunnel(null, NabtoStatus.OK.toInteger());
-        status = api.tunnelClose(tunnel);
-        assertEquals(NabtoStatus.INVALID_TUNNEL, status);
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoTunnelClose(anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-    }
-
-    @Test
     public void tunnelInfoSuccessTest() {
         TunnelInfoResult wrapperTunnelInfo =
                 new TunnelInfoResult(1, NabtoTunnelState.REMOTE_P2P.toInteger(), 2, 3, NabtoStatus.OK.toInteger());
-        when(NabtoCApiWrapper.nabtoTunnelInfo(anyObject()))
+        when(NabtoCApiWrapper.nabtoTunnelInfo(any(Tunnel.class)))
                 .thenReturn(wrapperTunnelInfo);
 
         Tunnel tunnel = new Tunnel("handle", NabtoStatus.OK.toInteger());
         TunnelInfoResult tunnelInfo = api.tunnelInfo(tunnel);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoTunnelInfo(eq(tunnel.getTunnel()));
+        NabtoCApiWrapper.nabtoTunnelInfo(eq(tunnel));
 
         PowerMockito.verifyStatic(times(0));
         Log.d(anyString(), anyString());
@@ -1303,43 +1028,18 @@ public class NabtoApiTest {
     public void tunnelInfoFailedTest() {
         TunnelInfoResult wrapperTunnelInfo =
                 new TunnelInfoResult(0, NabtoTunnelState.UNKNOWN.toInteger(), 0, 0, NabtoStatus.FAILED.toInteger());
-        when(NabtoCApiWrapper.nabtoTunnelInfo(anyObject()))
+        when(NabtoCApiWrapper.nabtoTunnelInfo(any(Tunnel.class)))
                 .thenReturn(wrapperTunnelInfo);
 
         Tunnel tunnel = new Tunnel("handle", NabtoStatus.OK.toInteger());
         TunnelInfoResult tunnelInfo = api.tunnelInfo(tunnel);
 
         PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoTunnelInfo(eq(tunnel.getTunnel()));
+        NabtoCApiWrapper.nabtoTunnelInfo(eq(tunnel));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());
 
         assertEquals(wrapperTunnelInfo, tunnelInfo);
-    }
-
-    @Test
-    public void tunnelInfoFailedInvalidTunnelTest() {
-        Tunnel tunnel = null;
-        TunnelInfoResult info = api.tunnelInfo(tunnel);
-        assertEquals(NabtoStatus.INVALID_TUNNEL, info.getStatus());
-        assertEquals(NabtoTunnelState.UNKNOWN, info.getTunnelState());
-        assertEquals(0, info.getPort());
-        assertEquals(0, info.getLastError());
-        assertEquals(0, info.getVersion());
-
-        tunnel = new Tunnel(null, NabtoStatus.OK.toInteger());
-        info = api.tunnelInfo(tunnel);
-        assertEquals(NabtoStatus.INVALID_TUNNEL, info.getStatus());
-        assertEquals(NabtoTunnelState.UNKNOWN, info.getTunnelState());
-        assertEquals(0, info.getPort());
-        assertEquals(0, info.getLastError());
-        assertEquals(0, info.getVersion());
-
-        PowerMockito.verifyStatic(times(0));
-        NabtoCApiWrapper.nabtoTunnelInfo(anyObject());
-
-        PowerMockito.verifyStatic(times(2));
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
     }
 }

@@ -297,7 +297,7 @@ public class NabtoCApiWrapperTest {
         Session session = NabtoCApiWrapper.nabtoOpenSession(DUMMY_EMAIL, DUMMY_PASSWORD);
 
         assertEquals(NabtoStatus.OK, session.getStatus());
-        assertThat(session.getSession(), instanceOf(ByteBuffer.class));
+        assertThat(session.getHandle(), instanceOf(ByteBuffer.class));
 
         Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
         assertEquals(DUMMY_EMAIL, paramVals.get("id"));
@@ -311,7 +311,7 @@ public class NabtoCApiWrapperTest {
         session = NabtoCApiWrapper.nabtoOpenSession(DUMMY_EMAIL, DUMMY_PASSWORD);
 
         assertEquals(NabtoStatus.FAILED, session.getStatus());
-        assertNull(session.getSession());
+        assertNull(session.getHandle());
 
         // test NULL resilience
         NabtoCApiWrapper.nabtoOpenSession(null, null);
@@ -327,7 +327,7 @@ public class NabtoCApiWrapperTest {
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
 
         assertEquals(NabtoStatus.OK, session.getStatus());
-        assertThat(session.getSession(), instanceOf(ByteBuffer.class));
+        assertThat(session.getHandle(), instanceOf(ByteBuffer.class));
 
         // test error
         retVals = new HashMap<String, String>();
@@ -337,7 +337,7 @@ public class NabtoCApiWrapperTest {
         session = NabtoCApiWrapper.nabtoOpenSessionBare();
 
         assertEquals(NabtoStatus.FAILED, session.getStatus());
-        assertNull(session.getSession());
+        assertNull(session.getHandle());
     }
 
     @Test
@@ -347,7 +347,7 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        NabtoStatus status = NabtoCApiWrapper.nabtoCloseSession(session.getSession());
+        NabtoStatus status = NabtoCApiWrapper.nabtoCloseSession(session);
 
         assertEquals(NabtoStatus.OK, status);
         Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
@@ -366,7 +366,7 @@ public class NabtoCApiWrapperTest {
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
         RpcResult result = NabtoCApiWrapper.nabtoRpcSetDefaultInterface(
-                "interface", session.getSession());
+                "interface", session);
 
         assertEquals(NabtoStatus.OK, result.getStatus());
         assertNull(result.getJson());
@@ -380,7 +380,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.FAILED.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        result = NabtoCApiWrapper.nabtoRpcSetDefaultInterface("interface", session.getSession());
+        result = NabtoCApiWrapper.nabtoRpcSetDefaultInterface("interface", session);
 
         assertEquals(NabtoStatus.FAILED, result.getStatus());
         assertNull(result.getJson());
@@ -390,7 +390,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.FAILED_WITH_JSON_MESSAGE.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        result = NabtoCApiWrapper.nabtoRpcSetDefaultInterface("interface", session.getSession());
+        result = NabtoCApiWrapper.nabtoRpcSetDefaultInterface("interface", session);
 
         assertEquals(NabtoStatus.FAILED_WITH_JSON_MESSAGE, result.getStatus());
         assertEquals("error", result.getJson());
@@ -408,7 +408,7 @@ public class NabtoCApiWrapperTest {
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
         RpcResult result = NabtoCApiWrapper.nabtoRpcSetInterface(
-                DUMMY_HOST, "interface", session.getSession());
+                DUMMY_HOST, "interface", session);
 
         assertEquals(NabtoStatus.OK, result.getStatus());
         assertNull(result.getJson());
@@ -423,7 +423,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.FAILED.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        result = NabtoCApiWrapper.nabtoRpcSetInterface("host", "interface", session.getSession());
+        result = NabtoCApiWrapper.nabtoRpcSetInterface("host", "interface", session);
 
         assertEquals(NabtoStatus.FAILED, result.getStatus());
         assertNull(result.getJson());
@@ -433,7 +433,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.FAILED_WITH_JSON_MESSAGE.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        result = NabtoCApiWrapper.nabtoRpcSetInterface("host", "interface", session.getSession());
+        result = NabtoCApiWrapper.nabtoRpcSetInterface("host", "interface", session);
 
         assertEquals(NabtoStatus.FAILED_WITH_JSON_MESSAGE, result.getStatus());
         assertEquals("error", result.getJson());
@@ -450,7 +450,7 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        RpcResult result = NabtoCApiWrapper.nabtoRpcInvoke("url", session.getSession());
+        RpcResult result = NabtoCApiWrapper.nabtoRpcInvoke("url", session);
 
         assertEquals(NabtoStatus.OK, result.getStatus());
         assertEquals("json", result.getJson());
@@ -464,7 +464,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.FAILED.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        result = NabtoCApiWrapper.nabtoRpcInvoke("url", session.getSession());
+        result = NabtoCApiWrapper.nabtoRpcInvoke("url", session);
 
         assertEquals(NabtoStatus.FAILED, result.getStatus());
         assertNull(result.getJson());
@@ -481,7 +481,7 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        UrlResult result = NabtoCApiWrapper.nabtoFetchUrl("url", session.getSession());
+        UrlResult result = NabtoCApiWrapper.nabtoFetchUrl("url", session);
 
         assertEquals(NabtoStatus.OK, result.getStatus());
         assertEquals("content", new String(result.getResult()));
@@ -496,7 +496,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.FAILED.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        result = NabtoCApiWrapper.nabtoFetchUrl("url", session.getSession());
+        result = NabtoCApiWrapper.nabtoFetchUrl("url", session);
 
         assertEquals(NabtoStatus.FAILED, result.getStatus());
         assertNull(result.getResult());
@@ -515,7 +515,7 @@ public class NabtoCApiWrapperTest {
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
         UrlResult result = NabtoCApiWrapper.nabtoSubmitPostData(
-                "url", new String("post").getBytes(), "post mime type", session.getSession());
+                "url", new String("post").getBytes(), "post mime type", session);
 
         assertEquals(NabtoStatus.OK, result.getStatus());
         assertEquals("content", new String(result.getResult()));
@@ -534,7 +534,7 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         result = NabtoCApiWrapper.nabtoSubmitPostData(
-                "url", new String("post").getBytes(), "post mime type", session.getSession());
+                "url", new String("post").getBytes(), "post mime type", session);
 
         assertEquals(NabtoStatus.FAILED, result.getStatus());
         assertNull(result.getResult());
@@ -552,7 +552,7 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        String token = NabtoCApiWrapper.nabtoGetSessionToken(session.getSession());
+        String token = NabtoCApiWrapper.nabtoGetSessionToken(session);
 
         assertEquals(64, token.length());
         assertEquals("xxx", token.substring(0, 3));
@@ -573,10 +573,10 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
+        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session);
 
         assertEquals(NabtoStatus.OK, stream.getStatus());
-        assertThat(stream.getStream(), instanceOf(ByteBuffer.class));
+        assertThat(stream.getHandle(), instanceOf(ByteBuffer.class));
 
         Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
         assertEquals("42", paramVals.get("sessionHandle"));
@@ -587,10 +587,10 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.FAILED.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
+        stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session);
 
         assertEquals(NabtoStatus.FAILED, stream.getStatus());
-        assertNull(stream.getStream());
+        assertNull(stream.getHandle());
 
         // test NULL resilience
         NabtoCApiWrapper.nabtoStreamOpen(null, null);
@@ -603,9 +603,9 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
+        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session);
 
-        NabtoStatus status = NabtoCApiWrapper.nabtoStreamClose(stream.getStream());
+        NabtoStatus status = NabtoCApiWrapper.nabtoStreamClose(stream);
 
         assertEquals(NabtoStatus.OK, status);
         Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
@@ -623,9 +623,9 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
+        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session);
 
-        StreamReadResult result = NabtoCApiWrapper.nabtoStreamRead(stream.getStream());
+        StreamReadResult result = NabtoCApiWrapper.nabtoStreamRead(stream);
 
         assertEquals(NabtoStatus.OK, result.getStatus());
         assertEquals("data", new String(result.getData()));
@@ -638,7 +638,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.FAILED.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        result = NabtoCApiWrapper.nabtoStreamRead(stream.getStream());
+        result = NabtoCApiWrapper.nabtoStreamRead(stream);
 
         assertEquals(NabtoStatus.FAILED, result.getStatus());
         assertNull(result.getData());
@@ -654,10 +654,10 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
+        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session);
 
         NabtoStatus status = NabtoCApiWrapper.nabtoStreamWrite(
-                new String("data").getBytes(), stream.getStream());
+                new String("data").getBytes(), stream);
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -678,9 +678,9 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
+        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session);
 
-        NabtoConnectionType type = NabtoCApiWrapper.nabtoStreamConnectionType(stream.getStream());
+        NabtoConnectionType type = NabtoCApiWrapper.nabtoStreamConnectionType(stream);
 
         assertEquals(NabtoConnectionType.P2P, type);
 
@@ -692,7 +692,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.FAILED.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        type = NabtoCApiWrapper.nabtoStreamConnectionType(stream.getStream());
+        type = NabtoCApiWrapper.nabtoStreamConnectionType(stream);
 
         assertEquals(NabtoConnectionType.UNKNOWN, type);
 
@@ -707,12 +707,12 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
+        Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session);
 
         NabtoStatus status = NabtoCApiWrapper.nabtoStreamSetOption(
                 NabtoStreamOption.RECEIVE_TIMEOUT.toInteger(),
                 new String("option").getBytes(),
-                stream.getStream());
+                stream);
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -736,10 +736,10 @@ public class NabtoCApiWrapperTest {
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
         Tunnel tunnel = NabtoCApiWrapper.nabtoTunnelOpenTcp(
-                11, "nabto host", "remote host", 22, session.getSession());
+                11, "nabto host", "remote host", 22, session);
 
         assertEquals(NabtoStatus.OK, tunnel.getStatus());
-        assertThat(tunnel.getTunnel(), instanceOf(ByteBuffer.class));
+        assertThat(tunnel.getHandle(), instanceOf(ByteBuffer.class));
 
         Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
         assertEquals("42", paramVals.get("sessionHandle"));
@@ -754,10 +754,10 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         tunnel = NabtoCApiWrapper.nabtoTunnelOpenTcp(
-                11, "nabto host", "remote host", 22, session.getSession());
+                11, "nabto host", "remote host", 22, session);
 
         assertEquals(NabtoStatus.FAILED, tunnel.getStatus());
-        assertNull(tunnel.getTunnel());
+        assertNull(tunnel.getHandle());
 
         // test NULL resilience
         NabtoCApiWrapper.nabtoTunnelOpenTcp(-1, null, null, -1, null);
@@ -771,9 +771,9 @@ public class NabtoCApiWrapperTest {
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
         Tunnel tunnel = NabtoCApiWrapper.nabtoTunnelOpenTcp(
-                11, "nabto host", "remote host", 22, session.getSession());
+                11, "nabto host", "remote host", 22, session);
 
-        NabtoStatus status = NabtoCApiWrapper.nabtoTunnelClose(tunnel.getTunnel());
+        NabtoStatus status = NabtoCApiWrapper.nabtoTunnelClose(tunnel);
 
         assertEquals(NabtoStatus.OK, status);
         Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
@@ -791,9 +791,9 @@ public class NabtoCApiWrapperTest {
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
         Tunnel tunnel = NabtoCApiWrapper.nabtoTunnelOpenTcp(
-                11, "nabto host", "remote host", 22, session.getSession());
+                11, "nabto host", "remote host", 22, session);
 
-        TunnelInfoResult info = NabtoCApiWrapper.nabtoTunnelInfo(tunnel.getTunnel());
+        TunnelInfoResult info = NabtoCApiWrapper.nabtoTunnelInfo(tunnel);
 
         assertEquals(NabtoStatus.OK, info.getStatus());
         assertEquals(123, info.getVersion());
