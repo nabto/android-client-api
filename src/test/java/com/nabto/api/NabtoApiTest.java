@@ -57,7 +57,7 @@ public class NabtoApiTest {
     @Test
     public void startupSuccessTest() {
         when(NabtoCApiWrapper.nabtoStartup(anyString()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         NabtoStatus status = api.startup();
 
@@ -73,7 +73,7 @@ public class NabtoApiTest {
     @Test
     public void startupFailedTest() {
         when(NabtoCApiWrapper.nabtoStartup(anyString()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         NabtoStatus status = api.startup();
 
@@ -89,7 +89,7 @@ public class NabtoApiTest {
     @Test
     public void shutdownSuccessTest() {
         when(NabtoCApiWrapper.nabtoShutdown())
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         NabtoStatus status = api.shutdown();
 
@@ -105,7 +105,7 @@ public class NabtoApiTest {
     @Test
     public void shutdownFailedTest() {
         when(NabtoCApiWrapper.nabtoShutdown())
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         NabtoStatus status = api.shutdown();
 
@@ -121,7 +121,7 @@ public class NabtoApiTest {
     @Test
     public void setStaticResourceDirSuccessTest() {
         when(NabtoCApiWrapper.nabtoSetStaticResourceDir(anyString()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         NabtoStatus status = api.setStaticResourceDir();
 
@@ -137,7 +137,7 @@ public class NabtoApiTest {
     @Test
     public void setStaticResourceDirFailedTest() {
         when(NabtoCApiWrapper.nabtoSetStaticResourceDir(anyString()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         NabtoStatus status = api.setStaticResourceDir();
 
@@ -219,7 +219,7 @@ public class NabtoApiTest {
     @Test
     public void probeNetworkSuccessTest() {
         when(NabtoCApiWrapper.nabtoProbeNetwork(anyInt(), anyString()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         NabtoStatus status = api.probeNetwork(42, "hostname");
 
@@ -235,7 +235,7 @@ public class NabtoApiTest {
     @Test
     public void probeNetworkFailedTest() {
         when(NabtoCApiWrapper.nabtoProbeNetwork(anyInt(), anyString()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         NabtoStatus status = api.probeNetwork(42, "hostname");
 
@@ -283,7 +283,7 @@ public class NabtoApiTest {
     @Test
     public void createProfileSuccessTest() {
         when(NabtoCApiWrapper.nabtoCreateProfile(anyString(), anyString()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         NabtoStatus status = api.createProfile("email", "password");
 
@@ -299,7 +299,7 @@ public class NabtoApiTest {
     @Test
     public void createProfileFailedTest() {
         when(NabtoCApiWrapper.nabtoCreateProfile(anyString(), anyString()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         NabtoStatus status = api.createProfile("email", "password");
 
@@ -315,7 +315,7 @@ public class NabtoApiTest {
     @Test
     public void createSelfSignedProfileSuccessTest() {
         when(NabtoCApiWrapper.nabtoCreateSelfSignedProfile(anyString(), anyString()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         NabtoStatus status = api.createSelfSignedProfile("commonName", "password");
 
@@ -331,7 +331,7 @@ public class NabtoApiTest {
     @Test
     public void createSelfSignedProfileFailedTest() {
         when(NabtoCApiWrapper.nabtoCreateSelfSignedProfile(anyString(), anyString()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         NabtoStatus status = api.createSelfSignedProfile("commonName", "password");
 
@@ -347,7 +347,7 @@ public class NabtoApiTest {
     @Test
     public void signupSuccessTest() {
         when(NabtoCApiWrapper.nabtoSignup(anyString(), anyString()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         NabtoStatus status = api.signup("email", "password");
 
@@ -363,7 +363,7 @@ public class NabtoApiTest {
     @Test
     public void signupFailedTest() {
         when(NabtoCApiWrapper.nabtoSignup(anyString(), anyString()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         NabtoStatus status = api.signup("email", "password");
 
@@ -379,7 +379,7 @@ public class NabtoApiTest {
     @Test
     public void resetAccountPasswordSuccessTest() {
         when(NabtoCApiWrapper.nabtoResetAccountPassword(anyString()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         NabtoStatus status = api.resetAccountPassword("email");
 
@@ -395,7 +395,7 @@ public class NabtoApiTest {
     @Test
     public void resetAccountPasswordFailedTest() {
         when(NabtoCApiWrapper.nabtoResetAccountPassword(anyString()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         NabtoStatus status = api.resetAccountPassword("email");
 
@@ -479,7 +479,7 @@ public class NabtoApiTest {
     @Test
     public void closeSessionSuccessTest() {
         when(NabtoCApiWrapper.nabtoCloseSession(anyObject()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.closeSession(session);
@@ -496,7 +496,7 @@ public class NabtoApiTest {
     @Test
     public void closeSessionFailedTest() {
         when(NabtoCApiWrapper.nabtoCloseSession(anyObject()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         Session session = new Session("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.closeSession(session);
@@ -917,7 +917,7 @@ public class NabtoApiTest {
     @Test
     public void streamCloseSuccessTest() {
         when(NabtoCApiWrapper.nabtoStreamClose(anyObject()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.streamClose(stream);
@@ -934,7 +934,7 @@ public class NabtoApiTest {
     @Test
     public void streamCloseFailedTest() {
         when(NabtoCApiWrapper.nabtoStreamClose(anyObject()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.streamClose(stream);
@@ -1023,7 +1023,7 @@ public class NabtoApiTest {
     @Test
     public void streamWriteSuccessTest() {
         when(NabtoCApiWrapper.nabtoStreamWrite(any(byte[].class), anyObject()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.streamWrite(stream, new byte[]{1,2});
@@ -1040,7 +1040,7 @@ public class NabtoApiTest {
     @Test
     public void streamWriteFailedTest() {
         when(NabtoCApiWrapper.nabtoStreamWrite(any(byte[].class), anyObject()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.streamWrite(stream, new byte[]{1,2});
@@ -1074,7 +1074,7 @@ public class NabtoApiTest {
     @Test
     public void streamConnectionTypeSuccessTest() {
         when(NabtoCApiWrapper.nabtoStreamConnectionType(anyObject()))
-                .thenReturn(NabtoConnectionType.RELAY_MICRO.toInteger());
+                .thenReturn(NabtoConnectionType.RELAY_MICRO);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoConnectionType type = api.streamConnectionType(stream);
@@ -1091,16 +1091,13 @@ public class NabtoApiTest {
     @Test
     public void streamConnectionTypeFailedTest() {
         when(NabtoCApiWrapper.nabtoStreamConnectionType(anyObject()))
-                .thenReturn(-1);
+                .thenReturn(NabtoConnectionType.UNKNOWN);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoConnectionType type = api.streamConnectionType(stream);
 
         PowerMockito.verifyStatic();
         NabtoCApiWrapper.nabtoStreamConnectionType(eq(stream.getStream()));
-
-        PowerMockito.verifyStatic();
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
 
         assertEquals(NabtoConnectionType.UNKNOWN, type);
     }
@@ -1125,7 +1122,7 @@ public class NabtoApiTest {
     @Test
     public void streamSetOptionSuccessTest() {
         when(NabtoCApiWrapper.nabtoStreamSetOption(anyInt(), any(byte[].class), anyObject()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.streamSetOption(stream, NabtoStreamOption.SEND_TIMEOUT, 42);
@@ -1143,7 +1140,7 @@ public class NabtoApiTest {
     @Test
     public void streamSetOptionFailedTest() {
         when(NabtoCApiWrapper.nabtoStreamSetOption(anyInt(), any(byte[].class), anyObject()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         Stream stream = new Stream("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.streamSetOption(stream, NabtoStreamOption.SEND_TIMEOUT, 42);
@@ -1235,7 +1232,7 @@ public class NabtoApiTest {
     @Test
     public void tunnelCloseSuccessTest() {
         when(NabtoCApiWrapper.nabtoTunnelClose(anyObject()))
-                .thenReturn(NabtoStatus.OK.toInteger());
+                .thenReturn(NabtoStatus.OK);
 
         Tunnel tunnel = new Tunnel("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.tunnelClose(tunnel);
@@ -1252,7 +1249,7 @@ public class NabtoApiTest {
     @Test
     public void tunnelCloseFailedTest() {
         when(NabtoCApiWrapper.nabtoTunnelClose(anyObject()))
-                .thenReturn(NabtoStatus.FAILED.toInteger());
+                .thenReturn(NabtoStatus.FAILED);
 
         Tunnel tunnel = new Tunnel("handle", NabtoStatus.OK.toInteger());
         NabtoStatus status = api.tunnelClose(tunnel);

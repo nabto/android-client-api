@@ -63,8 +63,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus startup() {
-        NabtoStatus status =  NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoStartup(assetManager.getNabtoHomeDirectory()));
+        NabtoStatus status =  NabtoCApiWrapper.nabtoStartup(assetManager.getNabtoHomeDirectory());
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to startup Nabto client API: " + status);
         }
@@ -88,7 +87,7 @@ public class NabtoApi {
      * @return {@link NabtoStatus#OK} is the only value returned.
      */
     public NabtoStatus shutdown() {
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoShutdown());
+        NabtoStatus status = NabtoCApiWrapper.nabtoShutdown();
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to shutdown Nabto client API: " + status);
         }
@@ -111,9 +110,8 @@ public class NabtoApi {
      * @return {@link NabtoStatus#OK} is the only value returned.
      */
     public NabtoStatus setStaticResourceDir() {
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoSetStaticResourceDir(
-                        assetManager.getNabtoResourceDirectory()));
+        NabtoStatus status = NabtoCApiWrapper.nabtoSetStaticResourceDir(
+                assetManager.getNabtoResourceDirectory());
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to set static resource directory: " + status);
@@ -189,8 +187,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus probeNetwork(int timeoutMillis, String hostname) {
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoProbeNetwork(timeoutMillis, hostname));
+        NabtoStatus status = NabtoCApiWrapper.nabtoProbeNetwork(timeoutMillis, hostname);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to probe network: " + status);
         }
@@ -258,8 +255,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus createProfile(String email, String password) {
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoCreateProfile(email, password));
+        NabtoStatus status = NabtoCApiWrapper.nabtoCreateProfile(email, password);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to create profile: " + status);
         }
@@ -294,8 +290,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus createSelfSignedProfile(String commonName, String password) {
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoCreateSelfSignedProfile(commonName, password));
+        NabtoStatus status = NabtoCApiWrapper.nabtoCreateSelfSignedProfile(commonName, password);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to create profile: " + status);
         }
@@ -326,7 +321,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus signup(String email, String password) {
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoSignup(email, password));
+        NabtoStatus status = NabtoCApiWrapper.nabtoSignup(email, password);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to sign up: " + status);
         }
@@ -353,8 +348,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus resetAccountPassword(String email) {
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoResetAccountPassword(email));
+        NabtoStatus status = NabtoCApiWrapper.nabtoResetAccountPassword(email);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to reset account password: " + status);
         }
@@ -465,8 +459,7 @@ public class NabtoApi {
                     "Failed to close session (invalid session object).");
             return NabtoStatus.INVALID_SESSION;
         }
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoCloseSession(session.getSession()));
+        NabtoStatus status = NabtoCApiWrapper.nabtoCloseSession(session.getSession());
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to close session: " + status);
         }
@@ -814,7 +807,7 @@ public class NabtoApi {
                     "Failed to close stream (invalid stream object).");
             return NabtoStatus.INVALID_STREAM;
         }
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoStreamClose(stream.getStream()));
+        NabtoStatus status = NabtoCApiWrapper.nabtoStreamClose(stream.getStream());
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to close stream: " + status);
         }
@@ -916,8 +909,7 @@ public class NabtoApi {
                     "Failed to write to stream (invalid stream object).");
             return NabtoStatus.INVALID_STREAM;
         }
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoStreamWrite(data, stream.getStream()));
+        NabtoStatus status = NabtoCApiWrapper.nabtoStreamWrite(data, stream.getStream());
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to write to stream: " + status);
         }
@@ -939,11 +931,7 @@ public class NabtoApi {
                     "Failed to get stream connection type (invalid stream object).");
             return NabtoConnectionType.UNKNOWN;
         }
-        int retVal = NabtoCApiWrapper.nabtoStreamConnectionType(stream.getStream());
-        if(retVal < 0) {
-            Log.d(this.getClass().getSimpleName(), "Failed to get stream connection type.");
-        }
-        return NabtoConnectionType.fromInteger(retVal);
+        return NabtoCApiWrapper.nabtoStreamConnectionType(stream.getStream());
     }
 
     /**
@@ -976,8 +964,8 @@ public class NabtoApi {
         }
         ByteBuffer byteBuffer = ByteBuffer.allocate(4);
         byteBuffer.putInt(value);
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoStreamSetOption(option.toInteger(), byteBuffer.array(), stream.getStream()));
+        NabtoStatus status = NabtoCApiWrapper
+                .nabtoStreamSetOption(option.toInteger(), byteBuffer.array(), stream.getStream());
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),  "Failed to set stream option: " + status);
         }
@@ -1080,8 +1068,7 @@ public class NabtoApi {
                     "Failed to close tunnel (invalid tunnel object).");
             return NabtoStatus.INVALID_TUNNEL;
         }
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoTunnelClose(tunnel.getTunnel()));
+        NabtoStatus status = NabtoCApiWrapper.nabtoTunnelClose(tunnel.getTunnel());
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),  "Failed to close tunnel: " + status);
         }

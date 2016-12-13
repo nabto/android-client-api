@@ -30,7 +30,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoStartup("dir"));
+        NabtoStatus status = NabtoCApiWrapper.nabtoStartup("dir");
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -42,7 +42,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        status = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoStartup(null));
+        status = NabtoCApiWrapper.nabtoStartup(null);
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -54,22 +54,21 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.ERROR_READING_CONFIG.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        status = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoStartup("dir"));
+        status = NabtoCApiWrapper.nabtoStartup("dir");
 
         assertEquals(NabtoStatus.ERROR_READING_CONFIG, status);
     }
 
     @Test
     public void nabtoShutdownTest() {
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoShutdown());
+        NabtoStatus status = NabtoCApiWrapper.nabtoShutdown();
 
         assertEquals(NabtoStatus.OK, status);
     }
 
     @Test
     public void nabtoSetStaticResourceDirTest() {
-        NabtoStatus status = NabtoStatus.fromInteger(
-                NabtoCApiWrapper.nabtoSetStaticResourceDir("dir"));
+        NabtoStatus status = NabtoCApiWrapper.nabtoSetStaticResourceDir("dir");
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -159,7 +158,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoProbeNetwork(1, "host"));
+        NabtoStatus status = NabtoCApiWrapper.nabtoProbeNetwork(1, "host");
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -172,7 +171,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.API_NOT_INITIALIZED.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        status = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoProbeNetwork(1, "host"));
+        status = NabtoCApiWrapper.nabtoProbeNetwork(1, "host");
 
         assertEquals(NabtoStatus.API_NOT_INITIALIZED, status);
 
@@ -222,8 +221,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        NabtoStatus status = NabtoStatus.fromInteger(
-                NabtoCApiWrapper.nabtoCreateProfile(DUMMY_EMAIL, DUMMY_PASSWORD));
+        NabtoStatus status = NabtoCApiWrapper.nabtoCreateProfile(DUMMY_EMAIL, DUMMY_PASSWORD);
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -241,8 +239,8 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        NabtoStatus status = NabtoStatus.fromInteger(
-                NabtoCApiWrapper.nabtoCreateSelfSignedProfile(DUMMY_EMAIL, DUMMY_PASSWORD));
+        NabtoStatus status = 
+                NabtoCApiWrapper.nabtoCreateSelfSignedProfile(DUMMY_EMAIL, DUMMY_PASSWORD);
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -260,8 +258,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        NabtoStatus status = NabtoStatus.fromInteger(
-                NabtoCApiWrapper.nabtoSignup(DUMMY_EMAIL, DUMMY_PASSWORD));
+        NabtoStatus status = NabtoCApiWrapper.nabtoSignup(DUMMY_EMAIL, DUMMY_PASSWORD);
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -279,8 +276,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        NabtoStatus status = NabtoStatus.fromInteger(
-                NabtoCApiWrapper.nabtoResetAccountPassword(DUMMY_EMAIL));
+        NabtoStatus status = NabtoCApiWrapper.nabtoResetAccountPassword(DUMMY_EMAIL);
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -351,8 +347,7 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        NabtoStatus status = NabtoStatus.fromInteger(
-                NabtoCApiWrapper.nabtoCloseSession(session.getSession()));
+        NabtoStatus status = NabtoCApiWrapper.nabtoCloseSession(session.getSession());
 
         assertEquals(NabtoStatus.OK, status);
         Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
@@ -610,8 +605,7 @@ public class NabtoCApiWrapperTest {
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
         Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
 
-        NabtoStatus status = NabtoStatus.fromInteger(
-                NabtoCApiWrapper.nabtoStreamClose(stream.getStream()));
+        NabtoStatus status = NabtoCApiWrapper.nabtoStreamClose(stream.getStream());
 
         assertEquals(NabtoStatus.OK, status);
         Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
@@ -662,9 +656,8 @@ public class NabtoCApiWrapperTest {
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
         Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
 
-        NabtoStatus status = NabtoStatus.fromInteger(
-                NabtoCApiWrapper.nabtoStreamWrite(
-                        new String("data").getBytes(), stream.getStream()));
+        NabtoStatus status = NabtoCApiWrapper.nabtoStreamWrite(
+                new String("data").getBytes(), stream.getStream());
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -687,8 +680,7 @@ public class NabtoCApiWrapperTest {
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
         Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
 
-        NabtoConnectionType type = NabtoConnectionType.fromInteger(
-                NabtoCApiWrapper.nabtoStreamConnectionType(stream.getStream()));
+        NabtoConnectionType type = NabtoCApiWrapper.nabtoStreamConnectionType(stream.getStream());
 
         assertEquals(NabtoConnectionType.P2P, type);
 
@@ -700,8 +692,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.FAILED.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        type = NabtoConnectionType.fromInteger(
-                NabtoCApiWrapper.nabtoStreamConnectionType(stream.getStream()));
+        type = NabtoCApiWrapper.nabtoStreamConnectionType(stream.getStream());
 
         assertEquals(NabtoConnectionType.UNKNOWN, type);
 
@@ -718,11 +709,10 @@ public class NabtoCApiWrapperTest {
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
         Stream stream = NabtoCApiWrapper.nabtoStreamOpen(DUMMY_HOST, session.getSession());
 
-        NabtoStatus status = NabtoStatus.fromInteger(
-                NabtoCApiWrapper.nabtoStreamSetOption(
-                        NabtoStreamOption.RECEIVE_TIMEOUT.toInteger(),
-                        new String("option").getBytes(),
-                        stream.getStream()));
+        NabtoStatus status = NabtoCApiWrapper.nabtoStreamSetOption(
+                NabtoStreamOption.RECEIVE_TIMEOUT.toInteger(),
+                new String("option").getBytes(),
+                stream.getStream());
 
         assertEquals(NabtoStatus.OK, status);
 
@@ -783,8 +773,7 @@ public class NabtoCApiWrapperTest {
         Tunnel tunnel = NabtoCApiWrapper.nabtoTunnelOpenTcp(
                 11, "nabto host", "remote host", 22, session.getSession());
 
-        NabtoStatus status = NabtoStatus.fromInteger(
-                NabtoCApiWrapper.nabtoTunnelClose(tunnel.getTunnel()));
+        NabtoStatus status = NabtoCApiWrapper.nabtoTunnelClose(tunnel.getTunnel());
 
         assertEquals(NabtoStatus.OK, status);
         Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();

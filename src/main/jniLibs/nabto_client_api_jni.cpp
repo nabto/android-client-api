@@ -5,6 +5,7 @@
 
 #include <jni.h>
 #include <string>
+#include <iostream>
 
 jobjectArray stringArrayToJavaArray(JNIEnv* env, char** strings, size_t stringsLength)
 {
@@ -30,6 +31,28 @@ jbyteArray charArrayToJavaArray(JNIEnv* env, char* array, size_t arrayLength)
     return javaArray;
 }
 
+jobject toNabtoStatus(JNIEnv* env, int status) {
+    jclass nabtoStatusEnum = env->FindClass("com/nabto/api/NabtoStatus");
+    if(nabtoStatusEnum == NULL) return NULL;
+
+    jmethodID fromInteger = env->GetStaticMethodID(
+            nabtoStatusEnum, "fromInteger", "(I)Lcom/nabto/api/NabtoStatus;");
+    if(fromInteger == NULL) return NULL;
+
+    return env->CallStaticObjectMethod(nabtoStatusEnum, fromInteger, status);
+}
+
+jobject toNabtoConnectionType(JNIEnv* env, int connectionType) {
+    jclass nabtoConnectionTypeEnum = env->FindClass("com/nabto/api/NabtoConnectionType");
+    if(nabtoConnectionTypeEnum == NULL) return NULL;
+
+    jmethodID fromInteger = env->GetStaticMethodID(
+            nabtoConnectionTypeEnum, "fromInteger", "(I)Lcom/nabto/api/NabtoConnectionType;");
+    if(fromInteger == NULL) return NULL;
+
+    return env->CallStaticObjectMethod(nabtoConnectionTypeEnum, fromInteger, connectionType);
+}
+
 template<typename T>
 T getHandle(JNIEnv* env, jobject handleObject)
 {
@@ -37,25 +60,25 @@ T getHandle(JNIEnv* env, jobject handleObject)
     return static_cast<T>(env->GetDirectBufferAddress(handleObject));
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoStartup(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStartup(JNIEnv* env,
                                                       jclass thiz,
                                                       jstring nabtoHomeDir)
 {
     jni_string nabtoHomeDirNative(env, nabtoHomeDir);
-    return nabtoStartup(nabtoHomeDirNative);
+    return toNabtoStatus(env, nabtoStartup(nabtoHomeDirNative));
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoSetStaticResourceDir(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSetStaticResourceDir(JNIEnv* env,
                                                                    jclass thiz,
                                                                    jstring resourceDir)
 {
     jni_string resourceDirNative(env, resourceDir);
-    return nabtoSetStaticResourceDir(resourceDirNative);
+    return toNabtoStatus(env, nabtoSetStaticResourceDir(resourceDirNative));
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoShutdown(JNIEnv* env, jclass thiz)
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoShutdown(JNIEnv* env, jclass thiz)
 {
-    return nabtoShutdown();
+    return toNabtoStatus(env, nabtoShutdown());
 }
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoOpenSession(JNIEnv* env,
@@ -100,12 +123,12 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoOpenSessionBare(JNIEnv* env, jc
     return env->NewObject(sessionClass, constructor, sessionHandleObject, status);
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoCloseSession(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoCloseSession(JNIEnv* env,
                                                            jclass thiz,
                                                            jobject sessionHandleObject)
 {
     nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionHandleObject);
-    return nabtoCloseSession(sessionHandle);
+    return toNabtoStatus(env, nabtoCloseSession(sessionHandle));
 }
 
 jobject JNICALL Java_com_nabto_api_NabtoCApiWrapper_nabtoRpcSetDefaultInterface(JNIEnv* env,
@@ -215,51 +238,51 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoFetchUrl(JNIEnv* env,
     return env->NewObject(urlResultClass, constructor, resultBuffer, mimeTypeBuffer, status);
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoCreateProfile(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoCreateProfile(JNIEnv* env,
                                                             jclass thiz,
                                                             jstring email,
                                                             jstring password)
 {
     jni_string emailNative(env, email);
     jni_string passwordNative(env, password);
-    return nabtoCreateProfile(emailNative, passwordNative);
+    return toNabtoStatus(env, nabtoCreateProfile(emailNative, passwordNative));
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoCreateSelfSignedProfile(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoCreateSelfSignedProfile(JNIEnv* env,
                                                                       jclass thiz,
                                                                       jstring commonName,
                                                                       jstring password)
 {
     jni_string commonNameNative(env, commonName);
     jni_string passwordNative(env, password);
-    return nabtoCreateSelfSignedProfile(commonNameNative, passwordNative);
+    return toNabtoStatus(env, nabtoCreateSelfSignedProfile(commonNameNative, passwordNative));
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoSignup(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSignup(JNIEnv* env,
                                                      jclass thiz,
                                                      jstring email,
                                                      jstring password)
 {
     jni_string emailNative(env, email);
     jni_string passwordNative(env, password);
-    return nabtoSignup(emailNative, passwordNative);
+    return toNabtoStatus(env, nabtoSignup(emailNative, passwordNative));
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoResetAccountPassword(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoResetAccountPassword(JNIEnv* env,
                                                                    jclass thiz,
                                                                    jstring email)
 {
     jni_string emailNative(env, email);
-    return nabtoResetAccountPassword(emailNative);
+    return toNabtoStatus(env, nabtoResetAccountPassword(emailNative));
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoProbeNetwork(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoProbeNetwork(JNIEnv* env,
                                                            jclass thiz,
                                                            jint timeoutMillis,
                                                            jstring host)
 {
     jni_string hostNative(env, host);
-    return nabtoProbeNetwork(timeoutMillis, hostNative);
+    return toNabtoStatus(env, nabtoProbeNetwork(timeoutMillis, hostNative));
 }
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSubmitPostData(JNIEnv* env,
@@ -378,12 +401,12 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelOpenTcp(JNIEnv* env,
     return env->NewObject(tunnelClass, constructor, tunnelHandleObject, status);
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelClose(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelClose(JNIEnv* env,
                                                           jclass thiz,
                                                           jobject tunnelHandleObject)
 {
     nabto_tunnel_t tunnelHandle = getHandle<nabto_tunnel_t>(env, tunnelHandleObject);
-    return nabtoTunnelClose(tunnelHandle);
+    return toNabtoStatus(env, nabtoTunnelClose(tunnelHandle));
 }
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelInfo(JNIEnv* env,
@@ -436,12 +459,12 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamOpen(JNIEnv* env,
     return env->NewObject(streamClass, constructor, streamHandleObject, status);
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamClose(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamClose(JNIEnv* env,
                                                           jclass thiz,
                                                           jobject streamHandleObject)
 {
     nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamHandleObject);
-    return nabtoStreamClose(streamHandle);
+    return toNabtoStatus(env, nabtoStreamClose(streamHandle));
 }
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamRead(JNIEnv* env,
@@ -467,7 +490,7 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamRead(JNIEnv* env,
     return env->NewObject(streamReadResultClass, constructor, resultBuffer, status);
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamWrite(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamWrite(JNIEnv* env,
                                                           jclass thiz,
                                                           jbyteArray data,
                                                           jobject streamHandleObject)
@@ -475,20 +498,21 @@ jint Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamWrite(JNIEnv* env,
     jni_byte_array bufferNative(env, data);
     nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamHandleObject);
 
-    return nabtoStreamWrite(streamHandle, bufferNative, bufferNative.length());
+    return toNabtoStatus(env, nabtoStreamWrite(streamHandle, bufferNative, bufferNative.length()));
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamConnectionType(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamConnectionType(JNIEnv* env,
                                                                    jclass thiz,
                                                                    jobject streamHandleObject)
 {
     nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamHandleObject);
 
     nabto_connection_type_t type;
-    return nabtoStreamConnectionType(streamHandle, &type) == NABTO_OK ? type : -1;
+    nabto_status status = nabtoStreamConnectionType(streamHandle, &type);
+    return toNabtoConnectionType(env, (status == NABTO_OK) ? type : -1);
 }
 
-jint Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamSetOption(JNIEnv* env,
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamSetOption(JNIEnv* env,
                                                               jclass thiz,
                                                               jint optionName,
                                                               jbyteArray option,
@@ -498,8 +522,8 @@ jint Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamSetOption(JNIEnv* env,
     nabto_stream_option_t streamOption = static_cast<nabto_stream_option_t>(optionName);
     nabto_stream_t streamHandle = getHandle<nabto_stream_t>(env, streamHandleObject);
 
-    return nabtoStreamSetOption(streamHandle, streamOption,
-            reinterpret_cast<void*>(optionNative.data()), optionNative.length());
+    return toNabtoStatus(env, nabtoStreamSetOption(streamHandle, streamOption,
+            reinterpret_cast<void*>(optionNative.data()), optionNative.length()));
 }
 
 jstring Java_com_nabto_api_NabtoCApiWrapper_nabtoVersion(JNIEnv* env, jclass thiz)
