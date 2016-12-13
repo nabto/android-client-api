@@ -52,19 +52,14 @@ public enum NabtoTunnelState {
      * capable of using TCP/IP and the connection runs directly from the
      * device to the relay node to the client.
      */
-    REMOTE_RELAY_MICRO,
-
-    /**
-     * An invalid state.
-     */
-    INVALID;
+    REMOTE_RELAY_MICRO;
 
     static NabtoTunnelState fromInteger(int val) {
         val++;
         if (val < NabtoTunnelState.values().length && val >= 0) {
             return NabtoTunnelState.values()[val];
         } else {
-            return INVALID;
+            return UNKNOWN;
         }
     }
 

@@ -1,17 +1,8 @@
 package com.nabto.api;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
-import android.content.res.AssetManager;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,72 +31,14 @@ import java.util.Collection;
  * }</pre>
  */
 public class NabtoApi {
-    private File nabtoHomeDirectory;
-    private File nabtoResourceDirectory;
+    private NabtoAssetManager assetManager;
 
     public NabtoApi(Context context) {
-        ApplicationInfo info = context.getApplicationInfo();
-
-        nabtoHomeDirectory = new File(context.getFilesDir(), "nabto");
-        nabtoResourceDirectory = new File(context.getFilesDir(), "share/nabto");
-
-        Log.d(this.getClass().getSimpleName(), "Native lib dir: " + info.nativeLibraryDir);
-        Log.d(this.getClass().getSimpleName(), "App resource dir: " + nabtoResourceDirectory.getAbsolutePath());
-        Log.d(this.getClass().getSimpleName(), "App dir: " + nabtoHomeDirectory.getAbsolutePath());
-
-        copyDirContentsToLocation(context.getAssets(), "share", new File(
-                context.getFilesDir() + "/share"), false);
+        assetManager = new NabtoAssetManager(context);
     }
 
-    private void copyDirContentsToLocation(AssetManager manager,
-                                           String fileToCopy, File fileLocation, boolean overwrite) {
-        try {
-            String[] filesInDir = manager.list(fileToCopy);
-            if (filesInDir.length == 0) {
-                // this is a file
-                copyFromAssets(manager, fileToCopy, fileLocation, overwrite);
-            } else {
-                for (String fileInDir : filesInDir) {
-                    copyDirContentsToLocation(manager, fileToCopy + "/"
-                            + fileInDir, new File(fileLocation + "/"
-                            + fileInDir), overwrite);
-                }
-            }
-        } catch (IOException e) {
-            throw new IllegalArgumentException(
-                    "Could not get assets from directory " + fileToCopy, e);
-        }
-    }
-
-    /**
-     * Copy the specified asset from assets to the specified fileLocation
-     */
-    private void copyFromAssets(AssetManager manager, String asset,
-                                File fileLocation, boolean overwrite) {
-        // Only write to file if it does not exist already
-        if (fileLocation.exists() && !overwrite)
-            return;
-
-        // Create necessary directory structure
-        fileLocation.getParentFile().mkdirs();
-        Log.d(this.getClass().getSimpleName(), "Writing asset file: " + asset + " to "
-                + fileLocation.getAbsolutePath());
-        try {
-            InputStream inStream = new BufferedInputStream(manager.open(asset,
-                    AssetManager.ACCESS_STREAMING));
-            OutputStream outStream = new BufferedOutputStream(
-                    new FileOutputStream(fileLocation));
-            byte[] buffer = new byte[10240]; // 10KB
-            int length = 0;
-            while ((length = inStream.read(buffer)) >= 0) {
-                outStream.write(buffer, 0, length);
-            }
-            outStream.close();
-            inStream.close();
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Could not write file to "
-                    + fileLocation, e);
-        }
+    NabtoApi(NabtoAssetManager assetManager) {
+        this.assetManager = assetManager;
     }
 
     /**
@@ -131,7 +64,7 @@ public class NabtoApi {
      */
     public NabtoStatus startup() {
         NabtoStatus status =  NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoStartup(nabtoHomeDirectory.getAbsolutePath()));
+                .nabtoStartup(assetManager.getNabtoHomeDirectory()));
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to startup Nabto client API: " + status);
         }
@@ -179,7 +112,8 @@ public class NabtoApi {
      */
     public NabtoStatus setStaticResourceDir() {
         NabtoStatus status = NabtoStatus.fromInteger(NabtoCApiWrapper
-                .nabtoSetStaticResourceDir(nabtoResourceDirectory.getAbsolutePath()));
+                .nabtoSetStaticResourceDir(
+                        assetManager.getNabtoResourceDirectory()));
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to set static resource directory: " + status);
@@ -465,9 +399,6 @@ public class NabtoApi {
      */
     public Session openSession(String id, String password) {
         Session session = NabtoCApiWrapper.nabtoOpenSession(id, password);
-        if(session == null) {
-            session = new Session(null, NabtoStatus.FAILED.toInteger());
-        }
         if(session.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to open session: " + session.getStatus());
@@ -501,9 +432,6 @@ public class NabtoApi {
      */
     public Session openSessionBare() {
         Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
-        if(session == null) {
-            session = new Session(null, NabtoStatus.FAILED.toInteger());
-        }
         if(session.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to open bare session: " + session.getStatus());
@@ -585,9 +513,6 @@ public class NabtoApi {
         }
         RpcResult rpcResult = NabtoCApiWrapper
                 .nabtoRpcSetDefaultInterface(interfaceDefinition, session.getSession());
-        if (rpcResult == null) {
-            rpcResult = new RpcResult(null, NabtoStatus.FAILED.toInteger());
-        }
         if(rpcResult.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to set default RPC interface: " + rpcResult.getStatus());
@@ -633,9 +558,6 @@ public class NabtoApi {
         }
         RpcResult rpcResult = NabtoCApiWrapper
                 .nabtoRpcSetInterface(nabtoHost, interfaceDefinition, session.getSession());
-        if (rpcResult == null) {
-            rpcResult = new RpcResult(null, NabtoStatus.FAILED.toInteger());
-        }
         if(rpcResult.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to set RPC interface: " + rpcResult.getStatus());
@@ -692,11 +614,7 @@ public class NabtoApi {
                     "Failed to invoke RPC (invalid session object).");
             return new RpcResult(null, NabtoStatus.INVALID_SESSION.toInteger());
         }
-        RpcResult rpcResult = NabtoCApiWrapper
-                .nabtoRpcInvoke(nabtoUrl, session.getSession());
-        if (rpcResult == null) {
-            rpcResult = new RpcResult(null, NabtoStatus.FAILED.toInteger());
-        }
+        RpcResult rpcResult = NabtoCApiWrapper.nabtoRpcInvoke(nabtoUrl, session.getSession());
         if(rpcResult.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to invoke RPC: " + rpcResult.getStatus());
@@ -739,9 +657,6 @@ public class NabtoApi {
             return new UrlResult(null, null, NabtoStatus.INVALID_SESSION.toInteger());
         }
         UrlResult result = NabtoCApiWrapper.nabtoFetchUrl(nabtoUrl, session.getSession());
-        if (result == null) {
-            result = new UrlResult(null, null, NabtoStatus.FAILED.toInteger());
-        }
         if(result.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to fetch URL: " + result.getStatus());
@@ -793,9 +708,6 @@ public class NabtoApi {
         }
         UrlResult result = NabtoCApiWrapper.nabtoSubmitPostData(nabtoUrl, postData,
                 postMimeType, session.getSession());
-        if (result == null) {
-            result = new UrlResult(null, null, NabtoStatus.FAILED.toInteger());
-        }
         if(result.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to submit post data: " + result.getStatus());
@@ -864,9 +776,6 @@ public class NabtoApi {
             return new Stream(null, NabtoStatus.INVALID_SESSION.toInteger());
         }
         Stream stream = NabtoCApiWrapper.nabtoStreamOpen(nabtoHost, session.getSession());
-        if (stream == null) {
-            stream = new Stream(null, NabtoStatus.FAILED.toInteger());
-        }
         if(stream.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to open stream: " + stream.getStatus());
         }
@@ -900,7 +809,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus streamClose(Stream stream) {
-        if(stream.getStream() == null) {
+        if(stream == null || stream.getStream() == null) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to close stream (invalid stream object).");
             return NabtoStatus.INVALID_STREAM;
@@ -955,9 +864,6 @@ public class NabtoApi {
             return new StreamReadResult(null, NabtoStatus.INVALID_STREAM.toInteger());
         }
         StreamReadResult result = NabtoCApiWrapper.nabtoStreamRead(stream.getStream());
-        if (result == null) {
-            result = new StreamReadResult(null, NabtoStatus.FAILED.toInteger());
-        }
         if(result.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to read from stream: " + result.getStatus());
@@ -1141,9 +1047,6 @@ public class NabtoApi {
         }
         Tunnel tunnel = NabtoCApiWrapper.nabtoTunnelOpenTcp(localPort, nabtoHost, remoteHost,
                 remotePort, session.getSession());
-        if (tunnel == null) {
-            tunnel = new Tunnel(null, NabtoStatus.FAILED.toInteger());
-        }
         if(tunnel.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to open TCP tunnel: " + tunnel.getStatus());
@@ -1216,13 +1119,9 @@ public class NabtoApi {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to get tunnel info (invalid tunnel object).");
             return new TunnelInfoResult(
-                    -1, NabtoTunnelState.INVALID.toInteger(), -1, -1, NabtoStatus.INVALID_TUNNEL.toInteger());
+                    0, NabtoTunnelState.UNKNOWN.toInteger(), 0, 0, NabtoStatus.INVALID_TUNNEL.toInteger());
         }
         TunnelInfoResult info = NabtoCApiWrapper.nabtoTunnelInfo(tunnel.getTunnel());
-        if(info == null) {
-            info = new TunnelInfoResult(
-                    -1, NabtoTunnelState.INVALID.toInteger(), -1, -1, NabtoStatus.FAILED.toInteger());
-        }
         if(info.getStatus() != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(),
                     "Failed to get tunnel info: " + info.getStatus());
