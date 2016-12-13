@@ -17,7 +17,6 @@ import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.anyObject;
 import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -36,7 +35,7 @@ public class NabtoApiTest {
 
     @Before
     public void setUp() {
-        NabtoAssetManager assetManager = mock(NabtoAssetManager.class);
+        NabtoAndroidAssetManager assetManager = mock(NabtoAndroidAssetManager.class);
         when(assetManager.getNabtoHomeDirectory()).thenReturn(DUMMY_NABTO_HOME_DIRECTORY);
         when(assetManager.getNabtoResourceDirectory()).thenReturn(DUMMY_NABTO_RESOURCE_DIRECTORY);
         mockStatic(Log.class);
@@ -111,38 +110,6 @@ public class NabtoApiTest {
 
         PowerMockito.verifyStatic();
         NabtoCApiWrapper.nabtoShutdown();
-
-        PowerMockito.verifyStatic();
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
-
-        assertEquals(NabtoStatus.FAILED, status);
-    }
-
-    @Test
-    public void setStaticResourceDirSuccessTest() {
-        when(NabtoCApiWrapper.nabtoSetStaticResourceDir(anyString()))
-                .thenReturn(NabtoStatus.OK);
-
-        NabtoStatus status = api.setStaticResourceDir();
-
-        PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoSetStaticResourceDir(eq(DUMMY_NABTO_RESOURCE_DIRECTORY));
-
-        PowerMockito.verifyStatic(times(0));
-        Log.d(anyString(), anyString());
-
-        assertEquals(NabtoStatus.OK, status);
-    }
-
-    @Test
-    public void setStaticResourceDirFailedTest() {
-        when(NabtoCApiWrapper.nabtoSetStaticResourceDir(anyString()))
-                .thenReturn(NabtoStatus.FAILED);
-
-        NabtoStatus status = api.setStaticResourceDir();
-
-        PowerMockito.verifyStatic();
-        NabtoCApiWrapper.nabtoSetStaticResourceDir(eq(DUMMY_NABTO_RESOURCE_DIRECTORY));
 
         PowerMockito.verifyStatic();
         Log.d(eq(api.getClass().getSimpleName()), anyString());

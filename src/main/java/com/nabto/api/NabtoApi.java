@@ -1,6 +1,5 @@
 package com.nabto.api;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.nio.ByteBuffer;
@@ -12,7 +11,7 @@ import java.util.Collection;
  *
  * <p>Example:</p>
  * <pre>{@code
- * NabtoApi api = new NabtoApi(this);
+ * NabtoApi api = new NabtoApi(new NabtoAndroidAssetManager(this));
  * api.setStaticResourceDir();
  * NabtoStatus status = api.startup();
  * if (status == NabtoStatus.OK) {
@@ -33,11 +32,7 @@ import java.util.Collection;
 public class NabtoApi {
     private NabtoAssetManager assetManager;
 
-    public NabtoApi(Context context) {
-        assetManager = new NabtoAssetManager(context);
-    }
-
-    NabtoApi(NabtoAssetManager assetManager) {
+    public NabtoApi(NabtoAssetManager assetManager) {
         this.assetManager = assetManager;
     }
 
@@ -63,6 +58,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus startup() {
+        NabtoCApiWrapper.nabtoSetStaticResourceDir(assetManager.getNabtoResourceDirectory());
         NabtoStatus status =  NabtoCApiWrapper.nabtoStartup(assetManager.getNabtoHomeDirectory());
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to startup Nabto client API: " + status);
@@ -90,31 +86,6 @@ public class NabtoApi {
         NabtoStatus status = NabtoCApiWrapper.nabtoShutdown();
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to shutdown Nabto client API: " + status);
-        }
-        return status;
-    }
-
-    /**
-     * Tells the Nabto client API the location of the static resource directory ("share/nabto").
-     * <p>
-     *     This function will override the default behaviour. The default behaviour
-     *     is to search several directories relative to the install location of the
-     *     Nabto client API. Using this function will force the Nabto client API to
-     *     look for static html driver data in one fixed place.
-     * </p>
-     * <p>
-     *     You may call this function at anytime to change the location of the
-     *     static resource directory.
-     * </p>
-     *
-     * @return {@link NabtoStatus#OK} is the only value returned.
-     */
-    public NabtoStatus setStaticResourceDir() {
-        NabtoStatus status = NabtoCApiWrapper.nabtoSetStaticResourceDir(
-                assetManager.getNabtoResourceDirectory());
-        if(status != NabtoStatus.OK) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to set static resource directory: " + status);
         }
         return status;
     }
