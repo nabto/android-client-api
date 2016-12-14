@@ -49,5 +49,7 @@ src/main/jniLibs/*/
 src/main/jniLibs/com_nabto_api_NabtoCApiWrapper.h
 
 # Nabto test lib
-src/test/jniLibs/nabto_client_api_jni_stub/build/*
-src/test/jniLibs/nabto_client_api_jni_stub/com_nabto_api_NabtoCApiWrapperStubController.h
+src/test/jniLibs/com_nabto_api_NabtoCApiWrapperStubController.h
+
+# CMake build
+cmake/build

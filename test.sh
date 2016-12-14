@@ -7,49 +7,49 @@ STUB_DIR=$DIR/src/test/jniLibs/nabto_client_api_jni_stub
 
 function help {
     echo "options:"
-    echo "  all   -> build + test (default)"
-    echo "  build -> build stubbed native library"
-    echo "  test  -> run unit tests"
+    echo "  testAndroid -> test the android client api (default)"
+    echo "  testJava    -> test the java client api only"
 }
 
-function build {
-    # create JNI header files from java classes
-    javah -jni -classpath $DIR/src/main/java/ -d $API_DIR com.nabto.api.NabtoCApiWrapper || exit 1
-    javah -jni -classpath $DIR/src/test/java/ -d $STUB_DIR com.nabto.api.NabtoCApiWrapperStubController || exit 1
-
+function testAndroid {
     # build stubbed native library
-    pushd $STUB_DIR
+    pushd $DIR/cmake
     rm -r build; mkdir build; cd build
     cmake .. || exit 1
     make || exit 1
     popd
-}
 
-function test {
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$STUB_DIR/build
-    
-    ## Need gradle installed!
+    ## Run tests
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DIR/cmake/build
     gradle clean --info || exit 1
     gradle test --info || exit 1
 }
 
-function all {
-    build
-    test
+function testJava {
+    # build stubbed native library and JARs
+    pushd $DIR/cmake
+    rm -r build; mkdir build; cd build
+    cmake -DBUILD_JARS=ON .. || exit 1
+    make || exit 1
+    popd
+    
+    ## Run tests
+    BUILD_DIR=$DIR/cmake/build
+    JAR_DIR=$DIR/libs
+    java -Djava.library.path=$BUILD_DIR \
+         -cp $JAR_DIR/junit-4.12.jar:$JAR_DIR/hamcrest-core-1.3.jar:$BUILD_DIR/NabtoClientApiWrapper.jar:$BUILD_DIR/NabtoClientApiWrapperTest.jar \
+         org.junit.runner.JUnitCore com.nabto.api.NabtoCApiWrapperTest || exit 1
 }
 
 case $1 in
     "")
-        all
+        testAndroid
         ;;
-    "all")
-        all
+    "testAndroid")
+        testAndroid
         ;;
-    "build")
-        build
-        ;;
-    "test")
-        test
+    "testJava")
+        testJava
         ;;
     *)
         help
