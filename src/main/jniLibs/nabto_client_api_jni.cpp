@@ -15,7 +15,7 @@ jobjectArray stringArrayToJavaArray(JNIEnv* env, char** strings, size_t stringsL
     jobjectArray javaArray = env->NewObjectArray(stringsLength, stringClass, NULL);
     if(javaArray == NULL) return NULL;
 
-    for (int i = 0; i < stringsLength; i++) {
+    for (size_t i = 0; i < stringsLength; i++) {
         env->SetObjectArrayElement(javaArray, i, env->NewStringUTF(strings[i]));
     }
 
