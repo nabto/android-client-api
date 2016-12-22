@@ -205,11 +205,8 @@ jobject JNICALL Java_com_nabto_api_NabtoCApiWrapper_nabtoRpcInvoke(JNIEnv* env,
     char* jsonResponseNative;
     nabto_status_t status = nabtoRpcInvoke(sessionHandle, nabtoUrlNative, &jsonResponseNative);
 
-    jstring jsonResponse = NULL;
-    if(status == NABTO_OK) {
-        jsonResponse = env->NewStringUTF(jsonResponseNative);
-        nabtoFree(jsonResponseNative);
-    }
+    jstring jsonResponse = env->NewStringUTF(jsonResponseNative);
+    nabtoFree(jsonResponseNative);
 
     jclass rpcResultClass = env->FindClass("com/nabto/api/RpcResult");
     if(rpcResultClass == NULL) return NULL;

@@ -263,40 +263,10 @@ enum nabto_status {
     NABTO_FAILED_WITH_JSON_MESSAGE = 26,
 
     /**
-     * There was not set an RPC interface for host prior to invocation
-     * @since 3.0.15
-     */
-    NABTO_RPC_INTERFACE_NOT_SET = 27,
-
-    /**
-     * The interface set for this host does not specify this request
-     * @since 3.0.15
-     */
-    NABTO_RPC_NO_SUCH_REQUEST = 28,
-
-    /**
-     * Requested device is offline
-     * @since 3.0.15
-     */
-    NABTO_RPC_DEVICE_OFFLINE = 29,
-
-    /**
-     * Response could not be decoded.
-     * @since 3.0.15
-     */
-    NABTO_RPC_RESPONSE_DECODE_FAILURE = 30,
-
-    /**
-     * Problem communicating with RPC target device
-     * @since 3.0.15
-     */
-    NABTO_RPC_COMMUNICATION_PROBLEM = 31,
-
-    /**
      * Timeout when connecting to remote device.
      * @since 3.0.15
      */
-    NABTO_CONNECT_TIMEOUT = 32,
+    NABTO_CONNECT_TIMEOUT = 27,
 
     /**
      * Number of possible error codes. This must always be last!
@@ -805,13 +775,12 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoRpcSetInterface(nabto_handle_t se
  *          If the function fails, the return value is one of the
  *          following values.
  *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_SESSION        | session handle was invalid.
- * NABTO_RPC_INTERFACE_NOT_SET  | an interface was not set prior to invoking.
- * NABTO_RPC_NO_SUCH_REQUEST    | the specified RPC function does not exist in request
- * NABTO_FAILED                 | an unspecified error occurred handling the request.
+ * Error code                     | Meaning
+ * ------------------------------ | ---------------------
+ * NABTO_API_NOT_INITIALIZED      | The nabtoStartup function is the first function to call to initialize the Nabto client.
+ * NABTO_INVALID_SESSION          | session handle was invalid.
+ * NABTO_FAILED_WITH_JSON_MESSAGE | an error occurred, details can be found in JSON format in the response.
+ * NABTO_FAILED                   | an unspecified error occurred handling the request.
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoRpcInvoke(nabto_handle_t session,
                                                          const char* nabtoUrl,
@@ -1681,6 +1650,22 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCreateProfile(const char* email,
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCreateSelfSignedProfile(const char* commonName,
                                                                        const char* password);
+    
+/**
+ * Retrieve public key fingerprint for certificate with specified id.
+ * @param certId  The certificate id (common name) of certificate.
+ * @param fingerprint  The RSA public key fingerprint (buffer of 16 bytes owned by caller)
+ * @return If the fingerprint was calculated the function returns NABTO_OK and writes the fingerprint.
+ *         If it fails one of the following error codes will be returned.
+ * 
+ * Error code                   | Meaning
+ * ---------------------------- | ---------------------
+ * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
+ * NABTO_OPEN_CERT_OR_PK_FAILED | No matching certificate found for the given id
+ * NABTO_FAILED                 | lookup failed for some unspecified reason.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoGetFingerprint(const char* certId,
+                                                              char fingerprint[16]);
 
 /**
  * Signs up for a Nabto account on the portal (host name defined in the
