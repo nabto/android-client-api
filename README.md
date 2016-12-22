@@ -50,10 +50,9 @@ client.pause();
 
 However, the *NabtoClient* does not support streaming and tunneling. Use the *NabtoApi* class for a full featured API. Same example:
 ```java
-NabtoApi api = new NabtoApi(context);
+NabtoApi api = new NabtoApi(new NabtoAndroidAssetManager(this));
 
 // Start Nabto
-api.setStaticResourceDir();
 api.startup();
 
 // Login as guest
