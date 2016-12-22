@@ -274,7 +274,7 @@ public class NabtoApi {
      */
     public NabtoStatus getFingerprint(String certId, String[] fingerprint){
         byte [] byteFingerprint = new byte[16];
-        NabtoStatus ret = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoGetFingerprint(certId, byteFingerprint));
+        NabtoStatus ret = NabtoCApiWrapper.nabtoGetFingerprint(certId, byteFingerprint);
         for (int i = 0; i<byteFingerprint.length; i++){
             String str = String.format("%02x",byteFingerprint[i]);
             fingerprint[0] += i!=0 ? ":" + str : str;
