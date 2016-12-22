@@ -269,6 +269,20 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoCreateSelfSignedProfile(JNIEnv*
     return toNabtoStatus(env, nabtoCreateSelfSignedProfile(commonNameNative, passwordNative));
 }
 
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoGetFingerprint(JNIEnv* env,
+                                                                jclass thiz,
+                                                                jstring certId,
+                                                                jbyteArray fingerprint){
+    jni_string certIdNative(env,certId);
+    char fingerprintNative[16];
+    nabto_status_t nabtoStatus = nabtoGetFingerprint(certIdNative,fingerprintNative);
+    if (fingerprintNative == NULL){
+        return -1;
+    }
+    env->SetByteArrayRegion(env,fingerprint, 0, 16, (jbyte*)fingerprintNative);
+    return nabtoStatus;
+}
+
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSignup(JNIEnv* env,
                                                      jclass thiz,
                                                      jstring email,
