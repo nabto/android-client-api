@@ -7,43 +7,42 @@ class NabtoCApiWrapper {
 
     // Configuration and initialization API
     static native String nabtoVersion();
-    static native int nabtoStartup(String nabtoHomeDir);
-    static native int nabtoShutdown();
-    static native int nabtoSetStaticResourceDir(String nabtoResDir);
+    static native NabtoStatus nabtoStartup(String nabtoHomeDir);
+    static native NabtoStatus nabtoShutdown();
+    static native NabtoStatus nabtoSetStaticResourceDir(String nabtoResDir);
     static native String[] nabtoGetProtocolPrefixes();
     static native String[] nabtoGetLocalDevices();
-    static native int nabtoProbeNetwork(int timeoutMillis, String hostname);
+    static native NabtoStatus nabtoProbeNetwork(int timeoutMillis, String hostname);
 
     // The portal API
-    static native String nabtoLookupExistingProfile();
     static native String[] nabtoGetCertificates();
-    static native int nabtoCreateProfile(String email, String password);
-    static native int nabtoCreateSelfSignedProfile(String email, String password);
-    static native int nabtoGetFingerprint(String certId, byte[] fingerprint);
-    static native int nabtoSignup(String email, String password);
-    static native int nabtoResetAccountPassword(String email);
+    static native NabtoStatus nabtoCreateProfile(String email, String password);
+    static native NabtoStatus nabtoCreateSelfSignedProfile(String commonName, String password);
+    static native NabtoStatus nabtoGetFingerprint(String certId, byte[] fingerprint);
+    static native NabtoStatus nabtoSignup(String email, String password);
+    static native NabtoStatus nabtoResetAccountPassword(String email);
 
     // The session API
-    static native Session nabtoOpenSession(String email, String password);
+    static native Session nabtoOpenSession(String id, String password);
     static native Session nabtoOpenSessionBare();
-    static native int nabtoCloseSession(Object session);
-    static native RpcResult nabtoRpcSetDefaultInterface(String interfaceDefinition, Object session);
-    static native RpcResult nabtoRpcSetInterface(String host, String interfaceDefinition, Object session);
-    static native RpcResult nabtoRpcInvoke(String nabtoUrl, Object session);
-    static native UrlResult nabtoFetchUrl(String url, Object session);
-    static native UrlResult nabtoSubmitPostData(String nabtoUrl, byte[] postData, String postMimeType, Object session);
-    static native String nabtoGetSessionToken(Object session);
+    static native NabtoStatus nabtoCloseSession(Session session);
+    static native RpcResult nabtoRpcSetDefaultInterface(String interfaceDefinition, Session session);
+    static native RpcResult nabtoRpcSetInterface(String host, String interfaceDefinition, Session session);
+    static native RpcResult nabtoRpcInvoke(String nabtoUrl, Session session);
+    static native UrlResult nabtoFetchUrl(String url, Session session);
+    static native UrlResult nabtoSubmitPostData(String nabtoUrl, byte[] postData, String postMimeType, Session session);
+    static native String nabtoGetSessionToken(Session session);
 
     // The streaming API
-    static native Stream nabtoStreamOpen(Object session, String nabtoHost);
-    static native int nabtoStreamClose(Object Stream);
-    static native StreamReadResult nabtoStreamRead(Object Stream);
-    static native int nabtoStreamWrite(Object stream, byte[] data);
-    static native int nabtoStreamConnectionType(Object stream);
-    static native int nabtoStreamSetOption(Object stream, int optionName, byte[] option);
+    static native Stream nabtoStreamOpen(String nabtoHost, Session session);
+    static native NabtoStatus nabtoStreamClose(Stream stream);
+    static native StreamReadResult nabtoStreamRead(Stream stream);
+    static native NabtoStatus nabtoStreamWrite(byte[] data, Stream stream);
+    static native NabtoConnectionType nabtoStreamConnectionType(Stream stream);
+    static native NabtoStatus nabtoStreamSetOption(int optionName, byte[] option, Stream stream);
 
     // The tunnel API
-    static native Tunnel nabtoTunnelOpenTcp(int localPort, String nabtoHost, String remoteHost, int remotePort, Object session);
-    static native int nabtoTunnelClose(Object tunnel);
-    static native TunnelInfoResult nabtoTunnelInfo(Object tunnel);
+    static native Tunnel nabtoTunnelOpenTcp(int localPort, String nabtoHost, String remoteHost, int remotePort, Session session);
+    static native NabtoStatus nabtoTunnelClose(Tunnel tunnel);
+    static native TunnelInfoResult nabtoTunnelInfo(Tunnel tunnel);
 }

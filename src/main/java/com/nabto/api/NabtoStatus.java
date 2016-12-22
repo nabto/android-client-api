@@ -169,6 +169,16 @@ public enum NabtoStatus {
     RPC_RESPONSE_DECODE_FAILURE,
 
     /**
+     * Problem communicating with RPC target device
+     */
+    NABTO_RPC_COMMUNICATION_PROBLEM,
+
+    /**
+     * Timeout when connecting to remote device.
+     */
+    NABTO_CONNECT_TIMEOUT,
+
+    /**
      * Number of possible error codes. This must always be last!
      */
     ERROR_CODE_COUNT;

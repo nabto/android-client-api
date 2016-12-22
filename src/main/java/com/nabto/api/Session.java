@@ -9,11 +9,11 @@ package com.nabto.api;
  * </p>
  */
 public class Session {
-    private Object session;
+    private Object handle;
     private NabtoStatus status;
 
-    Session(Object session, int nabtoStatus) {
-        this.session = session;
+    Session(Object handle, int nabtoStatus) {
+        this.handle = handle;
         this.status = NabtoStatus.fromInteger(nabtoStatus);
     }
 
@@ -26,8 +26,8 @@ public class Session {
      *
      * @return Session handle.
      */
-    Object getSession() {
-        return session;
+    Object getHandle() {
+        return handle;
     }
 
     /**

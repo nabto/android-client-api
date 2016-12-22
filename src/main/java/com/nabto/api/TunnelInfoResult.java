@@ -4,18 +4,36 @@ package com.nabto.api;
  * Result object of the function {@link NabtoApi#tunnelInfo(Tunnel)}.
  * <p>
  *     If {@link #getStatus()} is different from {@link NabtoStatus#OK}, the return values of
- *     both {@link #getTunnelState()} and {@link #getPort()} are undefined.
+ *     all {@link #getVersion()}, {@link #getTunnelState()}, {@link #getLastError()}, and
+ *     {@link #getPort()} are undefined.
  * </p>
  */
 public class TunnelInfoResult {
     private NabtoStatus status;
+    private int version;
     private NabtoTunnelState tunnelState;
+    private int lastError;
     private int port;
 
-    TunnelInfoResult(int nabtoTunnelState, int port, int nabtoStatus) {
+    TunnelInfoResult(int version, int nabtoTunnelState, int lastError, int port, int nabtoStatus) {
         this.status = NabtoStatus.fromInteger(nabtoStatus);
+        this.version = version;
         this.tunnelState = NabtoTunnelState.fromInteger(nabtoTunnelState);
+        this.lastError = lastError;
         this.port = port;
+    }
+
+    /**
+     * The protocol version of the tunnel.
+     * <p>
+     *     If {@link #getStatus()} is different from {@link NabtoStatus#OK}, the return value
+     *     is undefined.
+     * </p>
+     *
+     * @return The protocol version of the tunnel.
+     */
+    public int getVersion() {
+        return version;
     }
 
     /**
@@ -32,10 +50,25 @@ public class TunnelInfoResult {
     }
 
     /**
-     * The local listening port of the tunnel.
+     * The error code of the last error.
      * <p>
      *     If {@link #getStatus()} is different from {@link NabtoStatus#OK}, the return value
      *     is undefined.
+     * </p>
+     *
+     * @return The error code of the last error.
+     */
+    public int getLastError() {
+        return lastError;
+    }
+
+    /**
+     * The local listening port of the tunnel.
+     * <p>
+     *     If {@link #getStatus()} is different from {@link NabtoStatus#OK}, or the tunnel wasn't
+     *     successfully established ({@link #getTunnelState()} is {@link NabtoTunnelState#LOCAL},
+     *     {@link NabtoTunnelState#REMOTE_P2P}, {@link NabtoTunnelState#REMOTE_RELAY}, etc.) the
+     *     return value is undefined.
      * </p>
      *
      * @return The local listening port of the tunnel.

@@ -24,7 +24,7 @@ import java.util.Collection;
  * }</pre>
  */
 public class NabtoClient {
-    private Context context;
+    private NabtoAndroidAssetManager assetManager;
     private NabtoApi nabtoApi;
     private Session session;
     private boolean initialized;
@@ -39,8 +39,8 @@ public class NabtoClient {
      * @param context App context.
      */
     public NabtoClient(Context context) {
-        this.context = context;
-        this.nabtoApi = new NabtoApi(context);
+        this.assetManager = new NabtoAndroidAssetManager(context);
+        this.nabtoApi = new NabtoApi(assetManager);
     }
 
     /**
@@ -113,8 +113,7 @@ public class NabtoClient {
     }
 
     /**
-     * Tells the Nabto client API the location of the static resource directory ("share/nabto")
-     * and initializes the Nabto client API.
+     * Initializes the Nabto client API.
      *
      * @return  If the function succeeds, the return value is {@link NabtoStatus#OK}.
      *          If the function fails, the return value is one of the
@@ -126,7 +125,6 @@ public class NabtoClient {
      *          </ul>
      */
     private NabtoStatus startup() {
-        nabtoApi.setStaticResourceDir();
         return nabtoApi.startup();
     }
 

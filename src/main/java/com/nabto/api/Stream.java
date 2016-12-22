@@ -8,11 +8,11 @@ package com.nabto.api;
  * </p>
  */
 public class Stream {
-    private Object stream;
+    private Object handle;
     private NabtoStatus status;
 
-    Stream(Object stream, int nabtoStatus) {
-        this.stream = stream;
+    Stream(Object handle, int nabtoStatus) {
+        this.handle = handle;
         this.status = NabtoStatus.fromInteger(nabtoStatus);
     }
 
@@ -25,8 +25,8 @@ public class Stream {
      *
      * @return Stream handle.
      */
-    Object getStream() {
-        return stream;
+    Object getHandle() {
+        return handle;
     }
 
     /**

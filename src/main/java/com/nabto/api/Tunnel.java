@@ -8,11 +8,11 @@ package com.nabto.api;
  * </p>
  */
 public class Tunnel {
-    private Object tunnel;
+    private Object handle;
     private NabtoStatus status;
 
-    Tunnel(Object tunnel, int nabtoStatus) {
-        this.tunnel = tunnel;
+    Tunnel(Object handle, int nabtoStatus) {
+        this.handle = handle;
         this.status = NabtoStatus.fromInteger(nabtoStatus);
     }
 
@@ -25,8 +25,8 @@ public class Tunnel {
      *
      * @return Tunnel handle.
      */
-    Object getTunnel() {
-        return tunnel;
+    Object getHandle() {
+        return handle;
     }
 
     /**

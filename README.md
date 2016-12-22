@@ -99,3 +99,11 @@ src
     └── res
                 
 ```
+
+## Test
+
+The native interface is tested using a stubbed Nabto library. The source files of the stub are located in `/home/cs/nabto/android-client-api/src/test/jniLibs/nabto_client_api_jni_stub`. A bash script is provided to automate building the stub and executing the tests.
+
+```
+./test.sh
+```
