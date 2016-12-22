@@ -269,6 +269,21 @@ public class NabtoApi {
     }
 
     /**
+     * Gets the Nabto fingerprint.
+     * @param certId    Certificate ID from which the fingerprint should be retreived
+     * @return returns byte array of the fingerprint
+     */
+    public NabtoStatus getFingerprint(String certId, String[] fingerprint){
+        byte [] byteFingerprint = new byte[16];
+        NabtoStatus ret = NabtoStatus.fromInteger(NabtoCApiWrapper.nabtoGetFingerprint(certId, byteFingerprint));
+        for (int i = 0; i<byteFingerprint.length; i++){
+            String str = String.format("%02x",byteFingerprint[i]);
+            fingerprint[0] += i!=0 ? ":" + str : str;
+        }
+        return ret;
+    }
+
+    /**
      * Signs up for a Nabto account on the portal (host name defined in the
      * configuration file). Invokes web service and initiates sending of
      * confirmation email.
@@ -566,6 +581,7 @@ public class NabtoApi {
         return rpcResult;
     }
 
+   
     /**
      * Retrieves data synchronously from specified {@code nabto://URL} on specified
      * session.
