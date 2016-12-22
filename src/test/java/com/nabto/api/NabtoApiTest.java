@@ -312,6 +312,22 @@ public class NabtoApiTest {
     }
 
     @Test
+    public void getFingerprintTest() {
+        when(NabtoCApiWrapper.nabtoGetFingerprint(anyString(),any(byte[].class) ))
+            .thenReturn(NabtoStatus.OK);
+        String[] fingerprint = new String[1];
+        NabtoStatus status = api.getFingerprint("name",fingerprint);
+
+        PowerMockito.verifyStatic();
+        NabtoCApiWrapper.nabtoGetFingerprint(eq("name"),eq(new byte[16]));
+
+        PowerMockito.verifyStatic(times(0));
+        Log.d(anyString(),anyString());
+
+        assertEquals(NabtoStatus.OK, status);
+    }
+
+    @Test
     public void signupSuccessTest() {
         when(NabtoCApiWrapper.nabtoSignup(anyString(), anyString()))
                 .thenReturn(NabtoStatus.OK);
