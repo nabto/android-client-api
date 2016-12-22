@@ -434,7 +434,7 @@ public class NabtoClient {
      * <p>
      *     On successful return ({@link RpcResult#getStatus()} returns {@link NabtoStatus#OK}),
      *     {@link RpcResult#getJson()} returns a JSON response representing the response document.
-     *     Otherwise, the JSON string is undefined.
+     *     Otherwise, the JSON response contains details about the occured error.
      * </p>
      *
      * @param nabtoUrl       The URL to retrieve.
@@ -446,10 +446,8 @@ public class NabtoClient {
      *              <li>{@link NabtoStatus#ERROR_READING_CONFIG}: The config file wasn't read.</li>
      *              <li>{@link NabtoStatus#INVALID_SESSION}: Session handle was invalid. See
      *              {@link #init(String, String)}</li>
-     *              <li>{@link NabtoStatus#RPC_INTERFACE_NOT_SET}: An interface was not set prior
-     *              to invoking.</li>
-     *              <li>{@link NabtoStatus#RPC_NO_SUCH_REQUEST}: The specified RPC function does
-     *              not exist in request</li>
+     *              <li>{@link NabtoStatus#FAILED_WITH_JSON_MESSAGE}: An error occurred, details
+     *              can be found in JSON format in the response</li>
      *              <li>{@link NabtoStatus#FAILED}: Unknown error.</li>
      *          </ul>
      */

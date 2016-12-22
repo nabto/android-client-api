@@ -220,11 +220,9 @@ nabto_status_t NABTOAPI nabtoRpcInvoke(nabto_handle_t session,
 
     nabto_status status = static_cast<nabto_status>(std::stoi(returnValues["status"]));
 
-    if(status == NABTO_OK) {
-        const char* str = "json";
-        *jsonResponse = new char[strlen(str) + 1];
-        strncpy(*jsonResponse, str, strlen(str) + 1);
-    }
+    const char* str = "json";
+    *jsonResponse = new char[strlen(str) + 1];
+    strncpy(*jsonResponse, str, strlen(str) + 1);
 
     return status;
 }

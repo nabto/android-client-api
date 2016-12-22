@@ -467,7 +467,7 @@ public class NabtoCApiWrapperTest {
         result = NabtoCApiWrapper.nabtoRpcInvoke("url", session);
 
         assertEquals(NabtoStatus.FAILED, result.getStatus());
-        assertNull(result.getJson());
+        assertEquals("json", result.getJson());
 
         // test NULL resilience
         NabtoCApiWrapper.nabtoRpcInvoke(null, null);
