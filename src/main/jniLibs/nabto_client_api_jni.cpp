@@ -273,7 +273,7 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoGetFingerprint(JNIEnv* env,
     jni_string certIdNative(env,certId);
     char fingerprintNative[16];
     nabto_status_t nabtoStatus = nabtoGetFingerprint(certIdNative,fingerprintNative);
-    env->SetByteArrayRegion(env,fingerprint, 0, 16, (jbyte*)fingerprintNative);
+    env->SetByteArrayRegion(fingerprint, 0, 16, (jbyte*)fingerprintNative);
     return toNabtoStatus(env,nabtoStatus);
 }
 
