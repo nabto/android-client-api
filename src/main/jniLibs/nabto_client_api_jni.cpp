@@ -384,8 +384,8 @@ jstring Java_com_nabto_api_NabtoCApiWrapper_nabtoGetSessionToken(JNIEnv* env,
     nabto_status_t status = nabtoGetSessionToken(sessionHandle, bufferNative, bufLen, &resultLen);
 
     jstring buffer = NULL;
-    if (status == NABTO_OK && resultLen <= bufLen) {
-        bufferNative[resultLen - 1] = '\0'; // terminate char array
+    if (status == NABTO_OK && resultLen < bufLen) {
+        bufferNative[resultLen] = '\0'; // terminate char array
         buffer = env->NewStringUTF(bufferNative);
     }
     return buffer;
