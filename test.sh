@@ -39,7 +39,7 @@ function test-java {
     ## Run tests
     BUILD_DIR=$DIR/cmake/build
     JAR_DIR=$DIR/libs
-    $JAVA_HOME/bin/java -Djava.library.path=$BUILD_DIR \
+    java -Djava.library.path=$BUILD_DIR \
          -cp $JAR_DIR/junit-4.12.jar:$JAR_DIR/hamcrest-core-1.3.jar:$BUILD_DIR/NabtoClientApiWrapper.jar:$BUILD_DIR/NabtoClientApiWrapperTest.jar \
          org.junit.runner.JUnitCore com.nabto.api.NabtoCApiWrapperTest || exit 1
 }
