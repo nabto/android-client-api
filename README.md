@@ -14,18 +14,59 @@ repositories {
 }
 
 dependencies {
-    compile 'com.nabto.android:nabto-api:0.1'
+    compile 'com.nabto.android:nabto-api:0.11'
 }
 ```
 
-In case you want to build the API yourself, follow these steps:
+### Build
 
-1. Download Nabto libraries and assets to *android-client-api/src/main/* (See "Source File Structure" section).
-2. Open the project in Android Studio.
-3. Build the project. 
-4. Import the library from *android-client-api/build/outputs/aar/* into your project.
+In case you want to build the Android Client API library yourself, follow these steps:
 
-## Example
+#### 1. Download native libraries and resources
+Download the Nabto Client SDK resources and native libraries from [developer.nabto.com](https://developer.nabto.com/), and copy them to *android-client-api/src/main/* in order to get the following structure:
+
+```
+src
+└── main
+    ├── assets
+    │   └── share
+    │       └── nabto
+    │           ├── configuration
+    │           ├── roots
+    │           ├── schemas
+    │           ├── skins
+    │           └── users
+    ├── java
+    ├── jniLibs
+    │   ├── armeabi
+    │   │   └── libnabto_client_api_jni.so
+    │   ├── armeabi-v7a
+    │   │   └── libnabto_client_api_jni.so
+    │   └── x86
+    │       └── libnabto_client_api_jni.so
+    └── res
+
+```
+
+#### 2. Run tests (optional)
+```
+# ./test.sh
+```
+*For more details see section "Test".*
+#### 3. Build
+```
+# gradle build -x test
+```
+#### 4. Use the AAR library
+Use the generated AAR library, found in *android-client-api/build/outputs/aar/*, in your projects.
+#### 5. *Internal*: Upload to Bintray
+```
+# export BINTRAY_USER="<USER>"
+# export BINTRAY_API_KEY="<API KEY>"
+# gradle bintrayUpload
+```
+
+## Usage Example
 
 The simplest possible example of using the Android client API:
 ```java
@@ -74,35 +115,18 @@ api.closeSession(session);
 api.shutdown();
 ```
 
-## Source File Structure
-
-```
-src
-└── main
-    ├── assets
-    │   └── share
-    │       └── nabto
-    │           ├── configuration
-    │           ├── roots
-    │           ├── schemas
-    │           ├── skins
-    │           └── users
-    ├── java
-    ├── jniLibs
-    │   ├── armeabi
-    │   │   └── libnabto_client_api_jni.so
-    │   ├── armeabi-v7a
-    │   │   └── libnabto_client_api_jni.so
-    │   └── x86
-    │       └── libnabto_client_api_jni.so
-    └── res
-                
-```
-
 ## Test
 
-The native interface is tested using a stubbed Nabto library. The source files of the stub are located in `/home/cs/nabto/android-client-api/src/test/jniLibs/nabto_client_api_jni_stub`. A bash script is provided to automate building the stub and executing the tests.
+The Android Client API is tested using a stubbed native API. The source files of the stub are located in `/home/cs/nabto/android-client-api/src/test/jniLibs/`. A bash script is provided to automate building the stub and executing the tests.
 
+*Important*: Make sure `$JAVA_HOME` is set.
+
+You have two options:
+### 1. Test the whole Android Client API (default)
 ```
-./test.sh
+# ./test.sh android
+```
+### 2. Test the Java wrapper only
+```
+# ./test.sh java
 ```

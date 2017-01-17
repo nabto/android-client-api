@@ -6,12 +6,13 @@ API_DIR=$DIR/src/main/jniLibs
 STUB_DIR=$DIR/src/test/jniLibs/nabto_client_api_jni_stub
 
 function help {
+    echo "Test the Android Client API wrapper against a stubbed native API."
     echo "options:"
-    echo "  testAndroid -> test the android client api (default)"
-    echo "  testJava    -> test the java client api only"
+    echo "  android -> test the Android Client API (default)"
+    echo "  java    -> test the Java Client API only"
 }
 
-function testAndroid {
+function test-android {
     # build stubbed native library
     pushd $DIR/cmake
     rm -r build; mkdir build; cd build
@@ -27,7 +28,7 @@ function testAndroid {
     popd
 }
 
-function testJava {
+function test-java {
     # build stubbed native library and JARs
     pushd $DIR/cmake
     rm -r build; mkdir build; cd build
@@ -38,20 +39,20 @@ function testJava {
     ## Run tests
     BUILD_DIR=$DIR/cmake/build
     JAR_DIR=$DIR/libs
-    java -Djava.library.path=$BUILD_DIR \
+    $JAVA_HOME/bin/java -Djava.library.path=$BUILD_DIR \
          -cp $JAR_DIR/junit-4.12.jar:$JAR_DIR/hamcrest-core-1.3.jar:$BUILD_DIR/NabtoClientApiWrapper.jar:$BUILD_DIR/NabtoClientApiWrapperTest.jar \
          org.junit.runner.JUnitCore com.nabto.api.NabtoCApiWrapperTest || exit 1
 }
 
 case $1 in
     "")
-        testAndroid
+        test-android
         ;;
-    "testAndroid")
-        testAndroid
+    "android")
+        test-android
         ;;
-    "testJava")
-        testJava
+    "java")
+        test-java
         ;;
     *)
         help
