@@ -544,9 +544,11 @@ public class NabtoApi {
      *     {@link #openSession(String, String)} or {@link #openSessionBare()}.
      * </p>
      * <p>
+     *     On successful return ({@link RpcResult#getStatus()} returns {@link NabtoStatus#OK}),
+     *     {@link RpcResult#getJson()} contains a JSON response representing the response document.
      *     If a non-API level error occurred ({@link RpcResult#getStatus()} returns
-     *     {@link NabtoStatus#FAILED_WITH_JSON_MESSAGE}), {@link RpcResult#getJson()} contains
-     *     error details. Otherwise, the JSON string is undefined.
+     *     {@link NabtoStatus#FAILED_WITH_JSON_MESSAGE}), {@link RpcResult#getJson()} contains error
+     *     details in JSON format.
      * </p>
      * <p>
      *     On successful return ({@link RpcResult#getStatus()} returns {@link NabtoStatus#OK}),
@@ -564,10 +566,8 @@ public class NabtoApi {
      *              <li>{@link NabtoStatus#API_NOT_INITIALIZED}: The {@link #startup()}
      *              function is the first function to call to initialize the Nabto client.</li>
      *              <li>{@link NabtoStatus#INVALID_SESSION}: Session handle was invalid.</li>
-     *              <li>{@link NabtoStatus#RPC_INTERFACE_NOT_SET}: An interface was not set prior
-     *              to invoking.</li>
-     *              <li>{@link NabtoStatus#RPC_NO_SUCH_REQUEST}: The specified RPC function does
-     *              not exist in request</li>
+     *              <li>{@link NabtoStatus#FAILED_WITH_JSON_MESSAGE}: An error occurred, details
+     *              can be found in JSON format in the response.</li>
      *              <li>{@link NabtoStatus#FAILED}: An unspecified error occurred handling the
      *              request.</li>
      *          </ul>
