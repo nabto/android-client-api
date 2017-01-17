@@ -238,12 +238,12 @@ public class NabtoApi {
      *     The {@link #startup()} function must have been called prior to calling this
      *     function.
      * </p>
-     *
-     * This creates a self signed certificate. The identity of such certificate cannot be trusted
-     * but the fingerprint of the certificate can be trusted in the device. This does not rely on
-     * the {@link #signup(String, String)} function. After the profile has been created it can
-     * be used in the open session function.
-     *
+     * <p>
+     *     This creates a self signed certificate. The identity of such certificate cannot be
+     *     trusted but the fingerprint of the certificate can be trusted in the device. This does
+     *     not rely on the {@link #signup(String, String)} function. After the profile has been
+     *     created it can be used in the open session function.
+     * </p>
      * @param commonName  The common name part of the selfsigned certificate which is going to be made.
      * @param password    The password which protects the private key.
      * @return  If the function succeeds, the return value is {@link NabtoStatus#OK}.
@@ -268,9 +268,19 @@ public class NabtoApi {
     }
 
     /**
-     * Gets the Nabto fingerprint.
-     * @param certId    Certificate ID from which the fingerprint should be retreived
-     * @return returns byte array of the fingerprint
+     * Retrieve public key fingerprint for certificate with specified id.
+     * @param certId        Certificate ID from which the fingerprint should be retreived
+     * @param fingerprint   The RSA public key fingerprint (buffer of 16 bytes owned by caller)
+     * @return  If the function succeeds, the return value is {@link NabtoStatus#OK}.
+     *          If the function fails, the return value is one of the
+     *          following values.
+     *          <ul>
+     *              <li>{@link NabtoStatus#API_NOT_INITIALIZED}: The {@link #startup()}
+     *              function is the first function to call to initialize the Nabto client.</li>
+     *              <li>{@link NabtoStatus#OPEN_CERT_OR_PK_FAILED}: No matching certificate found
+     *              for the given id.</li>
+     *              <li>{@link NabtoStatus#FAILED}: Lookup failed for some unspecified reason.</li>
+     *          </ul>
      */
     public NabtoStatus getFingerprint(String certId, String[] fingerprint){
         byte [] byteFingerprint = new byte[16];
@@ -761,12 +771,12 @@ public class NabtoApi {
      * <p>
      *     This call blocks based on the stream option set by
      *     {@link #streamSetOption(Stream, NabtoStreamOption, int)}:
-     *     <ul>
-     *         <li>{@link NabtoStreamOption#RECEIVE_TIMEOUT} = -1: blocking (default)</li>
-     *         <li>{@link NabtoStreamOption#RECEIVE_TIMEOUT} = 0: non-blocking</li>
-     *         <li>{@link NabtoStreamOption#RECEIVE_TIMEOUT} = n: blocks for up to n milliseconds.</li>
-     *     </ul>
      * </p>
+     * <ul>
+     *     <li>{@link NabtoStreamOption#RECEIVE_TIMEOUT} = -1: blocking (default)</li>
+     *     <li>{@link NabtoStreamOption#RECEIVE_TIMEOUT} = 0: non-blocking</li>
+     *     <li>{@link NabtoStreamOption#RECEIVE_TIMEOUT} = n: blocks for up to n milliseconds.</li>
+     * </ul>
      * <p>
      *     The stream handle given must have been obtained by a call to
      *     {@link #streamOpen(String, Session)}.
@@ -806,13 +816,13 @@ public class NabtoApi {
      * <p>
      *     This call blocks based on the stream option set by
      *     {@link #streamSetOption(Stream, NabtoStreamOption, int)}:
-     *     <ul>
-     *         <li>{@link NabtoStreamOption#SEND_TIMEOUT} = -1: blocking until all data is sent
-     *         or queued (default)</li>
-     *         <li>{@link NabtoStreamOption#SEND_TIMEOUT} = 0: non-blocking</li>
-     *         <li>{@link NabtoStreamOption#SEND_TIMEOUT} = n: blocks for up to n milliseconds.</li>
-     *     </ul>
      * </p>
+     * <ul>
+     *     <li>{@link NabtoStreamOption#SEND_TIMEOUT} = -1: blocking until all data is sent or
+     *     queued (default)</li>
+     *     <li>{@link NabtoStreamOption#SEND_TIMEOUT} = 0: non-blocking</li>
+     *     <li>{@link NabtoStreamOption#SEND_TIMEOUT} = n: blocks for up to n milliseconds.</li>
+     * </ul>
      * <p>
      *     The stream handle given must have been obtained by a call to
      *     {@link #streamOpen(String, Session)}.
