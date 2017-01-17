@@ -21,8 +21,10 @@ function testAndroid {
 
     ## Run tests
     export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DIR/cmake/build
+    pushd $DIR
     gradle clean --info || exit 1
     gradle test --info || exit 1
+    popd
 }
 
 function testJava {
