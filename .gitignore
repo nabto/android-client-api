@@ -53,3 +53,6 @@ src/test/jniLibs/com_nabto_api_NabtoCApiWrapperStubController.h
 
 # CMake build
 cmake/build
+
+# JAR libs
+libs/NabtoClientApiWrapper*.jar

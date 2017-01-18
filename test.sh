@@ -29,18 +29,21 @@ function test-android {
 }
 
 function test-java {
+    JAR_DIR=$DIR/libs
+
     # build stubbed native library and JARs
     pushd $DIR/cmake
     rm -r build; mkdir build; cd build
     cmake -DBUILD_JARS=ON .. || exit 1
     make || exit 1
+    mv java-wrapper/*.jar $JAR_DIR/ || exit 1
     popd
     
     ## Run tests
-    BUILD_DIR=$DIR/cmake/build
+    JNI_DIR=$DIR/cmake/build
     JAR_DIR=$DIR/libs
-    java -Djava.library.path=$BUILD_DIR \
-         -cp $JAR_DIR/junit-4.12.jar:$JAR_DIR/hamcrest-core-1.3.jar:$BUILD_DIR/NabtoClientApiWrapper.jar:$BUILD_DIR/NabtoClientApiWrapperTest.jar \
+    java -Djava.library.path=$JNI_DIR \
+         -cp $JAR_DIR/junit-4.12.jar:$JAR_DIR/hamcrest-core-1.3.jar:$JAR_DIR/NabtoClientApiWrapper.jar:$JAR_DIR/NabtoClientApiWrapperTest.jar \
          org.junit.runner.JUnitCore com.nabto.api.NabtoCApiWrapperTest || exit 1
 }
 
