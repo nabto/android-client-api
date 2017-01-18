@@ -1,5 +1,5 @@
 #include "nabto_client_api_stub_controller.hpp"
-#include "nabto_client_api.hpp"
+#include "nabto_client_api.h"
 
 #include <string>
 #include <string.h>

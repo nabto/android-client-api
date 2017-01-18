@@ -1,4 +1,4 @@
-#include "nabto_client_api.hpp"
+#include "nabto_client_api.h"
 #include "com_nabto_api_NabtoCApiWrapper.h"
 #include "jni_string.hpp"
 #include "jni_byte_array.hpp"
