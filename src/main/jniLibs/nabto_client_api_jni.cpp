@@ -90,6 +90,16 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoShutdown(JNIEnv* env, jclass th
     return toNabtoStatus(env, nabtoShutdown());
 }
 
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSetOption(JNIEnv* env,
+                                                           jclass thiz,
+                                                           jstring name,
+                                                           jstring value)
+{
+    jni_string nameNative(env, name);
+    jni_string valueNative(env, value);
+    return toNabtoStatus(env, nabtoSetOption(nameNative, valueNative));
+}
+
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoOpenSession(JNIEnv* env,
                                                              jclass thiz,
                                                              jstring id,

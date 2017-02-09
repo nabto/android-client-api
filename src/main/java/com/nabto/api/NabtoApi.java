@@ -90,6 +90,18 @@ public class NabtoApi {
     }
 
     /**
+     * Set API option. See nabto_client_api.h for details
+     * @return {@link NabtoStatus#OK} if ok
+     */
+    public NabtoStatus setOption(String name, String value) {
+        NabtoStatus status = NabtoCApiWrapper.nabtoSetOption(name, value);
+        if(status != NabtoStatus.OK) {
+            Log.d(this.getClass().getSimpleName(), "Failed to set option on Nabto client API: " + status);
+        }
+        return status;
+    }
+
+    /**
      * Returns a collection of known prefixes in the location specified by prefixes.
      * <p>
      *     The {@link #startup()} function must have been called prior to calling this

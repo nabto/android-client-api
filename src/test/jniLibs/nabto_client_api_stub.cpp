@@ -32,6 +32,11 @@ nabto_status_t NABTOAPI nabtoStartup(const char* nabtoHomeDir)
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
+nabto_status_t NABTOAPI nabtoSetOption(const char* name, const char* value)
+{
+    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
+}
+
 nabto_status_t NABTOAPI nabtoShutdown()
 {
     parameterValues.clear();
@@ -111,6 +116,12 @@ nabto_status_t NABTOAPI nabtoCreateSelfSignedProfile(const char* commonName, con
     if(password != NULL) parameterValues["password"] = password;
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
+
+nabto_status_t NABTOAPI nabtoGetFingerprint(const char* certId, char fingerprint[16])
+{
+    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
+}
+
 
 nabto_status_t NABTOAPI nabtoSignup(const char* email, const char* password)
 {
