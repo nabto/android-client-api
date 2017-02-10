@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.nabto.android:nabto-api:0.11'
+    compile 'com.nabto.android:nabto-api:1.0.0'
 }
 ```
 
@@ -59,12 +59,6 @@ src
 ```
 #### 4. Use the AAR library
 Use the generated AAR library, found in *android-client-api/build/outputs/aar/*, in your projects.
-#### 5. *Internal*: Upload to Bintray
-```
-# export BINTRAY_USER="<USER>"
-# export BINTRAY_API_KEY="<API KEY>"
-# gradle bintrayUpload
-```
 
 ## Usage Example
 
