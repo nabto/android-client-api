@@ -32,15 +32,22 @@ nabto_status_t NABTOAPI nabtoStartup(const char* nabtoHomeDir)
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
-nabto_status_t NABTOAPI nabtoSetOption(const char* name, const char* value)
-{
-    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
-}
-
 nabto_status_t NABTOAPI nabtoShutdown()
 {
     parameterValues.clear();
     return NABTO_OK;
+}
+
+nabto_status_t NABTOAPI nabtoSetOption(const char* name,
+                                       const char* value)
+{
+    parameterValues.clear();
+    if(name != NULL) parameterValues["name"] = name;
+    if(value != NULL) parameterValues["value"] = value;
+
+    nabto_status status = static_cast<nabto_status>(std::stoi(returnValues["status"]));
+
+    return status;
 }
 
 nabto_status_t NABTOAPI nabtoSetStaticResourceDir(const char* resourceDir)

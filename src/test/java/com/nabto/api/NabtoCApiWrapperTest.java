@@ -65,6 +65,34 @@ public class NabtoCApiWrapperTest {
 
         assertEquals(NabtoStatus.OK, status);
     }
+    
+    @Test
+    public void nabtoSetOptionTest() {
+        // test ok
+        Map retVals = new HashMap<String, String>();
+        retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
+        NabtoCApiWrapperStubController.setReturnValueMap(retVals);
+
+        NabtoStatus status = NabtoCApiWrapper.nabtoSetOption("option name", "option value");
+
+        assertEquals(NabtoStatus.OK, status);
+
+        Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
+        assertEquals("option name", paramVals.get("name"));
+        assertEquals("option value", paramVals.get("value"));
+
+        // test error
+        retVals = new HashMap<String, String>();
+        retVals.put("status", Integer.toString(NabtoStatus.FAILED.toInteger()));
+        NabtoCApiWrapperStubController.setReturnValueMap(retVals);
+
+        status = NabtoCApiWrapper.nabtoSetOption("option name", "option value");
+
+        assertEquals(NabtoStatus.FAILED, status);
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoSetOption(null, null);
+    }
 
     @Test
     public void nabtoSetStaticResourceDirTest() {

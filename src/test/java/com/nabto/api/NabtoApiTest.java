@@ -116,6 +116,38 @@ public class NabtoApiTest {
 
         assertEquals(NabtoStatus.FAILED, status);
     }
+    
+    @Test
+    public void setOptionSuccessTest() {
+        when(NabtoCApiWrapper.nabtoSetOption(anyString(), anyString()))
+                .thenReturn(NabtoStatus.OK);
+
+        NabtoStatus status = api.setOption("name", "value");
+
+        PowerMockito.verifyStatic();
+        NabtoCApiWrapper.nabtoSetOption(eq("name"), eq("value"));
+
+        PowerMockito.verifyStatic(times(0));
+        Log.d(anyString(), anyString());
+
+        assertEquals(NabtoStatus.OK, status);
+    }
+
+    @Test
+    public void setOptionFailedTest() {
+        when(NabtoCApiWrapper.nabtoSetOption(anyString(), anyString()))
+                .thenReturn(NabtoStatus.FAILED);
+
+        NabtoStatus status = api.setOption("name", "value");
+
+        PowerMockito.verifyStatic();
+        NabtoCApiWrapper.nabtoSetOption(eq("name"), eq("value"));
+
+        PowerMockito.verifyStatic();
+        Log.d(eq(api.getClass().getSimpleName()), anyString());
+
+        assertEquals(NabtoStatus.FAILED, status);
+    }
 
     @Test
     public void getProtocolPrefixesSuccessTest() {

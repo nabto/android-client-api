@@ -9,6 +9,7 @@ public class NabtoCApiWrapper {
     public static native String nabtoVersion();
     public static native NabtoStatus nabtoStartup(String nabtoHomeDir);
     public static native NabtoStatus nabtoShutdown();
+    public static native NabtoStatus nabtoSetOption(String name, String value);
     public static native NabtoStatus nabtoSetStaticResourceDir(String nabtoResDir);
     public static native String[] nabtoGetProtocolPrefixes();
     public static native String[] nabtoGetLocalDevices();
