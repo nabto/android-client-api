@@ -91,6 +91,8 @@ public class NabtoApi {
 
     /**
      * Set API option. See nabto_client_api.h for details
+     * @param name  The name of the option to change.
+     * @param value The new value of the option.
      * @return {@link NabtoStatus#OK} if ok
      */
     public NabtoStatus setOption(String name, String value) {
