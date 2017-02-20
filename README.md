@@ -64,6 +64,9 @@ Use the generated AAR library, found in *android-client-api/build/outputs/aar/*,
 
 The simplest possible example of using the Android client API:
 ```java
+import com.nabto.api.*;
+```
+```java
 NabtoClient client = new NabtoClient(context);
 
 // Start Nabto and login as guest
