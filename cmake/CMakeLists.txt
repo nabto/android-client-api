@@ -6,6 +6,7 @@ option(BUILD_JARS "Build the JARs containing the Nabto Client API Java wrapper a
 set(CLIENT_API_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
 find_package(Java)
+find_package(JNI)
 
 if (BUILD_STUB AND NOT Java_FOUND)
   message(Does not build test stub since JNI was not found)
