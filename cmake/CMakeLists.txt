@@ -5,16 +5,28 @@ option(BUILD_JARS "Build the JARs containing the Nabto Client API Java wrapper a
 
 set(CLIENT_API_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/..)
 
-if(BUILD_STUB)
+find_package(Java)
+
+if (BUILD_STUB AND NOT Java_FOUND)
+  message(Does not build test stub since JNI was not found)
+endif()
+
+if(BUILD_STUB AND Java_FOUND)
     # Build the stubbed Nabto Client API used for testing the wrapper.
     project(nabto_client_api_jni)
 
-    find_package(JNI) # requires JAVA_HOME to be set
+    set(API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/jniLibs)
+    set(STUB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/test/jniLibs)
     
     execute_process(
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/javah.sh 
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
-    )    
+      COMMAND ${Java_JAVAH_EXECUTABLE} -jni -classpath ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/java -d ${API_DIR} com.nabto.api.NabtoCApiWrapper
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
+
+    execute_process(
+      COMMAND ${Java_JAVAH_EXECUTABLE} -jni -classpath ${CMAKE_CURRENT_SOURCE_DIR}/../src/test/java -d ${STUB_DIR} com.nabto.api.NabtoCApiWrapperStubController
+      WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+    )
 
     set(NABTO_CLIENT_API_JNI_SRC_DIR    ${CLIENT_API_ROOT}/src/main/jniLibs)
     set(NABTO_CLIENT_API_STUB_SRC_DIR   ${CLIENT_API_ROOT}/src/test/jniLibs)
@@ -37,5 +49,5 @@ if(BUILD_STUB)
 endif()
 
 if(BUILD_JARS)
-    add_subdirectory(java-wrapper) 
+    add_subdirectory(java-wrapper)
 endif()
