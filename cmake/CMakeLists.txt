@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.0)
+project(nabto_client_api_jni)
 
 option(BUILD_STUB "Build the stubbed Nabto Client API used for testing the wrapper." ON)
 option(BUILD_JARS "Build the JARs containing the Nabto Client API Java wrapper and its unit tests." OFF)
@@ -14,7 +15,6 @@ endif()
 
 if(BUILD_STUB AND Java_FOUND)
     # Build the stubbed Nabto Client API used for testing the wrapper.
-    project(nabto_client_api_jni)
 
     set(API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/jniLibs)
     set(STUB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/test/jniLibs)
