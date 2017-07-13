@@ -2,7 +2,7 @@
 
 find_package(Java 1.5)
 
-if (JAVA_Development_FOUND)
+if (Java_Development_FOUND)
   include(UseJava)
 
   set(JAVA_API_DIR      ${CLIENT_API_ROOT}/src/main/java/com/nabto/api)
