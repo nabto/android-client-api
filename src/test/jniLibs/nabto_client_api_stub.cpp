@@ -57,6 +57,14 @@ nabto_status_t NABTOAPI nabtoSetStaticResourceDir(const char* resourceDir)
     return NABTO_OK;
 }
 
+nabto_status_t NABTOAPI nabtoInstallDefaultStaticResources(const char* resourceDir)
+{
+    parameterValues.clear();
+    if(resourceDir != NULL) parameterValues["resourceDir"] = resourceDir;
+    return NABTO_OK;
+}
+
+
 nabto_status_t NABTOAPI nabtoGetProtocolPrefixes(char*** prefixes, int* prefixesLength)
 {
     parameterValues.clear();
@@ -124,6 +132,13 @@ nabto_status_t NABTOAPI nabtoCreateSelfSignedProfile(const char* commonName, con
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
+nabto_status_t NABTOAPI nabtoRemoveProfile(const char* id)
+{
+    parameterValues.clear();
+    if(id != NULL) parameterValues["id"] = id;
+    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
+}
+
 nabto_status_t NABTOAPI nabtoGetFingerprint(const char* certId, char fingerprint[16])
 {
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
@@ -184,6 +199,17 @@ nabto_status_t NABTOAPI nabtoCloseSession(nabto_handle_t session)
     parameterValues["sessionHandle"] = std::to_string(handle);
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
+
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetBasestationAuthJson(nabto_handle_t session,
+                                                                      const char* jsonKeyValuePairs)
+{
+    parameterValues.clear();
+    size_t handle = reinterpret_cast<size_t>(session);
+    parameterValues["sessionHandle"] = std::to_string(handle);
+    parameterValues["jsonKeyValuePairs"] = jsonKeyValuePairs;
+    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
+}
+
 
 nabto_status_t NABTOAPI nabtoRpcSetDefaultInterface(nabto_handle_t session, 
                                                     const char* interfaceDefinition, 
