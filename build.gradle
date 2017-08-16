@@ -44,6 +44,11 @@ dependencies {
     testCompile 'org.powermock:powermock-module-junit4:1.6.6'
 }
 
+
+tasks.withType(Test) {
+    systemProperty "java.library.path", System.getProperty('java.library.path')
+}
+
 install {
     repositories.mavenInstaller {
         pom {

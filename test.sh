@@ -4,6 +4,7 @@ DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 API_DIR=$DIR/src/main/jniLibs
 STUB_DIR=$DIR/src/test/jniLibs/nabto_client_api_jni_stub
+LIB_PATH=$DIR/cmake/build
 
 function help {
     echo "Test the Android Client API wrapper against a stubbed native API."
@@ -21,10 +22,10 @@ function test-android {
     popd
 
     ## Run tests
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$DIR/cmake/build
+    echo "Using java.library.path=$LIB_PATH"
     pushd $DIR
     gradle clean --info || exit 1
-    gradle test --info || exit 1
+    gradle -Djava.library.path=$LIB_PATH test --info  || exit 1
     popd
 }
 
