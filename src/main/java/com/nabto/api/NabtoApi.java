@@ -57,11 +57,21 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus startup() {
-        NabtoStatus status =  NabtoCApiWrapper.nabtoStartup(assetManager.getNabtoHomeDirectory());
-        if(status != NabtoStatus.OK) {
-            Log.d(this.getClass().getSimpleName(), "Failed to startup Nabto client API: " + status);
+        Log.i(this.getClass().getSimpleName(), "Started Nabto Client SDK in");
+        Log.d(this.getClass().getSimpleName(), "Started Nabto Client SDK in");
+        String dir = assetManager.getNabtoHomeDirectory();
+        NabtoStatus status =  NabtoCApiWrapper.nabtoStartup(dir);
+        if (status == NabtoStatus.OK) {
+            status = NabtoCApiWrapper.nabtoInstallDefaultStaticResources(assetManager.getNabtoHomeDirectory());
+            if (status == NabtoStatus.OK) {
+                Log.i(this.getClass().getSimpleName(), "Started Nabto Client SDK in " + dir);
+            } else {
+                Log.e(this.getClass().getSimpleName(), "Nabto started but resources could not be installed in " + dir);
+            }
+        } else {
+            Log.e(this.getClass().getSimpleName(), "Failed to startup Nabto client API: " + status);
         }
-        return NabtoCApiWrapper.nabtoInstallDefaultStaticResources(assetManager.getNabtoHomeDirectory());
+        return status;
     }
 
     /**
@@ -222,7 +232,7 @@ public class NabtoApi {
      *     function.
      * </p>
      *
-     * @param email     id of user, as registered on portal.
+     * @param id     id of user, as registered on portal.
      * @param password  Password for accessing portal for specified user.
      * @return  If the function succeeds, the return value is {@link NabtoStatus#OK}.
      *          If the function fails, the return value is one of the

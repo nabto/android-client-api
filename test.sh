@@ -33,12 +33,12 @@ function test-java {
     JAR_DIR=$DIR/libs
 
     # build stubbed native library and JARs
-    pushd $DIR/cmake
-    rm -r build; mkdir build; cd build
-    cmake -DBUILD_JARS=ON .. || exit 1
-    make || exit 1
-    mv java-wrapper/*.jar $JAR_DIR/ || exit 1
-    popd
+#    pushd $DIR/cmake
+#    rm -rf build; mkdir build; cd build
+#    cmake -DBUILD_JARS=ON .. || exit 1
+#    make || exit 1
+#    mv java-wrapper/*.jar $JAR_DIR/ || exit 1
+#    popd
     
     ## Run tests
     JNI_DIR=$DIR/cmake/build

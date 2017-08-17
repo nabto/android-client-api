@@ -28,8 +28,9 @@ nabto_status_t NABTOAPI nabtoStartup(const char* nabtoHomeDir)
         parameterValues["nabtoHomeDir"] = "default";
     } else {
         parameterValues["nabtoHomeDir"] = nabtoHomeDir;
-    }    
-    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
+    }
+    nabto_status_t res = static_cast<nabto_status>(std::stoi(returnValues["status"]));
+    return res;
 }
 
 nabto_status_t NABTOAPI nabtoShutdown()

@@ -33,11 +33,17 @@ jbyteArray charArrayToJavaArray(JNIEnv* env, char* array, size_t arrayLength)
 
 jobject toNabtoStatus(JNIEnv* env, int status) {
     jclass nabtoStatusEnum = env->FindClass("com/nabto/api/NabtoStatus");
-    if(nabtoStatusEnum == NULL) return NULL;
+    if(nabtoStatusEnum == NULL) {
+        std::cout << "ERROR: Could not find class com/nabto/api/NabtoStatus" << std::endl;
+        return NULL;
+    }
 
     jmethodID fromInteger = env->GetStaticMethodID(
             nabtoStatusEnum, "fromInteger", "(I)Lcom/nabto/api/NabtoStatus;");
-    if(fromInteger == NULL) return NULL;
+    if(fromInteger == NULL) {
+        std::cout << "ERROR: Could not convert status " << nabtoStatusEnum << " from integer" << std::endl;
+        return NULL;
+    }
 
     return env->CallStaticObjectMethod(nabtoStatusEnum, fromInteger, status);
 }
