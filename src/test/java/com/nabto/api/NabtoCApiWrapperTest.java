@@ -11,6 +11,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+/** 
+ * This class tests the JNI bindings using a C library (src/test/jniLibs/nabto_client_api_stub.cpp)
+ * that stubs the Nabto Client SDK.
+ */
 public class NabtoCApiWrapperTest {
     final String DUMMY_EMAIL = "dummy@nabto.com";
     final String DUMMY_PASSWORD = "dummy password";

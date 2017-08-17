@@ -24,6 +24,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
+/** 
+ * This class tests the high level Java wrapper using a Java-level mock of the JNI wrapper (and
+ * hence does not use the C based stub used by NabtoCApiWrapperTest.java
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Log.class, NabtoCApiWrapper.class})
 @SuppressStaticInitializationFor("com.nabto.api.NabtoCApiWrapper")
