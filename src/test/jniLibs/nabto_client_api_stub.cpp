@@ -202,12 +202,12 @@ nabto_status_t NABTOAPI nabtoCloseSession(nabto_handle_t session)
 }
 
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetBasestationAuthJson(nabto_handle_t session,
-                                                                      const char* jsonKeyValuePairs)
+                                                                      const char* json)
 {
     parameterValues.clear();
     size_t handle = reinterpret_cast<size_t>(session);
     parameterValues["sessionHandle"] = std::to_string(handle);
-    parameterValues["jsonKeyValuePairs"] = jsonKeyValuePairs;
+    parameterValues["jsonKeyValuePairs"] = (json ? json : ""); // null is valid input
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
