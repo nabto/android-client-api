@@ -61,7 +61,7 @@ public class NabtoApi {
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to startup Nabto client API: " + status);
         }
-        return NabtoCApiWrappeCr.nabtoInstallDefaultStaticResources(assetManager.getNabtoHomeDirectory());
+        return NabtoCApiWrapper.nabtoInstallDefaultStaticResources(assetManager.getNabtoHomeDirectory());
     }
 
     /**
