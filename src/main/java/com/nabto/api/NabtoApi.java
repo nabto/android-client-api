@@ -57,8 +57,6 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus startup() {
-        Log.i(this.getClass().getSimpleName(), "Started Nabto Client SDK in");
-        Log.d(this.getClass().getSimpleName(), "Started Nabto Client SDK in");
         String dir = assetManager.getNabtoHomeDirectory();
         NabtoStatus status =  NabtoCApiWrapper.nabtoStartup(dir);
         if (status == NabtoStatus.OK) {
