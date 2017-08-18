@@ -34,7 +34,7 @@ function test-java {
 
     # build stubbed native library and JARs
     pushd $DIR/cmake
-    rm -r build; mkdir build; cd build
+    rm -rf build; mkdir build; cd build
     cmake -DBUILD_JARS=ON .. || exit 1
     make || exit 1
     mv java-wrapper/*.jar $JAR_DIR/ || exit 1

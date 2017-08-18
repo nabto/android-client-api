@@ -11,6 +11,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+/** 
+ * This class tests the JNI bindings using a C library (src/test/jniLibs/nabto_client_api_stub.cpp)
+ * that stubs the Nabto Client SDK.
+ */
 public class NabtoCApiWrapperTest {
     final String DUMMY_EMAIL = "dummy@nabto.com";
     final String DUMMY_PASSWORD = "dummy password";
@@ -106,6 +110,24 @@ public class NabtoCApiWrapperTest {
         // test NULL resilience
         NabtoCApiWrapper.nabtoSetStaticResourceDir(null);
     }
+
+    @Test
+    public void nabtoInstallDefaultStaticResourcesTest() {
+        Map retVals = new HashMap<String, String>();
+        retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
+        NabtoCApiWrapperStubController.setReturnValueMap(retVals);
+
+        NabtoStatus status = NabtoCApiWrapper.nabtoInstallDefaultStaticResources("dir");
+
+        assertEquals(NabtoStatus.OK, status);
+
+        Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
+        assertEquals("dir", paramVals.get("resourceDir"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoInstallDefaultStaticResources(null);
+    }
+
 
     @Test
     public void nabtoGetProtocolPrefixesTest() {
@@ -260,6 +282,24 @@ public class NabtoCApiWrapperTest {
         // test NULL resilience
         NabtoCApiWrapper.nabtoCreateProfile(null, null);
     }
+    
+    @Test
+    public void nabtoRemoveProfileTest() {
+        Map retVals = new HashMap<String, String>();
+        retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
+        NabtoCApiWrapperStubController.setReturnValueMap(retVals);
+
+        NabtoStatus status = NabtoCApiWrapper.nabtoRemoveProfile(DUMMY_EMAIL);
+
+        assertEquals(NabtoStatus.OK, status);
+
+        Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
+        assertEquals(DUMMY_EMAIL, paramVals.get("id"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoRemoveProfile(null);
+    }
+
 
     @Test
     public void nabtoCreateSelfSignedProfileTest() {
@@ -383,6 +423,25 @@ public class NabtoCApiWrapperTest {
 
         // test NULL resilience
         NabtoCApiWrapper.nabtoCloseSession(null);
+    }
+
+    @Test
+    public void nabtoSetBasestationAuthJsonTest() {
+        Map retVals = new HashMap<String, String>();
+        retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
+        NabtoCApiWrapperStubController.setReturnValueMap(retVals);
+
+        Session session = NabtoCApiWrapper.nabtoOpenSession(DUMMY_EMAIL, DUMMY_PASSWORD);
+        final String json = "some json stuff";
+        NabtoStatus status = NabtoCApiWrapper.nabtoSetBasestationAuthJson(json, session);
+
+        assertEquals(NabtoStatus.OK, status);
+        Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
+        assertEquals("42", paramVals.get("sessionHandle"));
+        assertEquals(json, paramVals.get("jsonKeyValuePairs"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoSetBasestationAuthJson("", null);
     }
 
     @Test

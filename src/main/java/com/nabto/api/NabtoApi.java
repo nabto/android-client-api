@@ -57,10 +57,17 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus startup() {
-        NabtoCApiWrapper.nabtoSetStaticResourceDir(assetManager.getNabtoResourceDirectory());
-        NabtoStatus status =  NabtoCApiWrapper.nabtoStartup(assetManager.getNabtoHomeDirectory());
-        if(status != NabtoStatus.OK) {
-            Log.d(this.getClass().getSimpleName(), "Failed to startup Nabto client API: " + status);
+        String dir = assetManager.getNabtoHomeDirectory();
+        NabtoStatus status =  NabtoCApiWrapper.nabtoStartup(dir);
+        if (status == NabtoStatus.OK) {
+            status = NabtoCApiWrapper.nabtoInstallDefaultStaticResources(assetManager.getNabtoHomeDirectory());
+            if (status == NabtoStatus.OK) {
+                Log.i(this.getClass().getSimpleName(), "Started Nabto Client SDK in " + dir);
+            } else {
+                Log.e(this.getClass().getSimpleName(), "Nabto started but resources could not be installed in " + dir);
+            }
+        } else {
+            Log.e(this.getClass().getSimpleName(), "Failed to startup Nabto client API: " + status);
         }
         return status;
     }
@@ -223,7 +230,7 @@ public class NabtoApi {
      *     function.
      * </p>
      *
-     * @param email     Email address of user, as registered on portal.
+     * @param id     id of user, as registered on portal.
      * @param password  Password for accessing portal for specified user.
      * @return  If the function succeeds, the return value is {@link NabtoStatus#OK}.
      *          If the function fails, the return value is one of the
@@ -238,10 +245,37 @@ public class NabtoApi {
      *              <li>{@link NabtoStatus#FAILED}: Lookup failed for some unspecified reason.</li>
      *          </ul>
      */
-    public NabtoStatus createProfile(String email, String password) {
-        NabtoStatus status = NabtoCApiWrapper.nabtoCreateProfile(email, password);
+    public NabtoStatus createProfile(String id, String password) {
+        NabtoStatus status = NabtoCApiWrapper.nabtoCreateProfile(id, password);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to create profile: " + status);
+        }
+        return status;
+    }
+
+    /**
+     * Remove a Nabto client profile (private key + certificate) on this
+     * computer for specified user.
+     * <p>
+     *     The {@link #startup()} function must have been called prior to calling this
+     *     function.
+     * </p>
+     *
+     * @param   certId identification of certificate to remove
+     * @return  If the function succeeds, the return value is {@link NabtoStatus#OK}.
+     *          If the function fails, the return value is one of the
+     *          following values.
+     *          <ul>
+     *              <li>{@link NabtoStatus#API_NOT_INITIALIZED}: The {@link #startup()}
+     *              function is the first function to call to initialize the Nabto client.</li>
+     *              <li>{@link NabtoStatus#CERT_SAVING_FAILURE}: Failed to remove certificate.</li>
+     *              <li>{@link NabtoStatus#FAILED}: Lookup failed for some unspecified reason.</li>
+     *          </ul>
+     */
+    public NabtoStatus removeProfile(String certId) {
+        NabtoStatus status = NabtoCApiWrapper.nabtoRemoveProfile(certId);
+        if(status != NabtoStatus.OK) {
+            Log.d(this.getClass().getSimpleName(), "Failed to remove profile: " + status);
         }
         return status;
     }
@@ -467,6 +501,42 @@ public class NabtoApi {
         NabtoStatus status = NabtoCApiWrapper.nabtoCloseSession(session);
         if(status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to close session: " + status);
+        }
+        return status;
+    }
+
+    /**
+     * Set basestation auth information on connect requests.
+     * 
+     * This feature together with a webhook installed on the basestation
+     * allows the client to send an access token in the connect
+     * request. This way the basestation can contact a third party service
+     * and verify that a connect with the given key value pairs is allowed
+     * to a specific device.
+     * 
+     * The key value pairs are copied into an internal structure and can
+     * safely be forgotten after the call.
+     * 
+     * <p>
+     *     The session object passed to this function must be returned by a call to either
+     *     {@link #openSession(String, String)} or {@link #openSessionBare()}.
+     * </p>
+     *
+     * @param session   session handle
+     * @param jsonKeyValuePairs  valid json key value pairs like '{"foo": "bar", "baz": "quux" }'
+     * @return  If the function succeeds, the return value is {@link NabtoStatus#OK}.
+     *          If the function fails, the return value is one of the
+     *          following values.
+     *          <ul>
+     *              <li>{@link NabtoStatus#API_NOT_INITIALIZED}: The {@link #startup()}
+     *              function is the first function to call to initialize the Nabto client.</li>
+     *              <li>{@link NabtoStatus#INVALID_SESSION}: Session object was invalid.</li>
+     *          </ul>
+     */
+    public NabtoStatus setBasestationAuthJson(String jsonKeyValuePairs, Session session) {
+        NabtoStatus status = NabtoCApiWrapper.nabtoSetBasestationAuthJson(jsonKeyValuePairs, session);
+        if (status != NabtoStatus.OK) {
+            Log.d(this.getClass().getSimpleName(), "Failed to set basestation authentication info: " + status);
         }
         return status;
     }

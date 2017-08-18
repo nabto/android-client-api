@@ -33,11 +33,17 @@ jbyteArray charArrayToJavaArray(JNIEnv* env, char* array, size_t arrayLength)
 
 jobject toNabtoStatus(JNIEnv* env, int status) {
     jclass nabtoStatusEnum = env->FindClass("com/nabto/api/NabtoStatus");
-    if(nabtoStatusEnum == NULL) return NULL;
+    if(nabtoStatusEnum == NULL) {
+        std::cout << "ERROR: Could not find class com/nabto/api/NabtoStatus" << std::endl;
+        return NULL;
+    }
 
     jmethodID fromInteger = env->GetStaticMethodID(
             nabtoStatusEnum, "fromInteger", "(I)Lcom/nabto/api/NabtoStatus;");
-    if(fromInteger == NULL) return NULL;
+    if(fromInteger == NULL) {
+        std::cout << "ERROR: Could not convert status " << nabtoStatusEnum << " from integer" << std::endl;
+        return NULL;
+    }
 
     return env->CallStaticObjectMethod(nabtoStatusEnum, fromInteger, status);
 }
@@ -84,6 +90,15 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSetStaticResourceDir(JNIEnv* en
     jni_string resourceDirNative(env, resourceDir);
     return toNabtoStatus(env, nabtoSetStaticResourceDir(resourceDirNative));
 }
+
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoInstallDefaultStaticResources(JNIEnv* env,
+                                                                                jclass thiz,
+                                                                                jstring resourceDir)
+{
+    jni_string resourceDirNative(env, resourceDir);
+    return toNabtoStatus(env, nabtoInstallDefaultStaticResources(resourceDirNative));
+}
+
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoShutdown(JNIEnv* env, jclass thiz)
 {
@@ -151,6 +166,17 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoCloseSession(JNIEnv* env,
     nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
     return toNabtoStatus(env, nabtoCloseSession(sessionHandle));
 }
+
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSetBasestationAuthJson(JNIEnv* env,
+                                                                        jclass thiz,
+                                                                        jstring jsonKeyValuePairs,
+                                                                        jobject sessionObject)
+{
+    jni_string jsonStringNative(env, jsonKeyValuePairs);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
+    return toNabtoStatus(env, nabtoSetBasestationAuthJson(sessionHandle, jsonStringNative));
+}
+
 
 jobject JNICALL Java_com_nabto_api_NabtoCApiWrapper_nabtoRpcSetDefaultInterface(JNIEnv* env,
                                                                                 jclass thiz,
@@ -274,6 +300,14 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoCreateSelfSignedProfile(JNIEnv*
     jni_string commonNameNative(env, commonName);
     jni_string passwordNative(env, password);
     return toNabtoStatus(env, nabtoCreateSelfSignedProfile(commonNameNative, passwordNative));
+}
+
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoRemoveProfile(JNIEnv* env,
+                                                               jclass thiz,
+                                                               jstring certId)
+{
+    jni_string certIdNative(env, certId);
+    return toNabtoStatus(env, nabtoRemoveProfile(certIdNative));
 }
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoGetFingerprint(JNIEnv* env,

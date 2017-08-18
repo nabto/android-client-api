@@ -24,6 +24,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
+/** 
+ * This class tests the high level Java wrapper using a Java-level mock of the JNI wrapper (and
+ * hence does not use the C based stub used by NabtoCApiWrapperTest.java
+ */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Log.class, NabtoCApiWrapper.class})
 @SuppressStaticInitializationFor("com.nabto.api.NabtoCApiWrapper")
@@ -57,14 +61,12 @@ public class NabtoApiTest {
     public void startupSuccessTest() {
         when(NabtoCApiWrapper.nabtoStartup(anyString()))
                 .thenReturn(NabtoStatus.OK);
+        when(NabtoCApiWrapper.nabtoInstallDefaultStaticResources(anyString())).thenReturn(NabtoStatus.OK);
 
         NabtoStatus status = api.startup();
 
         PowerMockito.verifyStatic();
         NabtoCApiWrapper.nabtoStartup(eq(DUMMY_NABTO_HOME_DIRECTORY));
-
-        PowerMockito.verifyStatic(times(0));
-        Log.d(anyString(), anyString());
 
         assertEquals(NabtoStatus.OK, status);
     }
@@ -73,6 +75,7 @@ public class NabtoApiTest {
     public void startupFailedTest() {
         when(NabtoCApiWrapper.nabtoStartup(anyString()))
                 .thenReturn(NabtoStatus.FAILED);
+        when(NabtoCApiWrapper.nabtoInstallDefaultStaticResources(anyString())).thenReturn(NabtoStatus.OK);
 
         NabtoStatus status = api.startup();
 
@@ -80,7 +83,7 @@ public class NabtoApiTest {
         NabtoCApiWrapper.nabtoStartup(eq(DUMMY_NABTO_HOME_DIRECTORY));
 
         PowerMockito.verifyStatic();
-        Log.d(eq(api.getClass().getSimpleName()), anyString());
+        Log.e(eq(api.getClass().getSimpleName()), anyString());
 
         assertEquals(NabtoStatus.FAILED, status);
     }
@@ -96,7 +99,7 @@ public class NabtoApiTest {
         NabtoCApiWrapper.nabtoShutdown();
 
         PowerMockito.verifyStatic(times(0));
-        Log.d(anyString(), anyString());
+        Log.i(anyString(), anyString());
 
         assertEquals(NabtoStatus.OK, status);
     }

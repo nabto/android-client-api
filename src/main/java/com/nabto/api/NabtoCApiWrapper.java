@@ -11,6 +11,7 @@ public class NabtoCApiWrapper {
     public static native NabtoStatus nabtoShutdown();
     public static native NabtoStatus nabtoSetOption(String name, String value);
     public static native NabtoStatus nabtoSetStaticResourceDir(String nabtoResDir);
+    public static native NabtoStatus nabtoInstallDefaultStaticResources(String nabtoResDir);
     public static native String[] nabtoGetProtocolPrefixes();
     public static native String[] nabtoGetLocalDevices();
     public static native NabtoStatus nabtoProbeNetwork(int timeoutMillis, String hostname);
@@ -19,6 +20,7 @@ public class NabtoCApiWrapper {
     public static native String[] nabtoGetCertificates();
     public static native NabtoStatus nabtoCreateProfile(String email, String password);
     public static native NabtoStatus nabtoCreateSelfSignedProfile(String commonName, String password);
+    public static native NabtoStatus nabtoRemoveProfile(String certId);
     public static native NabtoStatus nabtoGetFingerprint(String certId, byte[] fingerprint);
     public static native NabtoStatus nabtoSignup(String email, String password);
     public static native NabtoStatus nabtoResetAccountPassword(String email);
@@ -27,6 +29,7 @@ public class NabtoCApiWrapper {
     public static native Session nabtoOpenSession(String id, String password);
     public static native Session nabtoOpenSessionBare();
     public static native NabtoStatus nabtoCloseSession(Session session);
+    public static native NabtoStatus nabtoSetBasestationAuthJson(String jsonKeyValuePairs, Session session);
     public static native RpcResult nabtoRpcSetDefaultInterface(String interfaceDefinition, Session session);
     public static native RpcResult nabtoRpcSetInterface(String host, String interfaceDefinition, Session session);
     public static native RpcResult nabtoRpcInvoke(String nabtoUrl, Session session);

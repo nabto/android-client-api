@@ -21,22 +21,17 @@
  *
  * The Nabto client API is divided into five major parts.
  *
- *  1.   Configuration and initialization API.
- *  2.   The session API.
+ *  1.   The session API.
+ *  2.   The RPC API.
  *  3.   The streaming API.
  *  4.   The tunnel API.
- *  5.   The portal API.
+ *  5.   The profile management API.
  *
- *  The configuration and initialization API is typically the first you
- *  will use. Here you can modify the behavior of the client API. For
- *  instance, change the location of the log file, change language of the
- *  html code returned by the session API, etc. You must also call
- *  nabtoStartup first to enable most of the functions in the other APIs to
- *  work properly.
+ *  The Session API is typically the first you will use to prepare a
+ *  session context with a user profile for further API invocation.
  *
- *  The session API is a set of functions that enables you to make
- *  synchronous and asynchronous request to any Nabto enabled device
- *  (assuming you have the right credentials).
+ *  The RPC API is a set of functions that enables you to invoke
+ *  functions on a remote Nabto enabled device.
  *
  *  The streaming API is a set of functions that enables you to make a
  *  permanent connection to a Nabto enabled device (assuming you have the
@@ -48,8 +43,8 @@
  *  use a standard TCP/IP socket to read and write data from and to the
  *  remote server.
  *
- *  The portal API is a set of functions that enables you to manage
- *  accounts and passwords on the Nabto portal.
+ *  The profile management API can be used to create use profiles for
+ *  use in Nabto sessions.
  */
 
 #include <stdint.h>
@@ -81,7 +76,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-
+    
 //-----------------------------------------------------------------------------
 // The Nabto client API - enumerations
 //-----------------------------------------------------------------------------
@@ -263,12 +258,6 @@ enum nabto_status {
     NABTO_FAILED_WITH_JSON_MESSAGE = 26,
 
     /**
-     * Timeout when connecting to remote device.
-     * @since 3.0.15
-     */
-    NABTO_CONNECT_TIMEOUT = 27,
-
-    /**
      * Number of possible error codes. This must always be last!
      */
     NABTO_ERROR_CODE_COUNT
@@ -436,51 +425,6 @@ enum nabto_tunnel_state {
     NTCS_REMOTE_RELAY_MICRO = 6
 };
 
-/**
- * The nabto_async_status enumeration is telling the reason why the
- * Nabto Client calls the NabtoAsyncStatusCallbackFunc callback function.
- * @since 3.0.2
- */
-enum nabto_async_status {
-    /**
-     * The Nabto Client has received the mime type of the requested data.
-     * @since 3.0.2
-     */
-    NAS_MIMETYPE_AVAILABLE = 0,
-
-    /**
-     * The Nabto Client has received a part of the requested data.
-     * @since 3.0.2
-     */
-    NAS_CHUNK_READY = 1,
-
-    /**
-     * The Nabto Client ends the request.
-     * @since 3.0.2
-     */
-    NAS_CLOSED = 2
-};
-
-/**
- * The nabto_async_post_data_status enumeration is the set of values
- * the NabtoAsyncPostDataCallbackFunc callback function returns.
- * @since 3.0.2
- */
-enum nabto_async_post_data_status {
-    /**
-     * The callback function has filled the buffer with the requested data.
-     * @since 3.0.2
-     */
-    NAPDS_OK = 0,
-
-    /**
-     * The post data stream has reached the end (no more data).
-     * @since 3.0.2
-     */
-    NAPDS_CLOSED = 1
-};
-
-
 //-----------------------------------------------------------------------------
 // The Nabto client API - typedefs
 //-----------------------------------------------------------------------------
@@ -514,19 +458,6 @@ typedef enum nabto_stream_option nabto_stream_option_t;
  * @since 3.0.2
  */
 typedef enum nabto_tunnel_info_selector nabto_tunnel_info_selector_t;
-
-/**
- * This is a typedef for the nabto_async_status enumeration.
- * @since 3.0.2
- */
-typedef enum nabto_async_status nabto_async_status_t;
-
-/**
- * This is a typedef for the nabto_async_post_data_status enumeration.
- * @since 3.0.2
- */
-typedef enum nabto_async_post_data_status nabto_async_post_data_status_t;
-
 
 //-----------------------------------------------------------------------------
 // The Nabto client API - handles
@@ -581,13 +512,58 @@ typedef struct nabto_opaque_tunnel * nabto_tunnel_t;
  */
 typedef struct nabto_opaque_async_resource * nabto_async_resource_t;
 
-
 //-----------------------------------------------------------------------------
-// The session API - synchronous
+// Session API.
 //-----------------------------------------------------------------------------
 
 /**
- * Starts a new Nabto data retrieval session using the specified profile.
+ * Initializes the Nabto client API.
+ *
+ * Specify an alternative location of the Nabto home directory (for
+ * certificates and log files) in the nabtoHomeDir parameter. The only
+ * requirement is that the parent directory must be writable by the
+ * user.
+
+ * The nabtoStartup function must be invoked prior to invoking most of the
+ * other functions in the Nabto client API.
+ *
+ * The nabtoSetApplicationName and nabtoSetOption functions
+ * must be called before this function if changes to the Nabto client API
+ * is needed.
+ *
+ * @param nabtoHomeDir   New location of the Nabto home directory. Specify
+ *                       NULL to use the system default home directory.
+ * @return  If the client API has been initialized, the return value
+ *          is NABTO_OK.@n
+ *          If the function fails, the return value is one of the
+ *          following values.
+ *
+ * Error code                   | Meaning
+ * ---------------------------- | ---------------------
+ * NABTO_FAILED                 | if path to home directory wasn't found.
+ * NABTO_ERROR_READING_CONFIG   | if config file wasn't read.
+ *
+ *  Remember to call nabtoShutdown after successful nabtoStartup.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoStartup(const char* nabtoHomeDir);
+
+/**
+ * Terminates the Nabto client API.
+ * Releases any resources held by the Nabto client API.
+ * After each successful call to nabtoStartup call this function when the
+ * Nabto client API is no longer needed. This function can block for a
+ * small amount of time until all current sessions has closed properly.
+ * @return    NABTO_OK. This is the only value returned.
+ *
+ * Upon return the Nabto client API is no longer available. The Nabto
+ * client API can be re-initialized by calling nabtoStartup again.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoShutdown(void);
+
+
+/**
+ * Starts a new Nabto session as context for RPC, stream or tunnel
+ * invocation using the specified profile.
  *
  * @param session    A pointer to a variable that receives the session
  *                   handle upon successful return.
@@ -605,78 +581,17 @@ typedef struct nabto_opaque_async_resource * nabto_async_resource_t;
  * NABTO_UNLOCK_PK_FAILED       | A bad password was specified in the @a password argument.
  * NABTO_FAILED                 | The login failed for some unspecified reason.
  *
- * @remark The @a email address given must be an id of an existing certificate
- * for a certain Nabto enabled device. If the device is unencrypted, specify
- * the empty string for the @a password argument.
- * This function returns a session handle that must be used in subsequent
- * client API invocations.
- *
- * @remark When the session handle is no longer needed, close it by using
- * the @b nabtoCloseSession function.
- *
- * @remark The @b nabtoStartup function must have been called prior to calling
- * this function.
- *
- * @remark The following example shows you how to open a single Nabto session.
- * @code{.c}
-#include <nabto_client_api.h>
-
-nabto_status_t st;
-nabto_handle_t session;
-
-st = nabtoStartup(NULL);
-if (st != NABTO_OK) exit(1);
-
-st = nabtoOpenSession(&session, "me@domain.com", "secret");
-if (st != NABTO_OK) {
-   nabtoShutdown();
-   exit(1);
-}
-
-...
-
-nabtoCloseSession(session);
-nabtoShutdown();
- * @endcode
- *
- * @since 3.0.2
- *
- * @sa
- * @b nabtoStartup
- * @b nabtoCloseSession
- * @b nabtoOpenSessionBare
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoOpenSession(nabto_handle_t* session,
                                                            const char* id,
                                                            const char* password);
 
-
 /**
- * Starts a new Nabto data retrieval session without using a certificate.
- * This function returns a session handle that must be used in subsequent
- * client API invocations.
- * The caller must call nabtoCloseSession when the session (handle) is no
- * longer needed.
- * The nabtoStartup function must have been called prior to calling this
- * function.
- * @param session        Location where the session handle will be copied upon
- *                       return.
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoOpenSessionBare(nabto_handle_t* session);
-
-/**
- * Closes the specified Nabto session, preventing further data retrieval.
+ * Closes the specified Nabto session and frees internal ressources.
  * The handle passed to nabtoCloseSession must previously have been opened
- * by a call to either nabtoOpenSession or nabtoOpenSessionBare.
+ * by a call to nabtoOpenSession.
  * @param session        session handle
- * @return  If the function succeeds, the return value is NABTO_OK.@n
+ * @return  If the function succeeds, the return value is NABTO_OK.
  *          If the function fails, the return value is one of the
  *          following values.
  *
@@ -690,6 +605,46 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoOpenSessionBare(nabto_handle_t* s
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCloseSession(nabto_handle_t session);
 
 /**
+ * Set basestation auth information on connect requests
+ * 
+ * This feature together with a webhook installed on the basestation
+ * allows the client to send an access token in the connect
+ * request. This way the basestation can contact a third party service
+ * and verify that a connect with the given key value pairs is allowed
+ * to a specific device.
+ * 
+ * The key value pairs are copied into an internal structure and can
+ * safely be forgotten after the call.
+ * 
+ * @param session   session handle
+ * @param jsonKeyValuePairs  valid json key value pairs like '{"foo": "bar", "baz": "quux" }'
+ * @return  If the function succeeds, the return value is NABTO_OK
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetBasestationAuthJson(nabto_handle_t session,
+                                                                      const char* jsonKeyValuePairs);
+
+
+/**
+ * Get the Nabto software version (major.minor.patch[-prerelease tag]+build)
+ * 
+ * int main() {
+ *     char* version;
+ *     nabtoVersionString(&version);
+ *     printf("%s\n", version);
+ *     nabtoFree(version);
+ * }
+ *
+ * @param version  The returned version string, it has to be freed
+ * afterwards with nabtoFree()
+ * @return NABTO_OK unless error occurs
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoVersionString(char** version);
+    
+//-----------------------------------------------------------------------------
+// The RPC API
+//-----------------------------------------------------------------------------
+
+/**
  * Sets the default RPC interface to use when later invoking nabtoRpcInvoke().
  * Can be overriden for specific hosts with nabtoRpcSetInterface.
  * The session handle given must have been obtained by a call to
@@ -700,7 +655,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCloseSession(nabto_handle_t sessi
  * Note that if this function fails, the output parameters are unchanged.
  * @param session              session handle.
  * @param interfaceDefinition  The interface definition as XML formatted string.
- * @param errorBuffer          If set, will be set to null-terminated JSON
+ * @param errorMessage          If set, will be set to null-terminated JSON
  *                             formatted error message from API if return
  *                             indicates so (caller must free)
  * @return  If the request has been answered and the buffers filled with
@@ -732,7 +687,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoRpcSetDefaultInterface(nabto_hand
  * @param host                 The host for which the interface is to be used
  *                             later RPC invocations.
  * @param interfaceDefinition  The interface definition as XML formatted string.
- * @param errorBuffer          If set, will be set to null-terminated JSON
+ * @param errorMessage          If set, will be set to null-terminated JSON
  *                             formatted error message from API if return
  *                             indicates so (caller must free)
  * @return  If the request has been answered and the buffers filled with
@@ -756,7 +711,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoRpcSetInterface(nabto_handle_t se
  * Retrieves data synchronously from specified nabto:// URL on
  * specified session. As compared to nabtoFethUrl, this function only
  * supports function invocation and not displaying contents of an HTML
- * DD bundle. This also means the interface file is to specified prior
+ * DD bundle. This also means the interface file is to be specified prior
  * to invocation using either nabtoRpcSetInterface or
  * nabtoRpcSetDefaultInterface.
  * The session handle given must have been obtained by a call to
@@ -785,110 +740,6 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoRpcSetInterface(nabto_handle_t se
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoRpcInvoke(nabto_handle_t session,
                                                          const char* nabtoUrl,
                                                          char** jsonResponse);
-
-/**
- * Retrieves data synchronously from specified nabto:// URL on specified
- * session. The session handle given must have been obtained by a call to either
- * nabtoOpenSession or nabtoOpenSessionBare.
- * On successful return the given result buffer is filled with newly
- * allocated HTML code in the language specified in nabtoSetOption.
- * The MIME type of the data is returned in the mimeType output parameter
- * as a zero-terminated string.
- * It is the responsibility of the caller to release the buffer and mime
- * type string again using the nabtoFree function.
- * Note that if this function fails, the output parameters are unchanged.
- * @param session         session handle.
- * @param nabtoUrl        The URL to retrieve.
- * @param resultBuffer    Location to place the pointer to the newly allocated
- *                        buffer.
- * @param resultLen       Location to place the number of bytes in the buffer.
- * @param mimeTypeBuffer  Location to place the pointer to the newly allocated
- *                        mime type.
- * @return  If the request has been answered and the buffers filled with
- *          the data from the answer, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_SESSION        | session handle was invalid.
- * NABTO_FAILED                 | an unspecified error occurred handling the request.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoFetchUrl(nabto_handle_t session,
-                                                        const char* nabtoUrl,
-                                                        char** resultBuffer,
-                                                        size_t* resultLen,
-                                                        char** mimeTypeBuffer);
-
-/**
- * Submits specified data synchronously to specified URL through specified
- * session. If destination host is HTTP enabled, use HTTP POST semantics
- * for the submission. Note: Only "application/x-www-form-urlencoded" type
- * data is currently supported as data for submission (any type of data may
- * still be retrieved, though).
- * The session handle given must have been obtained by a call to either
- * nabtoOpenSession or nabtoOpenSessionBare.
- * On successful return the given result buffer is filled with newly
- * allocated HTML code in the language specified in nabtoSetOption.
- * The MIME type of the data is returned in the mimeType output parameter
- * as a zero-terminated string.
- * It is the responsibility of the caller to release the buffer and mime
- * type string again using the nabtoFree function.
- * Note that if this function fails, the output parameters are unchanged.
- * @param session               session handle.
- * @param nabtoUrl              The URL to submit data to.
- * @param postBuffer            The data to submit.
- * @param postLen               The length in bytes of data to submit.
- * @param postMimeType          MIME type of data to submit.
- * @param resultBuffer          Location to place the pointer to the newly
- *                              allocated buffer.
- * @param resultLen             Location to place the number of bytes in the
- *                              buffer.
- * @param resultMimeTypeBuffer  Location to place the pointer to the newly
- *                              allocated mime type.
- * @return  If the request has been answered and the buffers filled with
- * the data from the answer, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_SESSION        | session handle was invalid.
- * NABTO_FAILED                 | an unspecified error occurred handling the request.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSubmitPostData(nabto_handle_t session,
-                                                              const char* nabtoUrl,
-                                                              const char* postBuffer,
-                                                              size_t postLen,
-                                                              const char* postMimeType,
-                                                              char** resultBuffer,
-                                                              size_t* resultLen,
-                                                              char** resultMimeTypeBuffer);
-
-/**
- * Reads the session token of the specified session handle. This token is
- * typically supplied in html requests.
- * @param session        Session handle.
- * @param buffer         Pointer to buffer that will receive the token.
- * @param bufLen         Size in bytes of the given buffer.
- * @param resultLen      Number of bytes copied to the buffer upon successful
- *                       return.
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_FAILED                 | an unspecified error occurred.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoGetSessionToken(nabto_handle_t session,
-                                                               char* buffer,
-                                                               size_t bufLen,
-                                                               size_t* resultLen);
-
 
 //-----------------------------------------------------------------------------
 // The stream API
@@ -1110,7 +961,6 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoStreamSetOption(nabto_stream_t st
  * NABTO_INVALID_SESSION        | session handle was invalid.
  * NABTO_FAILED                 | an unspecified error occurred creating the tunnel.
  *
- * @remark
  * @code
  *      +--------+           +--------+               +--------+
  *      | nabto  |   nabto   | nabto  |   tcp/ip      | remote |
@@ -1200,415 +1050,28 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelInfo(nabto_tunnel_t tunnel,
 
 
 //-----------------------------------------------------------------------------
-// The session API - asynchronous
+// Profile management API
 //-----------------------------------------------------------------------------
 
 /**
- * Definition of the asynchronous callback function.
- * This callback function is called every time something happens in
- * an asynchronous request.
- * Start the asynchronous request in the following way:
- *    nabtoAsyncInit(..., &resource, ...);
- *    nabtoAsyncSetPostData(resource,....);
- *    nabtoAsyncFetch(resource, ...);
- * You must implement this callback function and pass it to nabtoAsyncFetch
- * to retrieve the result of your request.
+ * Important: Only use this function if you use your own dedicated
+ * user management services as per agreement with Nabto - and hence do
+ * NOT use if developing a standard Nabto Cloud / AppMyProduct based
+ * app. In those cases, please use only self-signed cert
+ * authentication + fingerprint based ACL security - see
+ * nabtoCreateSelfSignedProfile and TEN036 "Security in Nabto
+ * Solutions"
  *
- * @param status    The reason why this function is called.
- * @param arg       Additional data - see table below.
- * @param userData  The user data passed in nabtoAsyncFetch.
+ * This function creates a private key and a signed certificate on
+ * this computer for a specified user that already must exist in a
+ * central user management service.
  *
- * The arg has the following content depending on "status":
- *
- *     Status/reason      |     Type     |    Content
- * ---------------------- | ------------ | -----------------------------
- * NAS_MIMETYPE_AVAILABLE | const char * | The MIME type of the data
- * NAS_CHUNK_READY        | size_t *     | Number of bytes available. Call the @b nabtoGetAsyncData function to retrieve the data.
- * NAS_CLOSED             | void         | The request has ended
- * ---------------------- | ------------ | -----------------------------
- */
-typedef void (NABTOAPI *NabtoAsyncStatusCallbackFunc)(nabto_async_status_t status,
-                                                      void* arg,
-                                                      void* userData);
-
-/**
- * Definition of the asynchronous data retriever callback function.
- * This callback function is called every time the Nabto client API needs
- * more data for a POST request.
- * You must implement this callback function and pass it to
- * nabtoAsyncSetPostData. When the callback function is called you need
- * to fill in a chunk of post data in a non-blocking fashion.
- *
- * @param buf         Pointer to a buffer to fill with the data to send.
- * @param bufSize     The size in bytes of the buffer.
- * @param actualSize  Return the number of bytes actually written to the buffer.
- * @param userData    The user data passed in nabtoAsyncSetPostData.
- * @return    NAPDS_OK      the buffer has been filled with *actualSize bytes.
- *            NAPDS_CLOSED  if the post data stream has reached eof.
- */
-typedef nabto_async_post_data_status_t (NABTOAPI *NabtoAsyncPostDataCallbackFunc)(char* buf,
-                                                                                  size_t bufSize,
-                                                                                  size_t* actualSize,
-                                                                                  void* userData);
-
-
-/**
- * Initialize an asynchronous resource with an request URL.
- * To get the result from the resource call the nabtoAsyncFetch function.
- * This function returns a asynchronous resource that must be used in
- * subsequent client API invocations.
- * An open session handle must have been created prior to calling this
- * function.
- * @param session   session handle
- * @param resource  Location where the asynchronous resource will be copied
- *                  upon return.
- * @param url       The URL to retrieve.
- * @return  If an asynchronous resource has been created, the return value
- *          is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_SESSION        | session handle was invalid.
- * NABTO_FAILED                 | an unspecified error occurred creating the resource.
- *
- * @sa
- * @b nabtoAsyncClose
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncInit(nabto_handle_t session,
-                                                         nabto_async_resource_t* resource,
-                                                         const char* url);
-
-/**
- * Close an asynchronous resource. After you are finished using a resource a
- * call to this function releases the resource and all it's resources.
- * @param resource  The asynchronous resource.
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_RESOURCE       | asynchronous resource was invalid.
- * NABTO_FAILED                 | an unspecified error occurred.
- *
- * @sa
- * @b nabtoAsyncInit
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncClose(nabto_async_resource_t resource);
-
-/**
- * Sets up a callback function that will be called whenever post data is
- * needed.
- * The callback function must deliver post data in a non-blocking
- * fashion.
- * @param resource  asynchronous resource
- * @param mimeType  The MIME type of the post data.
- * @param cb        Application specific callback function.
- * @param userData  Application data passed to the callback "as-is".
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_RESOURCE       | asynchronous resource was invalid.
- * NABTO_FAILED                 | an unspecified error occurred.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncSetPostData(nabto_async_resource_t resource,
-                                                                const char* mimeType,
-                                                                NabtoAsyncPostDataCallbackFunc cb,
-                                                                void* userData);
-
-/**
- * MISSING DOCUMENTATION
- * @param resource    asynchronous resource
- * @param data        pointer to ??
- * @param dataLength  size of buffer??
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_RESOURCE       | asynchronous resource was invalid.
- * NABTO_FAILED                 | an unspecified error occurred starting the fetch.
- *
- * @sa
- * @b nabtoAsyncInit
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncPostData(nabto_async_resource_t resource,
-                                                             const char* data,
-                                                             size_t dataLength);
-
-/**
- * MISSING DOCUMENTATION
- * @param resource  asynchronous resource
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_RESOURCE       | asynchronous resource was invalid.
- * NABTO_FAILED                 | an unspecified error occurred starting the fetch.
- *
- * @sa
- * @b nabtoAsyncInit
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncPostClose(nabto_async_resource_t resource);
-
-/**
- * Sets up a callback function that will be called whenever response data
- * is ready and starts the fetch of the data.
- * The nabtoAsyncInit function must have been called prior to calling this
- * function.
- * @param resource  asynchronous resource
- * @param cb        Application specific callback function.
- * @param userData  Application data passed to the callback "as-is".
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_RESOURCE       | asynchronous resource was invalid.
- * NABTO_FAILED                 | an unspecified error occurred starting the fetch.
- *
- * @sa
- * @b nabtoAsyncInit
- * @b nabtoGetAsyncData
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncFetch(nabto_async_resource_t resource,
-                                                          NabtoAsyncStatusCallbackFunc cb,
-                                                          void* userData);
-
-/**
- * Retrieves response data requested asynchronously.
- * This function is typically called from inside the
- * NabtoAsyncStatusCallbackFunc when called with NAS_CHUNK_READY.
- * When all data has been fetched from a nabto_async_resource_t it's
- * automatically garbage collected, which means no explicit resource
- * deallocation is necessary.
- * @param resource    asynchronous resource
- * @param buf         Pointer to a buffer to fill with the data to send.
- * @param bufSize     The size in bytes of the buffer.
- * @param actualSize  Return the number of bytes actually written to the buffer.
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_RESOURCE       | asynchronous resource was invalid.
- * NABTO_FAILED                 | an unspecified error occurred retrieving data.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoGetAsyncData(nabto_async_resource_t resource,
-                                                            char* buf,
-                                                            size_t bufSize,
-                                                            size_t* actualSize);
-
-/**
- * Aborts a outstanding asynchronous request.
- * @param resource    asynchronous resource
- * @return  If the request has been aborted, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_RESOURCE       | asynchronous resource was invalid.
- * NABTO_FAILED                 | an unspecified error occurred aborting request.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAbortAsync(nabto_async_resource_t resource);
-
-
-//-----------------------------------------------------------------------------
-// Configuration and initialization API.
-//-----------------------------------------------------------------------------
-
-/**
- * Get the Nabto software version
- * @param major  The returned major version.
- * @param minor  The returned minor version.
- * @return NABTO_OK
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoVersion(int* major, int* minor);
-
-/**
- * Initializes the Nabto client API.
- * Also initializes the Nabto home directory by removing temporary files
- * and (re)creating the Nabto configuration file.
- * The Nabto home directory also contains directories with certificate
- * stores (users/, roots/), log files (logs/) and the Nabto configuration
- * file (nabto_config.ini). The home directory (and sub-directories) will
- * be created if non-existing.
- * Specify an alternative location of the Nabto home directory in the
- * nabtoHomeDir parameter. The only requirement is that the parent
- * directory must be writable by the user.
- * The nabtoStartup function must be invoked prior to invoking many of the
- * other functions in the Nabto client API.
- * Remember that the nabtoSetApplicationName and nabtoSetOption functions
- * must be called before this function if changes to the Nabto client API
- * is needed.
- * @param nabtoHomeDir   New location of the Nabto home directory. Specify
- *                       NULL to use the system default home directory.
- * @return  If the client API has been initialized, the return value
- *          is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_FAILED                 | if path to home directory wasn't found.
- * NABTO_ERROR_READING_CONFIG   | if config file wasn't read.
- *
- *  Remember to call nabtoShutdown after successful nabtoStartup.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoStartup(const char* nabtoHomeDir);
-
-/**
- * Terminates the Nabto client API.
- * Releases any resources held by the Nabto client API.
- * After each successful call to nabtoStartup call this function when the
- * Nabto client API is no longer needed. This function can block for a
- * small amount of time until all current sessions has closed properly.
- * @return    NABTO_OK. This is the only value returned.
- *
- * Upon return the Nabto client API is no longer available. The Nabto
- * client API can be re-initialized by calling nabtoStartup again.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoShutdown(void);
-
-/**
- * Sets the name of your client application. The Nabto client API will use
- * this name to identify data from your application wherever possible.
- * Currently only the log file will use the client application name. The
- * nabtoStartup function will create a log file with the name of the
- * application appending -log.
- * The default application name is nabto-api - hence the default log file
- * name is nabto-api-log.
- * Call this function before nabtoStartup if it should have any effect.
- * @param applicationName    The name of your application name
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_ILLEGAL_PARAMETER      | if name is NULL or empty.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetApplicationName(const char* applicationName);
-
-/**
- * Tells the Nabto client API the location of the static resource directory.
- * This function will override the default behaviour. The default behaviour
- * is to search several directories relative to the install location of the
- * Nabto client API. Using this function will force the Nabto client API to
- * look for static html driver data in one fixed place.
- * You may call this function at anytime to change the location of the
- * static resource directory.
- * Calling this function with an empty (or NULL) resourceDir will revert to
- * default search behaviour.
- * @param resourceDir        The location of the static resource directory.
- * @return    NABTO_OK. This is the only value returned.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetStaticResourceDir(const char* resourceDir);
-
-/**
- * Changes the behaviour of the Nabto client API in different ways.@n
- * Each option is given by its name and the new value is passed in the
- * value parameter.@n
- * It is best to call this function before nabtoStartup to be sure the
- * changes have any effect.@n
- * The following options are available:
- *    Option                 Values
- * +----------------------+-----------------------------------------------+
- * | language             | "en" or "da"                                  |
- * | backupConfig         | "yes" or "no"                                 |
- * | configFileName       | any valid file name                           |
- * | clientWebServicePort | 16-bit port number, eg: (const char *) 5583   |
- * +----------------------+-----------------------------------------------+
- * The language option changes the language of the html returned by the
- * Nabto session API. The default language is "en".@n
- * The backupConfig option determines whether to make a backup of the Nabto
- * configuration file in the Nabto home directory before startup. The
- * default is "no". This option must be changed before calling the
- * nabtoStartup function to have any effect.@n
- * The configFileName option changes the file name of the Nabto
- * configuration file (which is located in the Nabto home directory). The
- * default file name is nabto_config.ini. This option must be changed
- * before calling the nabtoStartup function to have any effect.@n
- * The clientWebServicePort option starts an internal web service that
- * allows you to interrogate the internals of the client using a standard
- * web browser. The port number for the web service to listen for incoming
- * requests is given as an 16-bit number cast directly to a const char *.
- * When the web service is running you may inspect the internals using
- * requests like:    http://localhost:5583/api/1/client/threads
- * @param name               The name of the option to change.
- * @param value              The new value of the option.
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_ILLEGAL_PARAMETER      | if name is NULL or empty.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetOption(const char* name,
-                                                         const char* value);
-
-
-//-----------------------------------------------------------------------------
-// Portal
-//-----------------------------------------------------------------------------
-
-/**
- * Retrieves email address of installed Nabto client profile.
- * On successful return the given buffer is filled with a newly allocated
- * string containing the email address associated with profile.
- * It is the responsibility of the caller to release the string again using
- * the nabtoFree function.
- * Note that if this function fails, the output parameters are unchanged.
- * The nabtoStartup function must have been called prior to calling this
- * function.
- * @deprecated  Use nabtoGetCertificates instead since this function
- *              just returns one email address out of potentially many
- *              possible addresses.
- * @param email         Location to place the pointer to the newly allocated
- *                      email address.
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_NO_PROFILE             | if no profiles exists.
- */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoLookupExistingProfile(char** email);
-
-/**
- * Creates a Nabto client profile (private key + signed certificate) on this
- * computer for specified registered Nabto user.
- * Note: The base station needed to be contacted for signing certificates is
- * read from the configuration file (default is www.nabto.com).
  * This function will fail with NABTO_PORTAL_LOGIN_FAILURE if the specified
- * user was registered on a different portal such as www.nabtotest.com.
- * So the user must either register on the portal expected by the Nabto
- * client API or change urlPortalDomain in the configuration file to point
- * to the portal where the user is registered.
+ * user does not exist.
+ *
  * The given password is used to access the portal for specified user. The
  * password will also be used for encrypting the private key.
+ *
  * The nabtoStartup function must have been called prior to calling this
  * function.
  * @param email     Email address of user, as registered on portal.
@@ -1630,13 +1093,12 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCreateProfile(const char* email,
                                                              const char* password);
 
 /**
- * Creates a Nabto self signed profile. This creates a self signed
- * certificate. The identity of such certificate cannot be trusted but
- * the fingerprint of the certificate can be trusted in the
- * device. This does not rely on the nabtoSignup function. After the
- * profile has been created it can be used in the open session function.
+ * Creates a Nabto self signed profile. The identity of such
+ * certificate cannot be trusted but the fingerprint of the
+ * certificate can be trusted in the device. After the profile has
+ * been created it can be used in the open session function.
  * 
- * @param commonName  The common name part of the selfsigned certificate which is going to be made.
+ * @param id          The id used to create the selfsigned certificate, typically an email or user name.
  * @param password    The password which protects the private key.
  * @return If the self signed certificate has been created the function returns NABTO_OK
  *         If it fails one of the following error codes will be returned.
@@ -1648,12 +1110,25 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCreateProfile(const char* email,
  * NABTO_CERT_SIGNING_ERROR     | failed to sign certificate request.
  * NABTO_FAILED                 | lookup failed for some unspecified reason.
  */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCreateSelfSignedProfile(const char* commonName,
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCreateSelfSignedProfile(const char* id,
                                                                        const char* password);
-    
 /**
- * Retrieve public key fingerprint for certificate with specified id.
- * @param certId  The certificate id (common name) of certificate.
+ * Remove profile certificate for given id.
+ * @param id   The ID of the profile to be removed
+ * @return If the profile certificate was removed the function returns NABTO_OK
+ *         If it fails one of the following error codes will be returned.
+ *
+ * Error code                   | Meaning
+ * ---------------------------- | ---------------------
+ * NABTO_OPEN_CERT_OR_PK_FAILED | The provided ID could not be found.
+ * NABTO_FAILED                 | Failed to remove the certificate file from the filesystem
+ * NABTO_CERT_SAVING_FAILURE    | Failed to remove the key file
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoRemoveProfile(const char* id);
+
+/**
+ * Retrieve public key fingerprint for profile with specified id.
+ * @param id           The id of the profile for which to get the fingerprint.
  * @param fingerprint  The RSA public key fingerprint (buffer of 16 bytes owned by caller)
  * @return If the fingerprint was calculated the function returns NABTO_OK and writes the fingerprint.
  *         If it fails one of the following error codes will be returned.
@@ -1664,50 +1139,8 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCreateSelfSignedProfile(const cha
  * NABTO_OPEN_CERT_OR_PK_FAILED | No matching certificate found for the given id
  * NABTO_FAILED                 | lookup failed for some unspecified reason.
  */
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoGetFingerprint(const char* certId,
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoGetFingerprint(const char* id,
                                                               char fingerprint[16]);
-
-/**
- * Signs up for a Nabto account on the portal (host name defined in the
- * configuration file). Invokes web service and initiates sending of
- * confirmation email.
- * The nabtoStartup function must have been called prior to calling this
- * function.
- * @param email     Email address of user to register on portal.
- * @param password  Requested password for portal.
- * @return  If an account has been created, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_INVALID_ADDRESS        | invalid email address.
- * NABTO_ADDRESS_IN_USE         | email address already in use.
- * NABTO_FAILED                 | profile creation failed for some unspecified reason.
-*/
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSignup(const char* email,
-                                                      const char* password);
-
-
-/**
- * Requests reset of account password on the portal (host name defined in
- * the configuration file).
- * The nabtoStartup function must have been called prior to calling this
- * function.
- * @param email     Email address of user to registered on portal.
- * @return  If the function succeeds, the return value is NABTO_OK.@n
- *          If the function fails, the return value is one of the
- *          following values.
- *
- * Error code                   | Meaning
- * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_PORTAL_LOGIN_FAILURE   | invalid email and/or password.
- * NABTO_FAILED                 | sign up failed for some unspecified reason.
-*/
-NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoResetAccountPassword(const char* email);
-
 
 //-----------------------------------------------------------------------------
 // Logging
@@ -1775,7 +1208,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoGetProtocolPrefixes(char*** prefi
  * The nabtoStartup function must have been called prior to calling this
  * function.
  * @param certificates        points to a location that will receive the null
- *                            terminated array of allocated c strings.
+ *                            terminated array of allocated c strings containing the profile IDs.
  * @param certificatesLength  points to a location that will receive the number of
  *                            entries in the array.
  * @return  If the function succeeds, the return value is NABTO_OK.@n
@@ -1817,32 +1250,290 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoGetLocalDevices(char*** devices,
  * @return    NABTO_OK. This is the only value returned.
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoFree(void* p);
-
+    
 /**
- * Try to connect to probe service to test for network connectivity. If NULL is
- * specified as host, the portal host name from the configuration is used.
- * The nabtoStartup function must have been called prior to calling this
- * function.
- * This function can be used to make the underlying platform start the network
- * it's useful for platforms like Android where the network is shutdown if it's
- * not in use.
- * @param timeoutMillis    timeout before concluding a connection could not be
- *                         established.
- * @param host             hostname of probe service to connect to, using
- *                         default if NULL.
+ * Sets the name of your client application. The Nabto client API will
+ * use this name to identify data from your application wherever
+ * possible. Call this function before nabtoStartup if it should have
+ * any effect.
+ * @param applicationName    The name of your application name
  * @return  If the function succeeds, the return value is NABTO_OK.@n
  *          If the function fails, the return value is one of the
  *          following values.
  *
  * Error code                   | Meaning
  * ---------------------------- | ---------------------
- * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
- * NABTO_NO_NETWORK             | if the host couldn't be reached.
+ * NABTO_ILLEGAL_PARAMETER      | if name is NULL or empty.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetApplicationName(const char* applicationName);
+
+/**
+ * Tells the Nabto client API the location of the static resource
+ * directory.  This function will override the default behaviour of
+ * searching several directories relative to the install location of
+ * the Nabto client API.
+ *
+ * You may call this function at anytime to change the location of the
+ * static resource directory. Calling this function with an empty (or
+ * NULL) resourceDir will revert to default search behaviour.
+ *
+ * @param resourceDir        The location of the static resource directory.
+ * @return    NABTO_OK. This is the only value returned.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetStaticResourceDir(const char* resourceDir);
+
+/**
+ * Install default static resources.
+ *
+ * The default static resources includes the following resources:
+ *
+ * roots/ca.crt
+ * roots/ca-2016.crt
+ * roots/cacert.pem
+ * users/guest.crt
+ * users/guest.key
+ * 
+ * If resourceDir is null then the resources is installed into the user's homedir.
+ * 
+ * If resourceDir is not null and files are installed into a non-default location,
+ * nabtoSetStaticResourceDir must be called seperately with resourceDir for the SDK to be able to
+ * locate the files subsequently.
+ *
+ * Small code example for static resource installation:
+ * 
+ * nabto_handle_t session;
+ * nabtoStartup(NULL);
+ * nabtoInstallDefaultStaticResources(NULL);
+ * // Resources can now be used for communication!
+ * nabtoOpenSession(&session, "user", "pass");
+ * nabtoShutdown();
+ *
+ * @param  resourceDir The location to install the resources into.
+ * @return NABTO_OK if resources are installed.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoInstallDefaultStaticResources(const char* resourceDir);
+
+
+/**
+ * Invoke before nabtoStartup to change a few options. The following
+ * public options are available:
+ *
+ *    Option                 Values
+ * +----------------------+-----------------------------------------------+
+ * | configFileName       | any valid file name                           |
+ * +----------------------+-----------------------------------------------+
+ *
+ * The configFileName option changes the file name of the Nabto
+ * configuration file (which is located in the Nabto home directory). The
+ * default file name is nabto_config.ini. 
+ * @param name               The name of the option to change.
+ * @param value              The new value of the option.
+ * @return  If the function succeeds, the return value is NABTO_OK.@n
+ *          If the function fails, the return value is one of the
+ *          following values.
+ *
+ * Error code                   | Meaning
+ * ---------------------------- | ---------------------
+ * NABTO_ILLEGAL_PARAMETER      | if name is NULL or empty.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetOption(const char* name,
+                                                         const char* value);
+//-----------------------------------------------------------------------------
+// Deprecated functions - most due to HTML DD (and even older app types)
+// being deprecated
+//-----------------------------------------------------------------------------
+
+/**
+ * DEPRECATED: as it does not contain PATCH, prerelease and build information
+ * Get the Nabto software version
+ * @param major  The returned major version.
+ * @param minor  The returned minor version.
+ * @return NABTO_OK
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoVersion(int* major, int* minor);
+
+/**
+ * DEPRECATED: public platform has not supported this since pre
+ * 3.0.0 (2010), only used internally in (also deprecated) browser plugins
+ */
+enum nabto_async_post_data_status {
+    NAPDS_OK = 0,
+    NAPDS_CLOSED = 1
+};
+
+/**
+ * Not truly deprecated as it might be introduced for async functions
+ * in the future but currently only usable with deprecated functions.
+ */
+enum nabto_async_status {
+    /**
+     * The Nabto Client has received the mime type of the requested data.
+     * @since 3.0.2
+     */
+    NAS_MIMETYPE_AVAILABLE = 0,
+
+    /**
+     * The Nabto Client has received a part of the requested data.
+     * @since 3.0.2
+     */
+    NAS_CHUNK_READY = 1,
+    
+    /**
+     * The Nabto Client ends the request.
+     * @since 3.0.2
+     */
+    NAS_CLOSED = 2
+};
+
+
+/**
+ * Not truly deprecated as it might be introduced for async functions
+ * in the future but currently only usable with deprecated functions.
+ */
+typedef enum nabto_async_status nabto_async_status_t;
+
+/**
+ * DEPRECATED: HTML DD based application are deprecated, use
+ * rpcInvoke instead
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoFetchUrl(nabto_handle_t session,
+                                                        const char* nabtoUrl,
+                                                        char** resultBuffer,
+                                                        size_t* resultLen,
+                                                        char** mimeTypeBuffer);
+
+/**
+ * DEPRECATED: public platform has not supported this since pre
+ * 3.0.0 (2010), only used internally in (also deprecated) browser plugins
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSubmitPostData(nabto_handle_t session,
+                                                              const char* nabtoUrl,
+                                                              const char* postBuffer,
+                                                              size_t postLen,
+                                                              const char* postMimeType,
+                                                              char** resultBuffer,
+                                                              size_t* resultLen,
+                                                              char** resultMimeTypeBuffer);
+
+/**
+ * DEPRECATED: HTML DD based application are deprecated, use
+ * rpcInvoke instead
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoGetSessionToken(nabto_handle_t session,
+                                                               char* buffer,
+                                                               size_t bufLen,
+                                                               size_t* resultLen);
+
+/**
+ * DEPRECATED: HTML DD based application are deprecated, use
+ * rpcInvoke instead (but no async version exists yet)
+ */
+typedef void (NABTOAPI *NabtoAsyncStatusCallbackFunc)(nabto_async_status_t status,
+                                                      void* arg,
+                                                      void* userData);
+/**
+ * DEPRECATED: public platform has not supported this since pre 3.0.0
+ * (2010), only used internally in (also deprecated) browser plugins
+ */
+typedef enum nabto_async_post_data_status nabto_async_post_data_status_t;
+
+/**
+ * DEPRECATED: public platform has not supported this since pre 3.0.0
+ * (2010), only used internally in (also deprecated) browser plugins
+ */
+typedef nabto_async_post_data_status_t (NABTOAPI *NabtoAsyncPostDataCallbackFunc)(char* buf,
+                                                                                  size_t bufSize,
+                                                                                  size_t* actualSize,
+                                                                                  void* userData);
+    
+/**
+ * DEPRECATED: public SDK has not supported this since pre 3.0.0
+ * (2010), only used internally in (also deprecated) browser plugins
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncSetPostData(nabto_async_resource_t resource,
+                                                                const char* mimeType,
+                                                                NabtoAsyncPostDataCallbackFunc cb,
+                                                                void* userData);
+
+/**
+ * DEPRECATED: public SDK has not supported this since pre 3.0.0
+ * (2010), only used internally in (also deprecated) browser plugins
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncPostData(nabto_async_resource_t resource,
+                                                             const char* data,
+                                                             size_t dataLength);
+
+/**
+ * DEPRECATED: public SDK has not supported this since pre 3.0.0
+ * (2010), only used internally in (also deprecated) browser plugins
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncPostClose(nabto_async_resource_t resource);
+
+/**
+ * DEPRECATED: HTML DD based application are deprecated, use
+ * rpcInvoke instead (but no async version exists yet)
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncFetch(nabto_async_resource_t resource,
+                                                          NabtoAsyncStatusCallbackFunc cb,
+                                                          void* userData);
+
+/**
+ * DEPRECATED: HTML DD based application are deprecated, use
+ * rpcInvoke instead (but no async version exists yet)
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoGetAsyncData(nabto_async_resource_t resource,
+                                                            char* buf,
+                                                            size_t bufSize,
+                                                            size_t* actualSize);
+/**
+ * DEPRECATED: only used in now deprecated browser plugins
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoOpenSessionBare(nabto_handle_t* session);
+
+/**
+ * Not truly deprecated as it might be introduced for initializing
+ * other async handles in the future. Currently only prepares use of
+ * deprecated functions.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncInit(nabto_handle_t session,
+                                                         nabto_async_resource_t* resource,
+                                                         const char* url);
+/**
+ * Not truly deprecated as it might be introduced for closing other
+ * async handles in the future. Currently only closes handles created
+ * with deprecated methods.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAsyncClose(nabto_async_resource_t resource);
+
+/**
+ * Not truly deprecated as it might be introduced for aborting other
+ * async handles in the future. Currently only aborts deprecated async
+ * function calls.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoAbortAsync(nabto_async_resource_t resource);
+
+/**
+ * DEPRECATED: Central Nabto based user management is deprecated in
+ * favor of self-signed certificates and RSA fingerprint based access
+ * control. See TEN036.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSignup(const char* email,
+                                                      const char* password);
+
+/**
+ * DEPRECATED: Central Nabto based user management is deprecated in
+ * favor of self-signed certificates and RSA fingerprint based access
+ * control. See TEN036.
+*/
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoResetAccountPassword(const char* email);
+
+/**
+ * DEPRECATED: use platform specific mechanisms instead
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoProbeNetwork(size_t timeoutMillis,
                                                             const char* host);
 
-
+    
 #ifdef __cplusplus
 } // extern c
 #endif
