@@ -617,7 +617,8 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCloseSession(nabto_handle_t sessi
  * safely be forgotten after the call.
  * 
  * @param session   session handle
- * @param jsonKeyValuePairs  valid json key value pairs like '{"foo": "bar", "baz": "quux" }'
+ * @param jsonKeyValuePairs  valid json key value pairs like '{"foo": "bar", "baz": "quux" }', 
+ *                           null resets the authentication information for this session
  * @return  If the function succeeds, the return value is NABTO_OK
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetBasestationAuthJson(nabto_handle_t session,

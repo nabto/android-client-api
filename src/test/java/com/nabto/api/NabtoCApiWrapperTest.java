@@ -28,6 +28,13 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
+    public void nabtoVersionStringTest() {
+        String version = NabtoCApiWrapper.nabtoVersionString();
+
+        assertEquals("4.1.1-rc.0+12345", version);
+    }
+
+    @Test
     public void nabtoStartupTest() {
         // test ok
         Map retVals = new HashMap<String, String>();

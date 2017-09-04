@@ -107,9 +107,21 @@ public class NabtoClient {
      * Get the Nabto software version ("[major].[minor]").
      *
      * @return The Nabto software version.
+     * @deprecated use nabtoVersionString intead
      */
+    @Deprecated
     public String nabtoVersion() {
         return nabtoApi.version();
+    }
+
+    /**
+     * Get the Nabto software version string, following semver scheme with prerelease suffix
+     * ("<pre><major>.<minor>.<patch>[-prelease-suffix]</pre>"). Eg., 4.1.1-rc.1+23474.
+     *
+     * @return The Nabto software version string.
+     */
+    public String nabtoVersionString() {
+        return nabtoApi.versionString();
     }
 
     /**

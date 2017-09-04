@@ -598,6 +598,18 @@ jstring Java_com_nabto_api_NabtoCApiWrapper_nabtoVersion(JNIEnv* env, jclass thi
     return env->NewStringUTF(versionString.c_str());
 }
 
+jstring Java_com_nabto_api_NabtoCApiWrapper_nabtoVersionString(JNIEnv* env, jclass thiz)
+{
+    char* version;
+    if (nabtoVersionString(&version) == NABTO_OK) {
+        jstring res = env->NewStringUTF(version);
+        nabtoFree(version);
+        return res;
+    } else {
+        return NULL;
+    }
+}
+
 jobjectArray Java_com_nabto_api_NabtoCApiWrapper_nabtoGetLocalDevices(JNIEnv* env, jclass thiz)
 {
     char** devicesNative;

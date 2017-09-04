@@ -21,6 +21,13 @@ nabto_status_t NABTOAPI nabtoVersion(int* major, int* minor)
     return NABTO_OK;
 }
 
+nabto_status_t NABTOAPI nabtoVersionString(char** version)
+{
+    parameterValues.clear();
+    *version = strdup("4.1.1-rc.0+12345");
+    return NABTO_OK;
+}
+
 nabto_status_t NABTOAPI nabtoStartup(const char* nabtoHomeDir)
 {
     parameterValues.clear();

@@ -7,6 +7,7 @@ public class NabtoCApiWrapper {
 
     // Configuration and initialization API
     public static native String nabtoVersion();
+    public static native String nabtoVersionString();
     public static native NabtoStatus nabtoStartup(String nabtoHomeDir);
     public static native NabtoStatus nabtoShutdown();
     public static native NabtoStatus nabtoSetOption(String name, String value);

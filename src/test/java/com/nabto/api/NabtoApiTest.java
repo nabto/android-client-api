@@ -58,6 +58,16 @@ public class NabtoApiTest {
     }
 
     @Test
+    public void versionStringTest() {
+        when(NabtoCApiWrapper.nabtoVersionString())
+                .thenReturn("semver version string");
+
+        String version = api.versionString();
+
+        assertEquals("semver version string", version);
+    }
+
+    @Test
     public void startupSuccessTest() {
         when(NabtoCApiWrapper.nabtoStartup(anyString()))
                 .thenReturn(NabtoStatus.OK);
