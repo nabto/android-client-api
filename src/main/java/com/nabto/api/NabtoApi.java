@@ -1101,7 +1101,7 @@ public class NabtoApi {
      *     {@link #tunnelOpenTcp(int, String, String, int, Session)}.
      * </p>
      * <p>
-     *     On succesful return ({@link TunnelInfoResult#getStatus()} returns {@link NabtoStatus#OK}),
+     *     On success, ({@link TunnelInfoResult#getStatus()} returns {@link NabtoStatus#OK}),
      *     {@link TunnelInfoResult#getTunnelState()} returns the tunnel state and
      *     {@link TunnelInfoResult#getPort()}} returns the listening port. If the function fails
      *     both output parameters are undefined.
