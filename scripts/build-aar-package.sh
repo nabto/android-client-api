@@ -68,7 +68,7 @@ function download() {
     local output_file="$LIB_DIR/$output_path/libnabto_client_api_jni.so"
 
     echo "Downloading release artifact from $url"
-    curl -fs $url > $output_file || die "Download from '$url' to '$output' failed"
+    curl -fs $url > $output_file || die "Download from '$url' to '$output_path' failed"
 }
 
 function test() {
@@ -104,7 +104,7 @@ function deploy() {
 }
 
 function archive() {
-    mkdir -p $TARGET_DIR/android
+    mkdir -p $TARGET_DIR
     cp $BUILD_DIR/build/outputs/aar/nabto-api-release.aar $TARGET_DIR
     cp -r $BUILD_DIR/build/libs/nabto-api-*.jar $TARGET_DIR
 }
