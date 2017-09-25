@@ -86,6 +86,15 @@ public class NabtoApi {
     }
 
     /**
+     * Override default static resource dir.
+     *
+     * @return  The return value is always {@link NabtoStatus#OK}.
+     */
+    public NabtoStatus setStaticResourceDir(String dir) { /* GRMBL */
+        return NabtoCApiWrapper.nabtoInstallDefaultStaticResources(dir);
+    }
+
+    /**
      * Terminates the Nabto client API.
      * <p>
      *     Releases any resources held by the Nabto client API.
