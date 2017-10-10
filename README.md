@@ -18,6 +18,11 @@ dependencies {
 }
 ```
 
+## Note about version identifiers
+
+The version information returned by `nabto.versionString` is the core Nabto Client SDK version - _not_ the version of the Android wrapper (the component described in this document). See the release notes for the individual Android wrapper version to see the Nabto Client SDK core version wrapped.
+
+
 ### Build
 
 In case you want to build the Android Client API library yourself, follow these steps:
