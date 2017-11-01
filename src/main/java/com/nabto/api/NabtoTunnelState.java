@@ -74,7 +74,7 @@ public enum NabtoTunnelState {
             case CONNECTING:
                 return "Connecting...";
             case READY_FOR_RECONNECT:
-                return "Ready for reconnect";
+                return "Ready for TCP client retry";
             case UNKNOWN:
                 return "Unknown connection";
             case LOCAL:
@@ -82,9 +82,9 @@ public enum NabtoTunnelState {
             case REMOTE_P2P:
                 return "Remote P2P";
             case REMOTE_RELAY:
-                return "Remote relay";
+                return "Remote Relay (UDP)";
             case REMOTE_RELAY_MICRO:
-                return "Remote relay micro";
+                return "Remote Relay (TCP)";
             default:
                 return "?";
         }
