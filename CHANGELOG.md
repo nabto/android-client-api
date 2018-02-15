@@ -12,6 +12,12 @@ the release and a new unreleased section is added.
 
 ## 1.4.0 Unreleased
 
+## 1.3.5 2017-10-10
+
+### Changed
+- Use SDK embedded resources where possible
+- Version numbers 1.3.3-1.3.4 skipped (deployment issues)
+
 ## 1.3.2 2017-10-10
 
 ### Changed
