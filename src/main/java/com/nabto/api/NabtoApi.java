@@ -87,10 +87,11 @@ public class NabtoApi {
 
     /**
      * Override default static resource dir.
+     * @param dir the dir override
      *
      * @return  The return value is always {@link NabtoStatus#OK}.
      */
-    public NabtoStatus setStaticResourceDir(String dir) { /* GRMBL */
+    public NabtoStatus setStaticResourceDir(String dir) {
         return NabtoCApiWrapper.nabtoInstallDefaultStaticResources(dir);
     }
 

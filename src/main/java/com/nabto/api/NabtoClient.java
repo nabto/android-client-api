@@ -116,7 +116,7 @@ public class NabtoClient {
 
     /**
      * Get the Nabto software version string, following semver scheme with prerelease suffix
-     * ("<pre><major>.<minor>.<patch>[-prelease-suffix]</pre>"). Eg., 4.1.1-rc.1+23474.
+     * ("[MAJOR].[MINOR].[PATCH][-prelease-suffix]"). Eg., 4.1.1-rc.1+23474.
      *
      * @return The Nabto software version string.
      */
