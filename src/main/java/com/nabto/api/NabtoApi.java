@@ -70,6 +70,7 @@ public class NabtoApi {
      *          </ul>
      */
     public NabtoStatus startup() {
+        NabtoCApiWrapper.nabtoSetStaticResourceDir(assetManager.getNabtoResourceDirectory());
         String dir = assetManager.getNabtoHomeDirectory();
         NabtoStatus status =  NabtoCApiWrapper.nabtoStartup(dir);
         if (status == NabtoStatus.OK) {
