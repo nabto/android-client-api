@@ -13,39 +13,47 @@ function help {
     echo "  java    -> test the Java Client API only"
 }
 
-function test-android {
-    # build stubbed native library
-    pushd $DIR/cmake
-    rm -r build; mkdir build; cd build
-    cmake .. || exit 1
-    make || exit 1
+function clean {
+    rm -rf cmake/build
+    gradle clean --info || exit 1
+}
+
+# build stubbed native library
+function make-stuff {
+    pushd $DIR/cmake 
+    if [ ! -d build ]; then
+        mkdir build
+        cd build
+        cmake $1 .. || exit 1
+        cd ..
+    fi
+    cd build
+    make -j 8
     popd
+}
+
+function test-android {
+    make-stuff
 
     ## Run tests
     echo "Using java.library.path=$LIB_PATH"
     pushd $DIR
-    gradle clean --info || exit 1
     gradle -Djava.library.path=$LIB_PATH test --info  || exit 1
     popd
 }
 
 function test-java {
-    JAR_DIR=$DIR/libs
+     make-stuff -DBUILD_JARS=ON
 
-    # build stubbed native library and JARs
-    pushd $DIR/cmake
-    rm -rf build; mkdir build; cd build
-    cmake -DBUILD_JARS=ON .. || exit 1
-    make || exit 1
-    mv java-wrapper/*.jar $JAR_DIR/ || exit 1
-    popd
+     JAR_DIR=$DIR/libs
+     mv $DIR/cmake/build/java-wrapper/*.jar $JAR_DIR/ || exit 1
     
-    ## Run tests
-    JNI_DIR=$DIR/cmake/build
-    JAR_DIR=$DIR/libs
-    java -Djava.library.path=$JNI_DIR \
-         -cp $JAR_DIR/junit-4.12.jar:$JAR_DIR/hamcrest-core-1.3.jar:$JAR_DIR/NabtoClientApiWrapper.jar:$JAR_DIR/NabtoClientApiWrapperTest.jar \
-         org.junit.runner.JUnitCore com.nabto.api.NabtoCApiWrapperTest || exit 1
+     ## Run tests
+     JNI_DIR=$DIR/cmake/build
+     JAR_DIR=$DIR/libs
+     java -Djava.library.path=$JNI_DIR \
+          -cp $JAR_DIR/junit-4.12.jar:$JAR_DIR/hamcrest-core-1.3.jar:$JAR_DIR/NabtoClientApiWrapper.jar:$JAR_DIR/NabtoClientApiWrapperTest.jar \
+          org.junit.runner.JUnitCore com.nabto.api.NabtoCApiWrapperTest || exit 1
 }
 
 case $1 in
@@ -57,6 +65,10 @@ case $1 in
         ;;
     "java")
         test-java
+        ;;
+
+    "clean")
+        clean
         ;;
     *)
         help

@@ -76,7 +76,7 @@ public class NabtoApi {
         if (status == NabtoStatus.OK) {
             status = NabtoCApiWrapper.nabtoInstallDefaultStaticResources(assetManager.getNabtoHomeDirectory());
             if (status == NabtoStatus.OK) {
-                Log.i(this.getClass().getSimpleName(), "Started Nabto Client SDK in " + dir);
+                Log.i(this.getClass().getSimpleName(), "Started Nabto Client SDK version " + versionString() + " in " + dir);
             } else {
                 Log.e(this.getClass().getSimpleName(), "Nabto started but resources could not be installed in " + dir);
             }

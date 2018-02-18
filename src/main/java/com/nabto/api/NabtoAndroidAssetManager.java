@@ -90,11 +90,14 @@ public class NabtoAndroidAssetManager implements NabtoAssetManager {
     private void copyFromAssets(AssetManager manager, String asset,
                                 File fileLocation, boolean overwrite) {
         // Only write to file if it does not exist already
-        if (fileLocation.exists() && !overwrite)
+        if (fileLocation.exists() && !overwrite) {
             return;
+        }
 
         // Create necessary directory structure
-        fileLocation.getParentFile().mkdirs();
+        if (!fileLocation.getParentFile().mkdirs()) {
+            throw new IllegalArgumentException("Could not create directory: " + fileLocation.getParentFile().getPath());
+        }
         Log.d(this.getClass().getSimpleName(), "Writing asset file: " + asset + " to "
                 + fileLocation.getAbsolutePath());
         try {
