@@ -95,14 +95,22 @@ public class NabtoAndroidAssetManager implements NabtoAssetManager {
         }
 
         // Create necessary directory structure
-        if (!fileLocation.getParentFile().mkdirs()) {
+        if (!fileLocation.getParentFile().exists() && !fileLocation.getParentFile().mkdirs()) {
             throw new IllegalArgumentException("Could not create directory: " + fileLocation.getParentFile().getPath());
         }
         Log.d(this.getClass().getSimpleName(), "Writing asset file: " + asset + " to "
                 + fileLocation.getAbsolutePath());
+        InputStream inStream;
         try {
-            InputStream inStream = new BufferedInputStream(manager.open(asset,
-                    AssetManager.ACCESS_STREAMING));
+            inStream = new BufferedInputStream(manager.open(asset,
+                                                            AssetManager.ACCESS_STREAMING));
+        } catch (IOException e) {
+            Log.w(this.getClass().getSimpleName(), "Could not read asset file: " + asset);
+            // don't throw - it is ok to miss a file in the app bundle (asset manager used with
+            // different file configurations), just don't install in that case
+            return;
+        }
+        try {
             OutputStream outStream = new BufferedOutputStream(new FileOutputStream(fileLocation));
             byte[] buffer = new byte[10240]; // 10KB
             int length = 0;

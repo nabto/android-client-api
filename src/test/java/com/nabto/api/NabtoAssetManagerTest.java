@@ -128,7 +128,7 @@ public class NabtoAssetManagerTest {
         try {
             when(assets.list(subdirName)).thenReturn(new String[]{filename}); // ("share") => ["file1"] 
             when(assets.list(subdirName + "/" + filename)).thenReturn(new String[]{}); // ("share/file1") => [] (leaf)
-            when(assets.open(anyString(), anyInt())).thenReturn(new ByteArrayInputStream(body.getBytes()));
+            when(assets.open(subdirName + "/" + filename, AssetManager.ACCESS_STREAMING)).thenReturn(new ByteArrayInputStream(body.getBytes()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -137,6 +137,16 @@ public class NabtoAssetManagerTest {
         File copiedFile = new File(filesDir + "/" + subdirName, filename);
         assertEquals(readFileIntoString(copiedFile), body);
     }
-     
 
+    // repro error on master with no share dir as of 2018-02-19
+    @Test
+    public void copyFileInNonExistingShareDirTest() {
+        try {
+            when(assets.list("share")).thenReturn(new String[]{});
+            when(assets.open(anyString(), anyInt())).thenThrow(FileNotFoundException.class);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        NabtoAssetManager sut = new NabtoAndroidAssetManager(context);
+    }
 }
