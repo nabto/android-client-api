@@ -12,6 +12,11 @@ the release and a new unreleased section is added.
 
 ## 1.4.0 Unreleased
 
+## 1.3.6 2018-02-19
+
+### Changed
+- Asset manager now installs bundle resources if available and ignores files not included in bundle
+
 ## 1.3.5 2018-02-15
 
 ### Changed
