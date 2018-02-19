@@ -12,6 +12,19 @@ the release and a new unreleased section is added.
 
 ## 1.4.0 Unreleased
 
+## 1.3.5 2018-02-15
+
+### Changed
+- Use SDK embedded resources where possible
+
+## 1.3.4 2017-11-13
+
+### Changed
+- Meaningful state descriptions
+
+## 1.3.3
+Skipped due to deployment issue.
+
 ## 1.3.2 2017-10-10
 
 ### Changed
