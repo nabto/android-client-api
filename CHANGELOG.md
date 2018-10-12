@@ -12,6 +12,10 @@ the release and a new unreleased section is added.
 
 ## 1.4.0 Unreleased
 
+### Changed
+
+- Wrap native Nabto Client SDK 4.3.0, see https://downloads.nabto.com/assets/release-notes/4.3/release-notes.txt.
+
 ## 1.3.6 2018-02-19
 
 ### Changed
