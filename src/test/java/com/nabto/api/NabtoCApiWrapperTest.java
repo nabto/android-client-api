@@ -452,6 +452,26 @@ public class NabtoCApiWrapperTest {
     }
 
     @Test
+    public void nabtoSetLocalConnectionPskTest() {
+        Map retVals = new HashMap<String, String>();
+        retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
+        NabtoCApiWrapperStubController.setReturnValueMap(retVals);
+
+        Session session = NabtoCApiWrapper.nabtoOpenSession(DUMMY_EMAIL, DUMMY_PASSWORD);
+        final String host = "host_x";
+        byte[] pskId = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        byte[] psk = {(byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff, (byte)0xff};
+
+        NabtoStatus status = NabtoCApiWrapper.nabtoSetLocalConnectionPsk(host, pskId, psk, session);
+        assertEquals(NabtoStatus.OK, status);
+        Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
+        assertEquals("42", paramVals.get("sessionHandle"));
+        assertEquals("00000000000000000000000000000000", paramVals.get("pskId"));
+        assertEquals("ffffffffffffffffffffffffffffffff", paramVals.get("psk"));
+    }
+
+
+    @Test
     public void nabtoRpcSetDefaultInterfaceTest() {
         // test ok
         Map retVals = new HashMap<String, String>();
@@ -875,6 +895,42 @@ public class NabtoCApiWrapperTest {
 
         // test NULL resilience
         NabtoCApiWrapper.nabtoTunnelClose(null);
+    }
+
+    
+    @Test
+    public void nabtoTunnelSetSendWindowSize() {
+        Map retVals = new HashMap<String, String>();
+        retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
+        NabtoCApiWrapperStubController.setReturnValueMap(retVals);
+
+        Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
+        Tunnel tunnel = NabtoCApiWrapper.nabtoTunnelOpenTcp(
+                11, "nabto host", "remote host", 22, session);
+
+        NabtoStatus status = NabtoCApiWrapper.nabtoTunnelSetSendWindowSize(87, tunnel);
+        assertEquals(NabtoStatus.OK, status);
+
+        Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
+        assertEquals("87", paramVals.get("sendWindowSize"));
+    }
+        
+
+    @Test
+    public void nabtoTunnelSetRecvWindowSize() {
+        Map retVals = new HashMap<String, String>();
+        retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
+        NabtoCApiWrapperStubController.setReturnValueMap(retVals);
+
+        Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
+        Tunnel tunnel = NabtoCApiWrapper.nabtoTunnelOpenTcp(
+                11, "nabto host", "remote host", 22, session);
+
+        NabtoStatus status = NabtoCApiWrapper.nabtoTunnelSetRecvWindowSize(42, tunnel);
+        assertEquals(NabtoStatus.OK, status);
+
+        Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
+        assertEquals("42", paramVals.get("recvWindowSize"));
     }
 
     @Test

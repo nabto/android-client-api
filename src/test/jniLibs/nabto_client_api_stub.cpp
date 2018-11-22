@@ -218,6 +218,18 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetBasestationAuthJson(nabto_hand
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
+
+namespace {
+
+void toHexString(const char bytes[16], char hexenc[33]) {
+    for (size_t i=0; i<16; i++) {
+        sprintf(hexenc+2*i, "%02x", (unsigned char)(bytes[i]));
+    }
+    hexenc[32] = 0;
+}
+
+}
+
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetLocalConnectionPsk(nabto_handle_t session,
                                                                      const char* host,
                                                                      const char pskId[16],
@@ -226,8 +238,13 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetLocalConnectionPsk(nabto_handl
     parameterValues.clear();
     size_t handle = reinterpret_cast<size_t>(session);
     parameterValues["sessionHandle"] = std::to_string(handle);
-    parameterValues["host"] = std::string(host, 16);
-    parameterValues["pskId"] = std::string(pskId, 16);
+    char pskIdString[33];
+    toHexString(pskId, pskIdString);
+    char pskString[33];
+    toHexString(psk, pskString);
+    parameterValues["host"] = std::string(host);
+    parameterValues["pskId"] = std::string(pskIdString);
+    parameterValues["psk"] = std::string(pskString);
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
