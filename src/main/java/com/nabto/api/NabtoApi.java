@@ -133,7 +133,7 @@ public class NabtoApi {
         }
         return status;
     }
-
+    
     /**
      * Returns a collection of known prefixes in the location specified by prefixes.
      * <p>
@@ -561,6 +561,32 @@ public class NabtoApi {
         NabtoStatus status = NabtoCApiWrapper.nabtoSetBasestationAuthJson(jsonKeyValuePairs, session);
         if (status != NabtoStatus.OK) {
             Log.d(this.getClass().getSimpleName(), "Failed to set basestation authentication info: " + status);
+        }
+        return status;
+    }
+
+
+    /**
+     * Set Pre Shared Key for a local connection.
+     *
+     * Local Pre Shared Key(PSK) connections are local connections
+     * protected by a PSK. PSK connections needs to be created using a PSK
+     * which is shared with the device using some method which this
+     * feature does not implement. This function injects such an PSK into
+     * the nabto client. This function MUST be called before connections
+     * to the specific device occurs. When the PSK is set a local
+     * connection to a device will not be made if the device does not
+     * support PSK connection or does not know the provided key.
+     * @param session   session handle
+     * @param host      host for which shared secret is set
+     * @param pskId     identification of secret as multiple may exist on device
+     * @param psk       the shared secret
+     * @return {@link NabtoStatus#OK} iff key was successfully set.
+     */
+    public NabtoStatus setLocalConnectionPsk(String host, byte[] pskId, byte[] psk, Session session) {
+        NabtoStatus status = NabtoCApiWrapper.nabtoSetLocalConnectionPsk(host, pskId, psk, session);
+        if(status != NabtoStatus.OK) {
+            Log.d(this.getClass().getSimpleName(), "Failed to set local connection PSK on Nabto client API: " + status);
         }
         return status;
     }
@@ -1104,6 +1130,41 @@ public class NabtoApi {
         }
         return status;
     }
+    
+    /**
+     * Configure recv window size for streams created by the specified 
+     * tunnel. This feature is useful if tunnels in a client have different
+     * window requirements and the remote device is memory constrained.
+     *
+     * @param tunnel tunnel handle
+     * @param recvWindowSize  the new recvWindowSize to use for the streams opened 
+     *   when TCP clients connect to this tunnel
+     * @return  NABTO_OK iff it went ok.
+     */
+    public NabtoStatus tunnelSetRecvWindowSize(int recvWindowSize, Tunnel tunnel) {
+        NabtoStatus status = NabtoCApiWrapper.nabtoTunnelSetRecvWindowSize(recvWindowSize, tunnel);
+        if(status != NabtoStatus.OK) {
+            Log.d(this.getClass().getSimpleName(),  "Failed to set receive window size: " + status);
+        }
+        return status;
+    }    
+
+    /**
+     * Configure send window size for streams created by the specified 
+     * tunnel. Also see {@link tunnelSetRecvWindowSize}.
+     *
+     * @param tunnel tunnel handle
+     * @param sendWindowSize  the new sendWindowSize to use for the streams opened 
+     *   when TCP clients connect to this tunnel
+     * @return  NABTO_OK iff it went ok.
+     */
+    public NabtoStatus tunnelSetSendWindowSize(int sendWindowSize, Tunnel tunnel) {
+        NabtoStatus status = NabtoCApiWrapper.nabtoTunnelSetSendWindowSize(sendWindowSize, tunnel);
+        if(status != NabtoStatus.OK) {
+            Log.d(this.getClass().getSimpleName(),  "Failed to set send window size: " + status);
+        }
+        return status;
+    }    
 
     /**
      * Retrieves information on an (open) tunnel.

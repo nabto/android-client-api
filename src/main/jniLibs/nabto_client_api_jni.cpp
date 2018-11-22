@@ -177,6 +177,40 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSetBasestationAuthJson(JNIEnv* 
     return toNabtoStatus(env, nabtoSetBasestationAuthJson(sessionHandle, jsonStringNative));
 }
 
+bool copyBytesFromJava(JNIEnv* env, size_t len, jbyteArray src, char* dst) {
+    if (env->GetArrayLength(src) != len) {
+        return false;
+    }
+    jbyte* p = (jbyte*)env->GetByteArrayElements(src, NULL);
+    if (!p) {
+        return false;
+    }
+    memcpy(dst, p, len);
+    env->ReleaseByteArrayElements(src, p, JNI_ABORT);
+    return true;
+}
+
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSetLocalConnectionPsk(JNIEnv* env,
+                                                                       jclass thiz,
+                                                                       jstring host,
+                                                                       jbyteArray pskId,
+                                                                       jbyteArray psk,
+                                                                       jobject sessionObject)
+{
+    const size_t len = 16;
+    char pskIdNative[len];
+    char pskNative[len];
+    if (!copyBytesFromJava(env, len, pskId, pskIdNative)) {
+        return toNabtoStatus(env, NABTO_FAILED);
+    }
+    if (!copyBytesFromJava(env, len, psk, pskNative)) {
+        return toNabtoStatus(env, NABTO_FAILED);
+    }
+    jni_string hostNative(env, host);
+    nabto_handle_t sessionHandle = getHandle<nabto_handle_t>(env, sessionObject);
+    return toNabtoStatus(env, nabtoSetLocalConnectionPsk(sessionHandle, hostNative, pskIdNative, pskNative));
+}
+
 
 jobject JNICALL Java_com_nabto_api_NabtoCApiWrapper_nabtoRpcSetDefaultInterface(JNIEnv* env,
                                                                                 jclass thiz,
@@ -471,6 +505,25 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelClose(JNIEnv* env,
     nabto_tunnel_t tunnelHandle = getHandle<nabto_tunnel_t>(env, tunnelObject);
     return toNabtoStatus(env, nabtoTunnelClose(tunnelHandle));
 }
+
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelSetRecvWindowSize(JNIEnv* env,
+                                                                         jclass thiz,
+                                                                         jint recvWindowSize,
+                                                                         jobject tunnelObject)
+{
+    nabto_tunnel_t tunnelHandle = getHandle<nabto_tunnel_t>(env, tunnelObject);
+    return toNabtoStatus(env, nabtoTunnelSetRecvWindowSize(tunnelHandle, recvWindowSize));
+}
+
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelSetSendWindowSize(JNIEnv* env,
+                                                                         jclass thiz,
+                                                                         jint sendWindowSize,
+                                                                         jobject tunnelObject)
+{
+    nabto_tunnel_t tunnelHandle = getHandle<nabto_tunnel_t>(env, tunnelObject);
+    return toNabtoStatus(env, nabtoTunnelSetSendWindowSize(tunnelHandle, sendWindowSize));
+}
+
 
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelInfo(JNIEnv* env,
                                                             jclass thiz,

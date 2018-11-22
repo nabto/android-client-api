@@ -76,7 +76,7 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-    
+
 //-----------------------------------------------------------------------------
 // The Nabto client API - enumerations
 //-----------------------------------------------------------------------------
@@ -624,6 +624,29 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCloseSession(nabto_handle_t sessi
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetBasestationAuthJson(nabto_handle_t session,
                                                                       const char* jsonKeyValuePairs);
 
+/**
+ * Set Pre Shared Key for a local connection.
+ *
+ * Local Pre Shared Key(PSK) connections are local connections
+ * protected by a PSK. PSK connections needs to be created using a PSK
+ * which is shared with the device using some method which this
+ * feature does not implement. This function injects such an PSK into
+ * the nabto client. This function MUST be called before connections
+ * to the specific device occurs. When the PSK is set a local
+ * connection to a device will not be made if the device does not
+ * support PSK connection or does not know the provided key.
+ * 
+ * @param session   session handle
+ * @param host      host for which shared secret is set
+ * @param pskId     identification of secret as multiple may exist on device
+ * @param psk       the shared secret
+ * @return  NABTO_OK if key was successfully set.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetLocalConnectionPsk(nabto_handle_t session,
+                                                                     const char* host,
+                                                                     const char pskId[16],
+                                                                     const char psk[16]);
+
 
 /**
  * Get the Nabto software version (major.minor.patch[-prerelease tag]+build)
@@ -867,6 +890,11 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoStreamReadIntoBuf(nabto_stream_t 
  * or queued. 0: non blocking. <n>: block for up to <n> milliseconds.
  * The stream handle given must have been obtained by a call to
  * nabtoStreamOpen.
+ *
+ * WARNING: since the function does not return the number of bytes
+ * written, it always blocks until the bytes has been written or an
+ * error occurs. Effectively making NSO_SNDTIMEO useless.
+ *
  * If NABTO_BUFFER_FULL is returned you must retransmit the data, no data
  * has been queued. If NABTO_OK is returned all the data is queued in
  * the transmission queue.
@@ -947,7 +975,8 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoStreamSetOption(nabto_stream_t st
  * @param session     The session handle returned by a previous call to
  *                    the @b nabtoOpenSession or @b nabtoOpenSessionBare
  *                    function.
- * @param localPort   The local TCP port to listen on (0 = PORT_ANY)
+ * @param localPort   The local TCP port to listen on. If the localPort 
+ *                    number is 0 the api will choose the port number.
  * @param nabtoHost   The remote Nabto host to connect to.
  * @param remoteHost  The host the remote endpoint establishes a TCP
  *                    connection to.
@@ -1019,6 +1048,29 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelOpenTcp(nabto_tunnel_t* tun
  * NABTO_FAILED                 | an unspecified error occurred closing the tunnel.
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelClose(nabto_tunnel_t tunnel);
+
+/**
+ * Configure recv window size for streams created by the specified 
+ * tunnel. This feature is useful if tunnels in a client have different
+ * window requirements and the remote device is memory constrained.
+ *
+ * @param tunnel tunnel handle
+ * @param recvWindowSize  the new recvWindowSize to use for the streams opened 
+ *   when TCP clients connect to this tunnel
+ * @return  NABTO_OK iff it went ok.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelSetRecvWindowSize(nabto_tunnel_t tunnel, int recvWindowSize);
+
+/**
+ * Configure send window size for streams created by the specified 
+ * tunnel. Also see nabtoTunnelSetRecvWindowSize.
+ *
+ * @param tunnel tunnel handle
+ * @param sendWindowSize  the new sendWindowSize to use for the streams opened 
+ *   when TCP clients connect to this tunnel
+ * @return  NABTO_OK iff it went ok.
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelSetSendWindowSize(nabto_tunnel_t tunnel, int sendWindowSize);
 
 /**
  * Retrieves information on an (open) tunnel.

@@ -218,6 +218,18 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetBasestationAuthJson(nabto_hand
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetLocalConnectionPsk(nabto_handle_t session,
+                                                                     const char* host,
+                                                                     const char pskId[16],
+                                                                     const char psk[16])
+{
+    parameterValues.clear();
+    size_t handle = reinterpret_cast<size_t>(session);
+    parameterValues["sessionHandle"] = std::to_string(handle);
+    parameterValues["host"] = std::string(host, 16);
+    parameterValues["pskId"] = std::string(pskId, 16);
+    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
+}
 
 nabto_status_t NABTOAPI nabtoRpcSetDefaultInterface(nabto_handle_t session, 
                                                     const char* interfaceDefinition, 
@@ -466,6 +478,22 @@ nabto_status_t NABTOAPI nabtoTunnelClose(nabto_tunnel_t tunnel) {
     parameterValues.clear();
     size_t tunnelHandle = reinterpret_cast<size_t>(tunnel);
     parameterValues["tunnelHandle"] = std::to_string(tunnelHandle);
+    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
+}
+
+nabto_status_t NABTOAPI nabtoTunnelSetSendWindowSize(nabto_tunnel_t tunnel, int sendWindowSize) {
+    parameterValues.clear();
+    size_t tunnelHandle = reinterpret_cast<size_t>(tunnel);
+    parameterValues["tunnelHandle"] = std::to_string(tunnelHandle);
+    parameterValues["sendWindowSize"] = std::to_string(sendWindowSize);
+    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
+}
+
+nabto_status_t NABTOAPI nabtoTunnelSetRecvWindowSize(nabto_tunnel_t tunnel, int recvWindowSize) {
+    parameterValues.clear();
+    size_t tunnelHandle = reinterpret_cast<size_t>(tunnel);
+    parameterValues["tunnelHandle"] = std::to_string(tunnelHandle);
+    parameterValues["recvWindowSize"] = std::to_string(recvWindowSize);
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
