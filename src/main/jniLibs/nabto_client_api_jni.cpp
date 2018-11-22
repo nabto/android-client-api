@@ -6,6 +6,7 @@
 #include <jni.h>
 #include <string>
 #include <iostream>
+#include <cstring>
 
 jobjectArray stringArrayToJavaArray(JNIEnv* env, char** strings, size_t stringsLength)
 {
@@ -185,7 +186,7 @@ bool copyBytesFromJava(JNIEnv* env, size_t len, jbyteArray src, char* dst) {
     if (!p) {
         return false;
     }
-    memcpy(dst, p, len);
+    std::memcpy(dst, p, len);
     env->ReleaseByteArrayElements(src, p, JNI_ABORT);
     return true;
 }
