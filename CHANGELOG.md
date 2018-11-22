@@ -13,7 +13,7 @@ the release and a new unreleased section is added.
 ## 1.6.0 unreleased
 
 
-## 1.5.0 2018-11-22
+## 1.5.1 2018-11-22
 
 ### Changed
 
