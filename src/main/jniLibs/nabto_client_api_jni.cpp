@@ -178,7 +178,7 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoSetBasestationAuthJson(JNIEnv* 
 }
 
 bool copyBytesFromJava(JNIEnv* env, size_t len, jbyteArray src, char* dst) {
-    if (env->GetArrayLength(src) != len) {
+    if ((size_t)env->GetArrayLength(src) != len) {
         return false;
     }
     jbyte* p = (jbyte*)env->GetByteArrayElements(src, NULL);
