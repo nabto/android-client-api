@@ -28,7 +28,7 @@ The version information returned by `nabto.versionString` is the core Nabto Clie
 In case you want to build the Android Client API library yourself, follow these steps:
 
 #### 1. Download native libraries and resources
-Download the Nabto Client SDK resources and native libraries from [developer.nabto.com](https://developer.nabto.com/), and copy them to *android-client-api/src/main/* in order to get the following structure:
+Download the Nabto Client SDK resources and native libraries from [downloads.nabto.com](https://downloads.nabto.com/), and copy them to *android-client-api/src/main/* in order to get the following structure:
 
 ```
 src
