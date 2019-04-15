@@ -232,6 +232,8 @@ public class NabtoApi {
     }
 
     /**
+     * DEPRECATED - use self signed certs and local pairing instead to not depend on central authority.
+     *
      * Creates a Nabto client profile (private key + signed certificate) on this
      * computer for specified registered Nabto user.
      * <p>
@@ -366,6 +368,8 @@ public class NabtoApi {
     }
 
     /**
+     * DEPRECATED - use self signed certs and local pairing instead to not depend on central authority.
+     *
      * Signs up for a Nabto account on the portal (host name defined in the
      * configuration file). Invokes web service and initiates sending of
      * confirmation email.
@@ -397,6 +401,8 @@ public class NabtoApi {
     }
 
     /**
+     * DEPRECATED - use self signed certs and local pairing instead to not depend on central authority.
+     *
      * Requests reset of account password on the portal (host name defined in
      * the configuration file).
      * <p>
