@@ -432,8 +432,7 @@ public class NabtoApi {
     /**
      * Starts a new Nabto data retrieval session using the specified profile.
      * <p>
-     *     The email address given must be an id of an existing certificate
-     *     for a certain Nabto enabled device. If the device is unencrypted, specify
+     *     The email address given must be an id of an existing keypair. If the private key is unencrypted, specify
      *     the empty string for the password argument.
      * </p>
      * <p>
