@@ -12,6 +12,12 @@ the release and a new unreleased section is added.
 
 ## 1.6.0 unreleased
 
+## 1.5.2 2019-08-22
+
+### Changed
+
+- Add x86_64 support
+
 
 ## 1.5.1 2018-11-22
 
@@ -52,7 +58,7 @@ Skipped due to deployment issue.
 
 1.3.0 software, release bøvl caused version bump.
 
-## 1.3.0 2017-09-25 
+## 1.3.0 2017-09-25
 
 ### Added
 - Added `setStaticResourceDir` to set a custom directory to hold resources (useful for custom config file).
@@ -61,4 +67,3 @@ Skipped due to deployment issue.
 ### Changed
 
 ### Breaking
-
