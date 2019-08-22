@@ -10,7 +10,7 @@
 # If $3 is set and not set to no, BINTRAY_USER and BINTRAY_API_KEY env variables must have been
 # set with relevant bintray info.
 #
- 
+
 set -e
 
 if [ -z "$ANDROID_HOME" ]; then
@@ -46,6 +46,7 @@ function prep_dirs() {
     mkdir -p $LIB_DIR/arm64-v8a
     mkdir -p $LIB_DIR/armeabi-v7a
     mkdir -p $LIB_DIR/x86
+    mkdir -p $LIB_DIR/x86_64
 }
 
 function check_deploy_ready() {
@@ -86,6 +87,7 @@ function package() {
     download android-arm64 arm64-v8a
     download android-armv7 armeabi-v7a
     download android-x86 x86
+        download android-x86_64 x86_64
 
     if [ -z "$DEPLOY_TO_BINTRAY" ]; then
         cd $BUILD_DIR
@@ -100,7 +102,7 @@ function deploy() {
         return
     fi
     cd $BUILD_DIR
-    gradle clean bintrayUpload 
+    gradle clean bintrayUpload
 }
 
 function archive() {
@@ -121,6 +123,3 @@ deploy
 archive
 
 exit $?
-
-
-
