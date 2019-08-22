@@ -12,11 +12,11 @@ the release and a new unreleased section is added.
 
 ## 1.6.0 unreleased
 
-## 1.5.2 2019-08-22
+## 1.5.3 2019-08-22
 
 ### Changed
 
-- Add x86_64 support
+- Add x86_64 support (1.5.2 identical, but deployment trouble)
 
 
 ## 1.5.1 2018-11-22
