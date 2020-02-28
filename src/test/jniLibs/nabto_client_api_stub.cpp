@@ -86,7 +86,7 @@ nabto_status_t NABTOAPI nabtoGetProtocolPrefixes(char*** prefixes, int* prefixes
     }
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
-                                                        
+
 nabto_status_t NABTOAPI nabtoGetLocalDevices(char*** devices, int* numberOfDevices)
 {
     parameterValues.clear();
@@ -248,8 +248,8 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetLocalConnectionPsk(nabto_handl
     return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }
 
-nabto_status_t NABTOAPI nabtoRpcSetDefaultInterface(nabto_handle_t session, 
-                                                    const char* interfaceDefinition, 
+nabto_status_t NABTOAPI nabtoRpcSetDefaultInterface(nabto_handle_t session,
+                                                    const char* interfaceDefinition,
                                                     char** errorMessage)
 {
     parameterValues.clear();
@@ -268,9 +268,9 @@ nabto_status_t NABTOAPI nabtoRpcSetDefaultInterface(nabto_handle_t session,
     return status;
 }
 
-nabto_status_t NABTOAPI nabtoRpcSetInterface(nabto_handle_t session, 
-                                             const char* host, 
-                                             const char* interfaceDefinition, 
+nabto_status_t NABTOAPI nabtoRpcSetInterface(nabto_handle_t session,
+                                             const char* host,
+                                             const char* interfaceDefinition,
                                              char** errorMessage)
 {
     parameterValues.clear();
@@ -308,10 +308,10 @@ nabto_status_t NABTOAPI nabtoRpcInvoke(nabto_handle_t session,
     return status;
 }
 
-nabto_status_t NABTOAPI nabtoFetchUrl(nabto_handle_t session, 
-                                      const char* nabtoUrl, 
-                                      char** resultBuffer, 
-                                      size_t* resultLen, 
+nabto_status_t NABTOAPI nabtoFetchUrl(nabto_handle_t session,
+                                      const char* nabtoUrl,
+                                      char** resultBuffer,
+                                      size_t* resultLen,
                                       char** mimeTypeBuffer)
 {
     parameterValues.clear();
@@ -336,8 +336,8 @@ nabto_status_t NABTOAPI nabtoFetchUrl(nabto_handle_t session,
 }
 
 
-nabto_status_t NABTOAPI nabtoSubmitPostData(nabto_handle_t session, 
-                                            const char* nabtoUrl, 
+nabto_status_t NABTOAPI nabtoSubmitPostData(nabto_handle_t session,
+                                            const char* nabtoUrl,
                                             const char* postBuffer,
                                             size_t postLen,
                                             const char* postMimeType,
@@ -538,4 +538,19 @@ nabto_status_t NABTOAPI nabtoTunnelInfo(nabto_tunnel_t tunnel,
     }
 
     return status;
+}
+
+nabto_status_t NABTOAPI nabtoTunnelWait(nabto_tunnel_t tunnel,
+                                        int pollPeriodMillis,
+                                        int timeoutMillis,
+                                        nabto_tunnel_state_t* state
+    )
+{
+    parameterValues.clear();
+    size_t tunnelHandle = reinterpret_cast<size_t>(tunnel);
+    parameterValues["tunnelHandle"] = std::to_string(tunnelHandle);
+    parameterValues["pollPeriodMillis"] = std::to_string(pollPeriodMillis);
+    parameterValues["timeoutMillis"] = std::to_string(timeoutMillis);
+    *state = static_cast<nabto_tunnel_state_t>(std::stoi(returnValues["tunnelState"]));
+    return static_cast<nabto_status>(std::stoi(returnValues["status"]));
 }

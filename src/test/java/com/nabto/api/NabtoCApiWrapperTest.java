@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-/** 
+/**
  * This class tests the JNI bindings using a C library (src/test/jniLibs/nabto_client_api_stub.cpp)
  * that stubs the Nabto Client SDK.
  */
@@ -76,7 +76,7 @@ public class NabtoCApiWrapperTest {
 
         assertEquals(NabtoStatus.OK, status);
     }
-    
+
     @Test
     public void nabtoSetOptionTest() {
         // test ok
@@ -289,7 +289,7 @@ public class NabtoCApiWrapperTest {
         // test NULL resilience
         NabtoCApiWrapper.nabtoCreateProfile(null, null);
     }
-    
+
     @Test
     public void nabtoRemoveProfileTest() {
         Map retVals = new HashMap<String, String>();
@@ -314,7 +314,7 @@ public class NabtoCApiWrapperTest {
         retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
         NabtoCApiWrapperStubController.setReturnValueMap(retVals);
 
-        NabtoStatus status = 
+        NabtoStatus status =
                 NabtoCApiWrapper.nabtoCreateSelfSignedProfile(DUMMY_EMAIL, DUMMY_PASSWORD);
 
         assertEquals(NabtoStatus.OK, status);
@@ -897,7 +897,7 @@ public class NabtoCApiWrapperTest {
         NabtoCApiWrapper.nabtoTunnelClose(null);
     }
 
-    
+
     @Test
     public void nabtoTunnelSetSendWindowSize() {
         Map retVals = new HashMap<String, String>();
@@ -914,7 +914,7 @@ public class NabtoCApiWrapperTest {
         Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
         assertEquals("87", paramVals.get("sendWindowSize"));
     }
-        
+
 
     @Test
     public void nabtoTunnelSetRecvWindowSize() {
@@ -957,4 +957,30 @@ public class NabtoCApiWrapperTest {
         // test NULL resilience
         NabtoCApiWrapper.nabtoTunnelInfo(null);
     }
+
+    @Test
+    public void nabtoTunnelWaitTest() {
+        Map retVals = new HashMap<String, String>();
+        retVals.put("status", Integer.toString(NabtoStatus.OK.toInteger()));
+        retVals.put("tunnelState", Integer.toString(NabtoTunnelState.REMOTE_P2P.toInteger()));
+        NabtoCApiWrapperStubController.setReturnValueMap(retVals);
+
+        Session session = NabtoCApiWrapper.nabtoOpenSessionBare();
+        Tunnel tunnel = NabtoCApiWrapper.nabtoTunnelOpenTcp(11, "nabto host", "remote host", 22, session);
+
+        TunnelInfoResult info = NabtoCApiWrapper.nabtoTunnelWait(tunnel, 100, 3000);
+
+        assertEquals(NabtoStatus.OK, info.getStatus());
+        assertEquals(123, info.getVersion());
+        assertEquals(NabtoTunnelState.REMOTE_P2P, info.getTunnelState());
+        assertEquals(-123, info.getLastError());
+        assertEquals(234, info.getPort());
+
+        Map paramVals = NabtoCApiWrapperStubController.getParameterValueMap();
+        assertEquals("44", paramVals.get("tunnelHandle"));
+
+        // test NULL resilience
+        NabtoCApiWrapper.nabtoTunnelInfo(null, 100, 3000);
+    }
+
 }

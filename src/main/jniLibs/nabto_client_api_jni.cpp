@@ -552,6 +552,33 @@ jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelInfo(JNIEnv* env,
             tunnelInfoResultClass, constructor, version, state, lastError, port, status);
 }
 
+jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoTunnelWait(JNIEnv* env,
+                                                            jclass thiz,
+                                                            jobject tunnelObject,
+                                                            jint pollPeriodMillis,
+                                                            jint timeoutMillis)
+{
+    nabto_tunnel_t tunnelHandle = getHandle<nabto_tunnel_t>(env, tunnelObject);
+    nabto_tunnel_state_t state = NTCS_UNKNOWN;
+    nabto_status_t status = nabtoTunnelWait(tunnelHandle, pollPeriodMillis, timeoutMillis, &state);
+
+    unsigned short port = 0;
+    nabtoTunnelInfo(tunnelHandle, NTI_PORT, sizeof(port), &port);
+
+    unsigned int version = 0;
+    nabtoTunnelInfo(tunnelHandle, NTI_VERSION, sizeof(version), &version);
+
+    int lastError = 0;
+    nabtoTunnelInfo(tunnelHandle, NTI_LAST_ERROR, sizeof(lastError), &lastError);
+
+    jclass tunnelInfoResultClass = env->FindClass("com/nabto/api/TunnelInfoResult");
+    if(tunnelInfoResultClass == NULL) return NULL;
+    jmethodID constructor = env->GetMethodID(tunnelInfoResultClass, "<init>", "(IIIII)V");
+    if(constructor == NULL) return NULL;
+    return env->NewObject(
+            tunnelInfoResultClass, constructor, version, state, lastError, port, status);
+}
+
 jobject Java_com_nabto_api_NabtoCApiWrapper_nabtoStreamOpen(JNIEnv* env,
                                                             jclass thiz,
                                                             jstring nabtoHost,
