@@ -24,7 +24,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.when;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
-/** 
+/**
  * This class tests the high level Java wrapper using a Java-level mock of the JNI wrapper (and
  * hence does not use the C based stub used by NabtoCApiWrapperTest.java
  */
@@ -129,7 +129,7 @@ public class NabtoApiTest {
 
         assertEquals(NabtoStatus.FAILED, status);
     }
-    
+
     @Test
     public void setOptionSuccessTest() {
         when(NabtoCApiWrapper.nabtoSetOption(anyString(), anyString()))
@@ -1070,4 +1070,43 @@ public class NabtoApiTest {
 
         assertEquals(wrapperTunnelInfo, tunnelInfo);
     }
+
+    @Test
+    public void tunnelWaitSuccessTest() {
+        TunnelInfoResult wrapperTunnelInfo =
+            new TunnelInfoResult(0, NabtoTunnelState.REMOTE_P2P.toInteger(), 0, 0, NabtoStatus.OK.toInteger());
+        when(NabtoCApiWrapper.nabtoTunnelWait(any(Tunnel.class), anyInt(), anyInt()))
+            .thenReturn(wrapperTunnelInfo);
+
+        Tunnel tunnel = new Tunnel("handle", NabtoStatus.OK.toInteger());
+        TunnelInfoResult tunnelInfo = api.tunnelWait(tunnel, 100, 3000);
+
+        PowerMockito.verifyStatic();
+        NabtoCApiWrapper.nabtoTunnelWait(eq(tunnel), eq(100), eq(3000));
+
+        PowerMockito.verifyStatic(times(0));
+        Log.d(anyString(), anyString());
+
+        assertEquals(wrapperTunnelInfo, tunnelInfo);
+    }
+
+    @Test
+    public void tunnelWaitTimeoutTest() {
+        TunnelInfoResult wrapperTunnelInfo =
+            new TunnelInfoResult(0, NabtoTunnelState.UNKNOWN.toInteger(), 0, 0, NabtoStatus.CONNECT_TIMEOUT.toInteger());
+        when(NabtoCApiWrapper.nabtoTunnelWait(any(Tunnel.class), anyInt(), anyInt()))
+            .thenReturn(wrapperTunnelInfo);
+
+        Tunnel tunnel = new Tunnel("handle", NabtoStatus.OK.toInteger());
+        TunnelInfoResult tunnelInfo = api.tunnelWait(tunnel, 100, 3000);
+
+        PowerMockito.verifyStatic();
+        NabtoCApiWrapper.nabtoTunnelWait(eq(tunnel), eq(100), eq(3000));
+
+        PowerMockito.verifyStatic();
+        Log.d(eq(api.getClass().getSimpleName()), anyString());
+
+        assertEquals(wrapperTunnelInfo, tunnelInfo);
+    }
+
 }
