@@ -10,7 +10,11 @@ Guide: always keep an unreleased section which keeps track of current
 changes. When a release is made the unreleased section is renamed to
 the release and a new unreleased section is added.
 
-## 1.6.0 unreleased
+## 1.6.0 2020-02-28
+
+### Changed
+
+- Added tunnelWait to NabtoApi: Block caller until tunnel is ready or closed
 
 ## 1.5.3 2019-08-22
 

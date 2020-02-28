@@ -258,6 +258,12 @@ enum nabto_status {
     NABTO_FAILED_WITH_JSON_MESSAGE = 26,
 
     /**
+     * The operation timed out before completion
+     * @since 4.5.0
+     */
+    NABTO_TIMEOUT = 27,
+
+    /**
      * Number of possible error codes. This must always be last!
      */
     NABTO_ERROR_CODE_COUNT
@@ -560,7 +566,6 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoStartup(const char* nabtoHomeDir)
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoShutdown(void);
 
-
 /**
  * Starts a new Nabto session as context for RPC, stream or tunnel
  * invocation using the specified profile.
@@ -606,18 +611,18 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCloseSession(nabto_handle_t sessi
 
 /**
  * Set basestation auth information on connect requests
- * 
+ *
  * This feature together with a webhook installed on the basestation
  * allows the client to send an access token in the connect
  * request. This way the basestation can contact a third party service
  * and verify that a connect with the given key value pairs is allowed
  * to a specific device.
- * 
+ *
  * The key value pairs are copied into an internal structure and can
  * safely be forgotten after the call.
- * 
+ *
  * @param session   session handle
- * @param jsonKeyValuePairs  valid json key value pairs like '{"foo": "bar", "baz": "quux" }', 
+ * @param jsonKeyValuePairs  valid json key value pairs like '{"foo": "bar", "baz": "quux" }',
  *                           null resets the authentication information for this session
  * @return  If the function succeeds, the return value is NABTO_OK
  */
@@ -627,15 +632,14 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetBasestationAuthJson(nabto_hand
 /**
  * Set Pre Shared Key for a local connection.
  *
- * Local Pre Shared Key(PSK) connections are local connections
- * protected by a PSK. PSK connections needs to be created using a PSK
- * which is shared with the device using some method which this
- * feature does not implement. This function injects such an PSK into
- * the nabto client. This function MUST be called before connections
- * to the specific device occurs. When the PSK is set a local
- * connection to a device will not be made if the device does not
- * support PSK connection or does not know the provided key.
- * 
+ * Local Pre Shared Key (PSK) connections are local connections protected by a PSK. PSK connections
+ * need to be created using a PSK which is shared with the device using some method which this
+ * feature does not implement (ie, it must be exchanged through some other means).
+ *
+ * This function injects such a PSK into the nabto client. This function MUST be called before
+ * connections to the specific device occurs. When the PSK is set a local connection to a device
+ * will not be made if the device does not support PSK connection or does not know the provided key.
+ *
  * @param session   session handle
  * @param host      host for which shared secret is set
  * @param pskId     identification of secret as multiple may exist on device
@@ -650,7 +654,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetLocalConnectionPsk(nabto_handl
 
 /**
  * Get the Nabto software version (major.minor.patch[-prerelease tag]+build)
- * 
+ *
  * int main() {
  *     char* version;
  *     nabtoVersionString(&version);
@@ -663,7 +667,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetLocalConnectionPsk(nabto_handl
  * @return NABTO_OK unless error occurs
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoVersionString(char** version);
-    
+
 //-----------------------------------------------------------------------------
 // The RPC API
 //-----------------------------------------------------------------------------
@@ -975,7 +979,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoStreamSetOption(nabto_stream_t st
  * @param session     The session handle returned by a previous call to
  *                    the @b nabtoOpenSession or @b nabtoOpenSessionBare
  *                    function.
- * @param localPort   The local TCP port to listen on. If the localPort 
+ * @param localPort   The local TCP port to listen on. If the localPort
  *                    number is 0 the api will choose the port number.
  * @param nabtoHost   The remote Nabto host to connect to.
  * @param remoteHost  The host the remote endpoint establishes a TCP
@@ -1031,6 +1035,22 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelOpenTcp(nabto_tunnel_t* tun
                                                              const char* nabtoHost,
                                                              const char* remoteHost,
                                                              int remotePort);
+/**
+ * Utility function that wraps a loop around nabtoTunnelInfo polls: Wait for tunnel state to reach a
+ * closed or connected state.
+ *
+ * @param tunnel             tunnel handle
+ * @param pollPeriodMillis   number of milliseconds to wait before checking tunnel state again in next loop
+ * @param timeoutMillis      maximum milliseconds to wait, 0 to wait forever
+ * @param resultingState     if return value is NABTO_OK, this parameter is set to the tunnel state after state is no longer NTCS_CONNECTING
+ * @return NABTO_OK if state was changed from NTCS_CONNETING before timeout occurs.
+ *         NABTO_INVALID_TUNNEL if specified tunnel handle is not valid
+ *         NABTO_TIMEOUT if timeout occurred before reaching closed or connected state
+ */
+NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelWait(nabto_tunnel_t tunnel,
+                                                          int pollPeriodMillis,
+                                                          int timeoutMillis,
+                                                          nabto_tunnel_state_t* resultingState);
 
 /**
  * Closes an open tunnel.
@@ -1050,23 +1070,24 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelOpenTcp(nabto_tunnel_t* tun
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelClose(nabto_tunnel_t tunnel);
 
 /**
- * Configure recv window size for streams created by the specified 
- * tunnel. This feature is useful if tunnels in a client have different
- * window requirements and the remote device is memory constrained.
+ * Configure the client recv window size for streams created by the
+ * specified tunnel. This feature is useful if tunnels in a client
+ * have different window requirements and the remote device is memory
+ * constrained.
  *
  * @param tunnel tunnel handle
- * @param recvWindowSize  the new recvWindowSize to use for the streams opened 
+ * @param recvWindowSize  the new recvWindowSize to use for the streams opened
  *   when TCP clients connect to this tunnel
  * @return  NABTO_OK iff it went ok.
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelSetRecvWindowSize(nabto_tunnel_t tunnel, int recvWindowSize);
 
 /**
- * Configure send window size for streams created by the specified 
- * tunnel. Also see nabtoTunnelSetRecvWindowSize.
+ * Configure the client send window size for streams created by the
+ * specified tunnel. Also see nabtoTunnelSetRecvWindowSize.
  *
  * @param tunnel tunnel handle
- * @param sendWindowSize  the new sendWindowSize to use for the streams opened 
+ * @param sendWindowSize  the new sendWindowSize to use for the streams opened
  *   when TCP clients connect to this tunnel
  * @return  NABTO_OK iff it went ok.
  */
@@ -1150,12 +1171,12 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoCreateProfile(const char* email,
  * certificate cannot be trusted but the fingerprint of the
  * certificate can be trusted in the device. After the profile has
  * been created it can be used in the open session function.
- * 
+ *
  * @param id          The id used to create the selfsigned certificate, typically an email or user name.
  * @param password    The password which protects the private key.
  * @return If the self signed certificate has been created the function returns NABTO_OK
  *         If it fails one of the following error codes will be returned.
- * 
+ *
  * Error code                   | Meaning
  * ---------------------------- | ---------------------
  * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
@@ -1185,7 +1206,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoRemoveProfile(const char* id);
  * @param fingerprint  The RSA public key fingerprint (buffer of 16 bytes owned by caller)
  * @return If the fingerprint was calculated the function returns NABTO_OK and writes the fingerprint.
  *         If it fails one of the following error codes will be returned.
- * 
+ *
  * Error code                   | Meaning
  * ---------------------------- | ---------------------
  * NABTO_API_NOT_INITIALIZED    | The @b nabtoStartup function is the first function to call to initialize the Nabto client.
@@ -1303,7 +1324,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoGetLocalDevices(char*** devices,
  * @return    NABTO_OK. This is the only value returned.
  */
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoFree(void* p);
-    
+
 /**
  * Sets the name of your client application. The Nabto client API will
  * use this name to identify data from your application wherever
@@ -1345,15 +1366,15 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoSetStaticResourceDir(const char* 
  * roots/cacert.pem
  * users/guest.crt
  * users/guest.key
- * 
+ *
  * If resourceDir is null then the resources is installed into the user's homedir.
- * 
+ *
  * If resourceDir is not null and files are installed into a non-default location,
  * nabtoSetStaticResourceDir must be called seperately with resourceDir for the SDK to be able to
  * locate the files subsequently.
  *
  * Small code example for static resource installation:
- * 
+ *
  * nabto_handle_t session;
  * nabtoStartup(NULL);
  * nabtoInstallDefaultStaticResources(NULL);
@@ -1378,7 +1399,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoInstallDefaultStaticResources(con
  *
  * The configFileName option changes the file name of the Nabto
  * configuration file (which is located in the Nabto home directory). The
- * default file name is nabto_config.ini. 
+ * default file name is nabto_config.ini.
  * @param name               The name of the option to change.
  * @param value              The new value of the option.
  * @return  If the function succeeds, the return value is NABTO_OK.@n
@@ -1430,7 +1451,7 @@ enum nabto_async_status {
      * @since 3.0.2
      */
     NAS_CHUNK_READY = 1,
-    
+
     /**
      * The Nabto Client ends the request.
      * @since 3.0.2
@@ -1498,7 +1519,7 @@ typedef nabto_async_post_data_status_t (NABTOAPI *NabtoAsyncPostDataCallbackFunc
                                                                                   size_t bufSize,
                                                                                   size_t* actualSize,
                                                                                   void* userData);
-    
+
 /**
  * DEPRECATED: public SDK has not supported this since pre 3.0.0
  * (2010), only used internally in (also deprecated) browser plugins
@@ -1586,7 +1607,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoResetAccountPassword(const char* 
 NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoProbeNetwork(size_t timeoutMillis,
                                                             const char* host);
 
-    
+
 #ifdef __cplusplus
 } // extern c
 #endif

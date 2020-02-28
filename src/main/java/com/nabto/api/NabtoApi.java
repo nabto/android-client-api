@@ -133,7 +133,7 @@ public class NabtoApi {
         }
         return status;
     }
-    
+
     /**
      * Returns a collection of known prefixes in the location specified by prefixes.
      * <p>
@@ -536,16 +536,16 @@ public class NabtoApi {
 
     /**
      * Set basestation auth information on connect requests.
-     * 
+     *
      * This feature together with a webhook installed on the basestation
      * allows the client to send an access token in the connect
      * request. This way the basestation can contact a third party service
      * and verify that a connect with the given key value pairs is allowed
      * to a specific device.
-     * 
+     *
      * The key value pairs are copied into an internal structure and can
      * safely be forgotten after the call.
-     * 
+     *
      * <p>
      *     The session object passed to this function must be returned by a call to either
      *     {@link #openSession(String, String)} or {@link #openSessionBare()}.
@@ -730,7 +730,7 @@ public class NabtoApi {
         return rpcResult;
     }
 
-   
+
     /**
      * Retrieves data synchronously from specified {@code nabto://URL} on specified
      * session.
@@ -1135,14 +1135,14 @@ public class NabtoApi {
         }
         return status;
     }
-    
+
     /**
-     * Configure recv window size for streams created by the specified 
+     * Configure recv window size for streams created by the specified
      * tunnel. This feature is useful if tunnels in a client have different
      * window requirements and the remote device is memory constrained.
      *
      * @param tunnel tunnel handle
-     * @param recvWindowSize  the new recvWindowSize to use for the streams opened 
+     * @param recvWindowSize  the new recvWindowSize to use for the streams opened
      *   when TCP clients connect to this tunnel
      * @return  NABTO_OK iff it went ok.
      */
@@ -1152,14 +1152,14 @@ public class NabtoApi {
             Log.d(this.getClass().getSimpleName(),  "Failed to set receive window size: " + status);
         }
         return status;
-    }    
+    }
 
     /**
-     * Configure send window size for streams created by the specified 
+     * Configure send window size for streams created by the specified
      * tunnel. Also see {@link tunnelSetRecvWindowSize}.
      *
      * @param tunnel tunnel handle
-     * @param sendWindowSize  the new sendWindowSize to use for the streams opened 
+     * @param sendWindowSize  the new sendWindowSize to use for the streams opened
      *   when TCP clients connect to this tunnel
      * @return  NABTO_OK iff it went ok.
      */
@@ -1169,7 +1169,7 @@ public class NabtoApi {
             Log.d(this.getClass().getSimpleName(),  "Failed to set send window size: " + status);
         }
         return status;
-    }    
+    }
 
     /**
      * Retrieves information on an (open) tunnel.
@@ -1205,4 +1205,43 @@ public class NabtoApi {
         }
         return info;
     }
+
+    /**
+     * Wait for a tunnel to complete a connection attemt.
+     * <p>
+     *     The tunnel handle given must have been obtained by a call to
+     *     {@link #tunnelOpenTcp(int, String, String, int, Session)}.
+     * </p>
+     * <p>
+     *     On success, ({@link TunnelInfoResult#getStatus()} returns {@link NabtoStatus#OK}),
+     *     {@link TunnelInfoResult#getTunnelState()} returns the tunnel state and
+     *     {@link TunnelInfoResult#getPort()}} returns the listening port. If the function fails
+     *     both output parameters are undefined.
+     * </p>
+     *
+     * @param tunnel           tunnel handle
+     * @param pollPeriodMillis number of milliseconds to wait before checking tunnel state again in next loop
+     * @param timeoutMillis    maximum milliseconds to wait, 0 to wait forever
+     * @return  A {@link TunnelInfoResult} object. If the function succeeds, the return value of
+     *          {@link Tunnel#getStatus()} is {@link NabtoStatus#OK} and it contains valid result
+     *          parameters. If the function fails, the return value of
+     *          {@link TunnelInfoResult#getStatus()} is one of the following values.
+     *          <ul>
+     *              <li>{@link NabtoStatus#API_NOT_INITIALIZED}: The {@link #startup()}
+     *              function is the first function to call to initialize the Nabto client.</li>
+     *              <li>{@link NabtoStatus#INVALID_TUNNEL}: Tunnel handle was invalid.</li>
+     *              <li>{@link NabtoStatus#FAILED}: An unspecified error occurred retrieving the
+     *              tunnel info.</li>
+     *          </ul>
+     */
+    public TunnelInfoResult tunnelWait(Tunnel tunnel, int pollPeriodMillis, int timeoutMillis) {
+        TunnelInfoResult info = NabtoCApiWrapper.nabtoTunnelWait(tunnel, pollPeriodMillis, timeoutMillis);
+        if(info.getStatus() != NabtoStatus.OK) {
+            Log.d(this.getClass().getSimpleName(),
+                    "Failed to wait for tunnel connection: " + info.getStatus());
+        }
+        return info;
+    }
+
+
 }
