@@ -980,7 +980,7 @@ public class NabtoCApiWrapperTest {
         assertEquals("44", paramVals.get("tunnelHandle"));
 
         // test NULL resilience
-        NabtoCApiWrapper.nabtoTunnelInfo(null, 100, 3000);
+        NabtoCApiWrapper.nabtoTunnelWait(null, 100, 3000);
     }
 
 }

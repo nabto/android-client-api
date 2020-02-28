@@ -1108,15 +1108,6 @@ public class NabtoApi {
         return tunnel;
     }
 
-    public TunnelInfoResult tunnelWait(int pollPeriodMillis, int timeoutMillis) {
-        TunnelInfoResult info = NabtoCApiWrapper.nabtoTunnelWait(tunnel, pollPeriodMillis, timeoutMillis);
-        if(info.getStatus() != NabtoStatus.OK) {
-            Log.d(this.getClass().getSimpleName(),
-                    "Failed to get tunnel info: " + info.getStatus());
-        }
-        return info;
-    }
-
     /**
      * Closes an open tunnel.
      * <p>
@@ -1214,4 +1205,43 @@ public class NabtoApi {
         }
         return info;
     }
+
+    /**
+     * Wait for a tunnel to complete a connection attemt.
+     * <p>
+     *     The tunnel handle given must have been obtained by a call to
+     *     {@link #tunnelOpenTcp(int, String, String, int, Session)}.
+     * </p>
+     * <p>
+     *     On success, ({@link TunnelInfoResult#getStatus()} returns {@link NabtoStatus#OK}),
+     *     {@link TunnelInfoResult#getTunnelState()} returns the tunnel state and
+     *     {@link TunnelInfoResult#getPort()}} returns the listening port. If the function fails
+     *     both output parameters are undefined.
+     * </p>
+     *
+     * @param tunnel           tunnel handle
+     * @param pollPeriodMillis number of milliseconds to wait before checking tunnel state again in next loop
+     * @param timeoutMillis    maximum milliseconds to wait, 0 to wait forever
+     * @return  A {@link TunnelInfoResult} object. If the function succeeds, the return value of
+     *          {@link Tunnel#getStatus()} is {@link NabtoStatus#OK} and it contains valid result
+     *          parameters. If the function fails, the return value of
+     *          {@link TunnelInfoResult#getStatus()} is one of the following values.
+     *          <ul>
+     *              <li>{@link NabtoStatus#API_NOT_INITIALIZED}: The {@link #startup()}
+     *              function is the first function to call to initialize the Nabto client.</li>
+     *              <li>{@link NabtoStatus#INVALID_TUNNEL}: Tunnel handle was invalid.</li>
+     *              <li>{@link NabtoStatus#FAILED}: An unspecified error occurred retrieving the
+     *              tunnel info.</li>
+     *          </ul>
+     */
+    public TunnelInfoResult tunnelWait(Tunnel tunnel, int pollPeriodMillis, int timeoutMillis) {
+        TunnelInfoResult info = NabtoCApiWrapper.nabtoTunnelWait(tunnel, pollPeriodMillis, timeoutMillis);
+        if(info.getStatus() != NabtoStatus.OK) {
+            Log.d(this.getClass().getSimpleName(),
+                    "Failed to wait for tunnel connection: " + info.getStatus());
+        }
+        return info;
+    }
+
+
 }

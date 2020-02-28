@@ -51,6 +51,7 @@ public class NabtoCApiWrapper {
     public static native Tunnel nabtoTunnelOpenTcp(int localPort, String nabtoHost, String remoteHost, int remotePort, Session session);
     public static native NabtoStatus nabtoTunnelClose(Tunnel tunnel);
     public static native TunnelInfoResult nabtoTunnelInfo(Tunnel tunnel);
+    public static native TunnelInfoResult nabtoTunnelWait(Tunnel tunnel, int pollPeriodMillis, int timeoutMillis);
     public static native NabtoStatus nabtoTunnelSetRecvWindowSize(int recvWindowSize, Tunnel tunnel);
     public static native NabtoStatus nabtoTunnelSetSendWindowSize(int sendWindowSize, Tunnel tunnel);
 }
