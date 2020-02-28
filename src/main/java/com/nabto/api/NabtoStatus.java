@@ -151,7 +151,7 @@ public enum NabtoStatus {
     /**
      * Timeout when connecting to remote device.
      */
-    CONNECT_TIMEOUT,
+    NABTO_CONNECT_TIMEOUT,
 
     /**
      * Number of possible error codes. This must always be last!

@@ -1093,7 +1093,7 @@ public class NabtoApiTest {
     @Test
     public void tunnelWaitTimeoutTest() {
         TunnelInfoResult wrapperTunnelInfo =
-            new TunnelInfoResult(0, NabtoTunnelState.UNKNOWN.toInteger(), 0, 0, NabtoStatus.CONNECT_TIMEOUT.toInteger());
+            new TunnelInfoResult(0, NabtoTunnelState.UNKNOWN.toInteger(), 0, 0, NabtoStatus.NABTO_CONNECT_TIMEOUT.toInteger());
         when(NabtoCApiWrapper.nabtoTunnelWait(any(Tunnel.class), anyInt(), anyInt()))
             .thenReturn(wrapperTunnelInfo);
 
