@@ -258,7 +258,7 @@ enum nabto_status {
     NABTO_FAILED_WITH_JSON_MESSAGE = 26,
 
     /**
-     * An error occurred with detailed described in JSON document
+     * The operation timed out before completion
      * @since 4.5.0
      */
     NABTO_TIMEOUT = 27,
@@ -1040,7 +1040,7 @@ NABTO_DECL_PREFIX nabto_status_t NABTOAPI nabtoTunnelOpenTcp(nabto_tunnel_t* tun
  * closed or connected state.
  *
  * @param tunnel             tunnel handle
- * @param pollPeriodMillis   number of milliseconds to wait
+ * @param pollPeriodMillis   number of milliseconds to wait before checking tunnel state again in next loop
  * @param timeoutMillis      maximum milliseconds to wait, 0 to wait forever
  * @param resultingState     if return value is NABTO_OK, this parameter is set to the tunnel state after state is no longer NTCS_CONNECTING
  * @return NABTO_OK if state was changed from NTCS_CONNETING before timeout occurs.
