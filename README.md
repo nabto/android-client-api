@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.nabto.android:nabto-api:1.4.0'
+    compile 'com.nabto.android:nabto-api:1.6.0'
 }
 ```
 
