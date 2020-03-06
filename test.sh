@@ -17,12 +17,12 @@ function help {
 
 function clean {
     rm -rf cmake/build
-    gradle clean --info || exit 1
+    ./gradlew clean --info || exit 1
 }
 
 # build stubbed native library
 function make-stuff {
-    pushd $DIR/cmake 
+    pushd $DIR/cmake
     if [ ! -d build ]; then
         mkdir build
         cd build
@@ -40,7 +40,7 @@ function test-android {
     ## Run tests
     echo "Using java.library.path=$LIB_PATH"
     pushd $DIR
-    gradle -Djava.library.path=$LIB_PATH test --info  || exit 1
+    ./gradlew -Djava.library.path=$LIB_PATH test --info  || exit 1
     popd
 }
 
@@ -49,7 +49,7 @@ function test-java {
 
      JAR_DIR=$DIR/libs
      mv $DIR/cmake/build/java-wrapper/*.jar $JAR_DIR/ || exit 1
-    
+
      ## Run tests
      JNI_DIR=$DIR/cmake/build
      JAR_DIR=$DIR/libs
