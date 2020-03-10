@@ -10,6 +10,11 @@ Guide: always keep an unreleased section which keeps track of current
 changes. When a release is made the unreleased section is renamed to
 the release and a new unreleased section is added.
 
+## 1.6.1 2020-03-10
+
+### Changed
+ - Bumped targetSdkVersion to comply with Google minimum requirements
+
 ## 1.6.0 2020-02-28
 
 ### Changed

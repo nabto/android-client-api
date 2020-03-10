@@ -1,4 +1,4 @@
-# Android Client API 
+# Android Client API
 
 [Nabto ApS](http://nabto.com) client API for Android.
 
@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.nabto.android:nabto-api:1.6.0'
+    compile 'com.nabto.android:nabto-api:1.6.1'
 }
 ```
 
