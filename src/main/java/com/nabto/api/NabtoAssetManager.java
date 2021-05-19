@@ -6,7 +6,7 @@ package com.nabto.api;
  * release.
  */
 @Deprecated
-interface NabtoAssetManager {
+public interface NabtoAssetManager {
     /**
      * Returns the absolute path of the Nabto home directory "nabto".
      *
