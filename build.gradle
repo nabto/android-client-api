@@ -1,23 +1,22 @@
 buildscript {
     repositories {
-        jcenter()
         google()
+        mavenCentral()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
+        classpath 'com.android.tools.build:gradle:4.2.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
 }
 
 repositories {
     google()
+    mavenCentral()
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-apply plugin: 'com.jfrog.bintray'
 
 version = "1.6.2"
 
@@ -103,25 +102,4 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
     archives javadocJar
     archives sourcesJar
-}
-
-bintray {
-    user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
-    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
-
-    configurations = ['archives']
-    pkg {
-        repo = "android"
-        name = "com.nabto.android:nabto-api"
-        desc = 'Nabto Client API for Android'
-        websiteUrl = 'https://github.com/nabto/android-client-api'
-        issueTrackerUrl = 'https://github.com/nabto/android-client-api/issues'
-        vcsUrl = 'https://github.com/nabto/android-client-api.git'
-        licenses = ["Apache-2.0"]
-        labels = ['Nabto', 'IoT', 'Java', 'Android']
-        publish = true
-        version {
-            released  = new Date()
-        }
-    }
 }
