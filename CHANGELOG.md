@@ -10,6 +10,12 @@ Guide: always keep an unreleased section which keeps track of current
 changes. When a release is made the unreleased section is renamed to
 the release and a new unreleased section is added.
 
+
+## 1.6.2 2021-05-19
+
+### Changed
+ - Made NabtoAssetManager public to fix kotlin problems (fix ticket #2)
+
 ## 1.6.1 2020-03-10
 
 ### Changed

@@ -6,17 +6,7 @@ Nabto provides a full communication infrastructure to allow direct, encrypted co
 
 ## Installation
 
-The simplest way to use the Nabto client API for Android is by including the Apache Maven package from JCenter by adding the following to your project's `build.gradle`:
-
-```java
-repositories {
-    jcenter()
-}
-
-dependencies {
-    compile 'com.nabto.android:nabto-api:1.6.0'
-}
-```
+The .aar file is not available from any repository as of writing due to jCenter being shut down and no migration has been performed yet. So obtain it from https://downloads.nabto.com for now and install manually in your project.
 
 ## Note about version identifiers
 

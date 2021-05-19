@@ -12,7 +12,6 @@ buildscript {
 }
 
 repositories {
-    jcenter()
     google()
 }
 
@@ -20,7 +19,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = "1.6.1"
+version = "1.6.2"
 
 group = "com.nabto.android"
 
