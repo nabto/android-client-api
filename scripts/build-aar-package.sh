@@ -91,7 +91,7 @@ function package() {
 
     if [ -z "$DEPLOY_TO_BINTRAY" ]; then
         cd $BUILD_DIR
-        gradle clean assembleRelease sourcesJar javadocJar --info --no-daemon
+        ./gradlew clean assembleRelease sourcesJar javadocJar --info --no-daemon
     else
         echo "Package is assembled as part of bintray upload"
     fi
