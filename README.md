@@ -1,12 +1,15 @@
+> **Warning**
+> Deprecation notice: This SDK is for Nabto 4/Micro (uNabto). For new projects, the next generation Nabto 5/Edge should be used instead. Read about the differences [here](https://docs.nabto.com/developer/guides/concepts/overview/edge-vs-micro.html). Nabto 5/Edge also provides an [Android SDK](https://docs.nabto.com/developer/platforms/android/intro.html) (with Kotlin extensions).
+
 # Android Client API
 
-[Nabto ApS](http://nabto.com) client API for Android.
+Legacy [Nabto 4/Micro](https://www.nabto.com) client API for Android.
 
 Nabto provides a full communication infrastructure to allow direct, encrypted communication between clients and IoT devices - the Nabto communication platform. The platform supports direct peer-to-peer connectivity through NAT traversal.
 
 ## Installation
 
-The .aar file is not available from any repository as of writing due to jCenter being shut down and no migration has been performed yet. So obtain it from https://downloads.nabto.com for now and install manually in your project.
+The latest .aar file is currently only available as [direct download](https://downloads.nabto.com/assets/nabto-android-client/1.6.2/nabto-api-release.aar) so install manually in your project (or setup a local Maven repository).
 
 ## Note about version identifiers
 
