@@ -5,8 +5,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.android.tools.build:gradle:8.0.0'
+        //classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
     }
 }
 
@@ -16,21 +16,27 @@ repositories {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.github.dcendents.android-maven'
 
-version = "1.6.2"
+version = "1.6.3"
 
 group = "com.nabto.android"
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion "28.0.3"
+    namespace "com.nabto.api"
+    compileSdkVersion 33
+    //buildToolsVersion "28.0.3"
 
     defaultConfig {
-        minSdkVersion 11
-        targetSdkVersion 28
+        minSdkVersion 14
+        targetSdkVersion 33
         versionCode 1
         versionName version
+        ndk {
+            // Specifies the ABI configurations of your native
+            // libraries Gradle should build and package with your app.
+            abiFilters 'x86', 'x86_64', 'armeabi-v7a', 'arm64-v8a'
+        }
     }
     buildTypes {
         release {
@@ -41,65 +47,68 @@ android {
 }
 
 dependencies {
-    testCompile 'org.powermock:powermock-api-mockito:1.6.6'
-    testCompile 'org.powermock:powermock-module-junit4:1.6.6'
+    testImplementation 'junit:junit:4.13.2'
+    //testImplementation "org.mockito:mockito-core:5.+"
+    testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
+    testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
 }
 
 
 tasks.withType(Test) {
     systemProperty "java.library.path", System.getProperty('java.library.path')
+    jvmArgs += ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.io=ALL-UNNAMED', '--add-opens', 'java.base/java.nio.file=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
 }
 
-install {
-    repositories.mavenInstaller {
-        pom {
-            project {
-                packaging 'aar'
+// install {
+//     repositories.mavenInstaller {
+//         pom {
+//             project {
+//                 packaging 'aar'
 
-                name 'com.nabto.android:nabto-api'
-                description = 'Nabto Client API for Android'
-                url 'https://github.com/nabto/android-client-api'
+//                 name 'com.nabto.android:nabto-api'
+//                 description = 'Nabto Client API for Android'
+//                 url 'https://github.com/nabto/android-client-api'
 
-                licenses {
-                    license {
-                        name 'The Apache Software License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                    }
-                }
+//                 licenses {
+//                     license {
+//                         name 'The Apache Software License, Version 2.0'
+//                         url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+//                     }
+//                 }
 
-                scm {
-                    connection 'https://github.com/nabto/android-client-api.git'
-                    developerConnection 'https://github.com/nabto/android-client-api.git'
-                    url 'https://github.com/nabto/android-client-api'
-                }
-            }
-        }
-    }
-}
+//                 scm {
+//                     connection 'https://github.com/nabto/android-client-api.git'
+//                     developerConnection 'https://github.com/nabto/android-client-api.git'
+//                     url 'https://github.com/nabto/android-client-api'
+//                 }
+//             }
+//         }
+//     }
+// }
 
-tasks.withType(Javadoc) {
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.addStringOption('encoding', 'UTF-8')
-    options.addStringOption('charSet', 'UTF-8')
-}
+// tasks.withType(Javadoc) {
+//     options.addStringOption('Xdoclint:none', '-quiet')
+//     options.addStringOption('encoding', 'UTF-8')
+//     options.addStringOption('charSet', 'UTF-8')
+// }
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
+// task sourcesJar(type: Jar) {
+//     from android.sourceSets.main.java.srcDirs
+//     classifier = 'sources'
+// }
 
-task javadoc(type: Javadoc) {
-    options.addStringOption('Xdoclint:none')
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
+// task javadoc(type: Javadoc) {
+//     options.addStringOption('Xdoclint:none')
+//     source = android.sourceSets.main.java.srcDirs
+//     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+// }
 
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
+// task javadocJar(type: Jar, dependsOn: javadoc) {
+//     classifier = 'javadoc'
+//     from javadoc.destinationDir
+// }
 
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
+// artifacts {
+//     archives javadocJar
+//     archives sourcesJar
+// }
