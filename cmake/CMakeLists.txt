@@ -19,14 +19,14 @@ if(BUILD_STUB AND Java_Development_FOUND)
 
     set(API_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/jniLibs)
     set(STUB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../src/test/jniLibs)
-    
+
     execute_process(
-      COMMAND ${Java_JAVAH_EXECUTABLE} -jni -classpath ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/java -d ${API_DIR} com.nabto.api.NabtoCApiWrapper
+      COMMAND ${Java_JAVAC_EXECUTABLE} -h ${API_DIR} -classpath ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/java ${CMAKE_CURRENT_SOURCE_DIR}/../src/main/java/com/nabto/api/NabtoCApiWrapper.java
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
     execute_process(
-      COMMAND ${Java_JAVAH_EXECUTABLE} -jni -classpath ${CMAKE_CURRENT_SOURCE_DIR}/../src/test/java -d ${STUB_DIR} com.nabto.api.NabtoCApiWrapperStubController
+      COMMAND ${Java_JAVAC_EXECUTABLE} -h ${STUB_DIR} -classpath ${CMAKE_CURRENT_SOURCE_DIR}/../src/test/java ${CMAKE_CURRENT_SOURCE_DIR}/../src/test/java/com/nabto/api/NabtoCApiWrapperStubController.java
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
     )
 
