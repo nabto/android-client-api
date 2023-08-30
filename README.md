@@ -26,21 +26,15 @@ Obtain the Nabto Client SDK resources and native libraries by contact Nabto Supp
 ```
 src
 └── main
-    ├── assets
-    │   └── share
-    │       └── nabto
-    │           ├── configuration
-    │           ├── roots
-    │           ├── schemas
-    │           ├── skins
-    │           └── users
     ├── java
     ├── jniLibs
-    │   ├── armeabi
-    │   │   └── libnabto_client_api_jni.so
     │   ├── armeabi-v7a
     │   │   └── libnabto_client_api_jni.so
-    │   └── x86
+    │   ├── arm64-v8a
+    │   │   └── libnabto_client_api_jni.so
+    │   ├── x86
+    │   │   └── libnabto_client_api_jni.so
+    │   └── x86_64
     │       └── libnabto_client_api_jni.so
     └── res
 

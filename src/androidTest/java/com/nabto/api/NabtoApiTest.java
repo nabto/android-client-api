@@ -27,4 +27,13 @@ public class NabtoApiTest {
 
         assertTrue(v, v.matches("^\\d+\\.\\d+.*$"));
     }
+
+    @Test
+    public void startup() {
+        NabtoAndroidAssetManager assetManager = new NabtoAndroidAssetManager(InstrumentationRegistry.getInstrumentation().getContext());
+        NabtoApi api = new NabtoApi(assetManager);
+
+        NabtoStatus s = api.startup();
+        assertEquals(s, NabtoStatus.OK);
+    }
 }
