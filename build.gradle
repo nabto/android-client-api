@@ -27,6 +27,15 @@ android {
     compileSdkVersion 33
     //buildToolsVersion "28.0.3"
 
+    sourceSets{
+        main {
+            java {
+                srcDirs += ['src/main/jniJava']
+            }
+        }
+    }
+
+
 
     defaultConfig {
         minSdkVersion 14

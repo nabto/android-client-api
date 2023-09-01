@@ -5,7 +5,7 @@ set -e
 DIR="$( cd -P "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 API_DIR=$DIR/src/main/jniLibs
-STUB_DIR=$DIR/src/test/jniLibs/nabto_client_api_jni_stub
+STUB_DIR=$DIR/src/unused_jni_integration_tests/jniLibs/nabto_client_api_jni_stub
 LIB_PATH=$DIR/cmake/build
 
 function help {

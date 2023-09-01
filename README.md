@@ -20,35 +20,22 @@ The version information returned by `nabto.versionString` is the core Nabto Clie
 
 In case you want to build the Android Client API library yourself, follow these steps:
 
-#### 1. Download native libraries and resources
-Obtain the Nabto Client SDK resources and native libraries by contact Nabto Support (legacy product not available for public download). Copy the libraries to *android-client-api/src/main/* in order to get the following structure:
-
 ```
-src
-└── main
-    ├── java
-    ├── jniLibs
-    │   ├── armeabi-v7a
-    │   │   └── libnabto_client_api_jni.so
-    │   ├── arm64-v8a
-    │   │   └── libnabto_client_api_jni.so
-    │   ├── x86
-    │   │   └── libnabto_client_api_jni.so
-    │   └── x86_64
-    │       └── libnabto_client_api_jni.so
-    └── res
-
+./gradlew build
 ```
 
-#### 2. Run tests (optional)
+#### Run tests on android
+
 ```
-# ./test.sh
+./gradlew connectedAndroidTest
 ```
-*For more details see section "Test".*
-#### 3. Build
-```
-# gradle build -x test
-```
+
+#### Updating jni libraries and associated files.
+
+src/main/jniJava and src/main/jniLibs contains java and libraries which is built
+elsewhere. If updates are needed for these files, the updates should be made in
+the svn repository where these files reside.
+
 #### 4. Use the AAR library
 Use the generated AAR library, found in *android-client-api/build/outputs/aar/*, in your projects.
 
