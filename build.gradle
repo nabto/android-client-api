@@ -17,6 +17,7 @@ repositories {
 
 apply plugin: 'com.android.library'
 //apply plugin: 'com.github.dcendents.android-maven'
+apply from: 'versioning.gradle'
 
 version = "1.6.3"
 
@@ -35,13 +36,11 @@ android {
         }
     }
 
-
-
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 33
-        versionCode 1
-        versionName version
+        versionCode buildVersionCode()
+        versionName buildVersionName()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             // Specifies the ABI configurations of your native
@@ -69,6 +68,11 @@ dependencies {
 tasks.withType(Test) {
     systemProperty "java.library.path", System.getProperty('java.library.path')
     jvmArgs += ['--add-opens', 'java.base/java.lang=ALL-UNNAMED', '--add-opens', 'java.base/java.io=ALL-UNNAMED', '--add-opens', 'java.base/java.nio.file=ALL-UNNAMED', '--add-opens', 'java.base/java.util=ALL-UNNAMED']
+}
+
+task showVersion() {
+    println 'VersionName: ' + buildVersionName()
+    println 'VersionCode: ' + buildVersionCode()
 }
 
 // install {

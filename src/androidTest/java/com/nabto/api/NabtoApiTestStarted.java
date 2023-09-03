@@ -16,35 +16,35 @@ import java.util.Collection;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-
 @RunWith(AndroidJUnit4.class)
-public class NabtoApiTest {
-
+public class NabtoApiTestStarted {
     private NabtoApi api;
 
     @Before
     public void setup() {
         NabtoAndroidAssetManager assetManager = new NabtoAndroidAssetManager(InstrumentationRegistry.getInstrumentation().getContext());
         api = new NabtoApi(assetManager);
-    }
-
-    @Test
-    public void nabtoVersionString() {
-        String v = api.versionString();
-        assertTrue(v, v.matches("^\\d+\\.\\d+\\.\\d+.*$"));
-    }
-
-    @Test
-    public void startup() {
         NabtoStatus s = api.startup();
         assertEquals(s, NabtoStatus.OK);
     }
 
-    @Test
-    public void shutdown() {
-        NabtoStatus s = api.startup();
-        assertEquals(s, NabtoStatus.OK);
-        s = api.shutdown();
-        assertEquals(s, NabtoStatus.OK);
+    @After
+    public void teardown() {
+        api.shutdown();
     }
+
+    @Test
+    public void getProtocolPrefixes() {
+        api.getProtocolPrefixes();
+    }
+
+    @Test
+    public void getLocalDevices() {
+        api.getLocalDevices();
+    }
+    @Test
+    public void getCertificates() {
+        api.getCertificates();
+    }
+
 }

@@ -1,0 +1,23 @@
+ext {
+    gitDirty = ['sh', '-c', 'git diff --quiet --exit-code || echo .dirty'].execute().text.trim()
+    gitTag = ['sh', '-c', 'git describe --exact-match --tags'].execute().text.trim()
+    gitBranch = ['sh', '-c', 'git rev-parse --abbrev-ref HEAD'].execute().text.trim()
+    gitCount = ['sh', '-c', 'git rev-list --count HEAD'].execute().text.trim()
+    gitHash = ['sh', '-c', 'git rev-parse --short HEAD'].execute().text.trim()
+
+    buildVersionCode = { ->
+        Integer.parseInt(gitCount)
+    }
+
+    buildVersionName = { ->
+        if (isReleaseVersion()) {
+            gitTag.substring(1)
+        } else {
+            "0.0.0" + "-branch." + gitBranch + ".commits." + gitCount + "+" + gitHash + gitDirty
+        }
+    }
+
+    isReleaseVersion = { ->
+        !gitTag.isEmpty() && gitDirty.isEmpty()
+    }
+}

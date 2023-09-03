@@ -42,7 +42,7 @@ captures/
 
 # Nabto assets and libs
 src/main/assets/*/
-src/main/jniLibs/*/
+#src/main/jniLibs/*/
 src/main/jniLibs/com_nabto_api_NabtoCApiWrapper.h
 
 # Nabto test lib
