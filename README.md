@@ -9,7 +9,7 @@ Nabto provides a full communication infrastructure to allow direct, encrypted co
 
 ## Installation
 
-The latest .aar file is currently only available as [direct download](https://downloads.nabto.com/assets/nabto-android-client/1.6.2/nabto-api-release.aar) so install manually in your project (or setup a local Maven repository).
+The latest .aar file is currently only available as [direct download](https://github.com/nabto/android-client-api/releases/tag/v1.6.2) so install manually in your project (or setup a local Maven repository).
 
 ## Note about version identifiers
 
@@ -35,6 +35,12 @@ In case you want to build the Android Client API library yourself, follow these 
 src/main/jniJava and src/main/jniLibs contains java and libraries which is built
 elsewhere. If updates are needed for these files, the updates should be made in
 the svn repository where these files reside.
+
+strip .so files to save some space
+
+```
+llvm-strip-14 src/main/jniLibs/*/*.so
+```
 
 #### 4. Use the AAR library
 Use the generated AAR library, found in *android-client-api/build/outputs/aar/*, in your projects.
