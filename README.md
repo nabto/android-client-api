@@ -9,7 +9,7 @@ Nabto provides a full communication infrastructure to allow direct, encrypted co
 
 ## Installation
 
-The latest .aar file is currently only available as [direct download](https://github.com/nabto/android-client-api/releases/tag/v1.6.2) so install manually in your project (or setup a local Maven repository).
+The latest .aar file is currently only available as [direct download](https://github.com/nabto/android-client-api/releases) so install manually in your project (or setup a local Maven repository).
 
 ## Note about version identifiers
 
@@ -17,6 +17,8 @@ The version information returned by `nabto.versionString` is the core Nabto Clie
 
 
 ### Build
+
+Clone: The project uses git lfs so install that prior to checkout
 
 In case you want to build the Android Client API library yourself, follow these steps:
 

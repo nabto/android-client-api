@@ -47,4 +47,10 @@ public class NabtoApiTestStarted {
         api.getCertificates();
     }
 
+    @Test
+    public void testGuestCert() {
+        Session session = api.openSession("guest", "");
+        assertEquals(session.getStatus(), NabtoStatus.OK);
+    }
+
 }
