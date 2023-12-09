@@ -18,13 +18,40 @@ The version information returned by `nabto.versionString` is the core Nabto Clie
 
 ### Build
 
-Clone: The project uses git lfs so install that prior to checkout
+> **Important**
+> The project uses git Large File Storage (git lfs) so read this section carefully! Especially if you observe odd errors like `bad ELF magic: 76657273` - then you have not resolved the `lfs` references and are just installing the placeholder files.
 
-In case you want to build the Android Client API library yourself, follow these steps:
+First install git lfs by following [github's guide](https://docs.github.com/en/repositories/working-with-files/managing-large-files/installing-git-large-file-storage). It has detailed instructions for macOS, Linux and Windows.
+
+After installation, confirm lfs is installed correctly:
+
+```
+$ git lfs install
+Git LFS initialized.
+```
+
+If this looks ok, do a fresh clone of the github repo:
+
+```
+git clone https://github.com/nabto/android-client-api
+```
+
+Confirm that the placeholders are indeed replaced with binaries:
+
+```
+$ file ./src/main/jniLibs/arm64-v8a/libnabto_client_api_jni.so
+./src/main/jniLibs/arm64-v8a/libnabto_client_api_jni.so: ELF 64-bit LSB shared object, ARM aarch64, version 1 (SYSV), dynamically linked, stripped
+```
+
+Finally, you can build the libraries:
 
 ```
 ./gradlew build
 ```
+
+If you do not want to clone the repos again after installing git lfs, you can use `git lfs install`,
+`git lfs fetch` and `git lfs checkout` to resolve the dependencies - but this is error prone and not
+recommended over just starting with a fresh clone.
 
 #### Run tests on android
 
