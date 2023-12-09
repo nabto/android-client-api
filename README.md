@@ -9,14 +9,14 @@ Nabto provides a full communication infrastructure to allow direct, encrypted co
 
 ## Installation
 
-The latest .aar file is currently only available as [direct download](https://github.com/nabto/android-client-api/releases) so install manually in your project (or setup a local Maven repository).
+The .aar files are no longer distributed to artifact repositories, so you must build the libraries yourself by following the build instructions below.
 
 ## Note about version identifiers
 
 The version information returned by `nabto.versionString` is the core Nabto Client SDK version - _not_ the version of the Android wrapper (the component described in this document). See the release notes for the individual Android wrapper version to see the Nabto Client SDK core version wrapped.
 
 
-### Build
+## Build
 
 > **Important**
 > The project uses git Large File Storage (git lfs) so read this section carefully! Especially if you observe odd errors like `bad ELF magic: 76657273` - then you have not resolved the `lfs` references and are just installing the placeholder files.
@@ -49,32 +49,37 @@ Finally, you can build the libraries:
 ./gradlew build
 ```
 
-If you do not want to clone the repos again after installing git lfs, you can use `git lfs install`,
-`git lfs fetch` and `git lfs checkout` to resolve the dependencies - but this is error prone and not
-recommended over just starting with a fresh clone.
-
-#### Run tests on android
+Run tests on an Android device:
 
 ```
 ./gradlew connectedAndroidTest
 ```
 
-#### Updating jni libraries and associated files.
+Now you can use the generated .aar libraries in your applications:
 
-src/main/jniJava and src/main/jniLibs contains java and libraries which is built
-elsewhere. If updates are needed for these files, the updates should be made in
-the svn repository where these files reside.
+```
+./build/outputs/aar/nabto-api-release.aar
+```
 
-strip .so files to save some space
+If you do not want to clone the repos again after installing git lfs, you can use `git lfs install`,
+`git lfs fetch` and `git lfs checkout` to resolve the dependencies - but this is error prone and not
+recommended over just starting with a fresh clone.
+
+
+### Nabto internal notes: Updating jni libraries and associated files
+
+`src/main/jniJava and src/main/jniLibs` contains java and libraries which are built on Nabto CI servers. If
+updates are needed for these files, the updates should be made in the legacy svn repositories where these
+files reside.
+
+Strip .so files to save some space:
 
 ```
 llvm-strip-14 src/main/jniLibs/*/*.so
 ```
 
-#### 4. Use the AAR library
-Use the generated AAR library, found in *android-client-api/build/outputs/aar/*, in your projects.
 
-## Usage Example
+## Application Example
 
 The simplest possible example of using the Android client API:
 ```java
