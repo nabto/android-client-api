@@ -9,7 +9,7 @@ Nabto provides a full communication infrastructure to allow direct, encrypted co
 
 ## Installation
 
-The .aar files are no longer distributed to artifact repositories, so you must build the libraries yourself by following the build instructions below.
+The .aar files are no longer distributed to artifact repositories, but can be downloaded from the [release section in github](https://github.com/nabto/android-client-api/releases) and installed by hand. Or you can build the libraries yourself by following the build instructions below.
 
 ## Note about version identifiers
 
