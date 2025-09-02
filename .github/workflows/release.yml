@@ -21,7 +21,7 @@ jobs:
         run: ./gradlew assemble
 
       - name: Archive .aar as artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: aar lib
           path: |
