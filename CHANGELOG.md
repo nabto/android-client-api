@@ -11,6 +11,20 @@ changes. When a release is made the unreleased section is renamed to
 the release and a new unreleased section is added.
 
 
+## 1.7.0 Unreleased
+
+### Changed
+ - 2026 Google Play compliance: bumped `compileSdkVersion`/`targetSdkVersion` to 36 (Android 16) and
+   `minSdkVersion` to 21.
+ - Upgraded toolchain: Android Gradle Plugin 8.13.0, Gradle 8.13.
+ - Updated androidx test dependencies (`ext:junit` 1.2.1, `espresso-core` 3.6.1).
+
+### Removed
+ - Stale unused vendored jars (`libs/junit-4.12.jar`, `libs/hamcrest-core-1.3.jar`).
+
+### Added
+ - `LICENSE` file (Apache-2.0) and README note on preserving 16 KB native library alignment.
+
 ## 1.6.2 2021-05-19
 
 ### Changed
