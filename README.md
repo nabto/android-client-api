@@ -72,6 +72,17 @@ recommended over just starting with a fresh clone.
 updates are needed for these files, the updates should be made in the legacy svn repositories where these
 files reside.
 
+> **Important (16 KB page size compliance)**
+> Since Android 15, Google Play requires 64-bit native libraries to be aligned to 16 KB page sizes. The
+> current `arm64-v8a` and `x86_64` `.so` files are already 16 KB-aligned. Any future rebuild of these
+> libraries **must** keep the linker flag `-Wl,-z,max-page-size=16384` so alignment is not lost. Verify
+> with:
+> ```
+> readelf -lW src/main/jniLibs/arm64-v8a/libnabto_client_api_jni.so | awk '/LOAD/{print $NF}' | sort -u
+> ```
+> All `LOAD` segments must report `0x4000` (16 KB). 32-bit ABIs (`armeabi-v7a`, `x86`) remain 4 KB-aligned,
+> which is correct as the requirement applies to 64-bit only.
+
 Strip .so files to save some space:
 
 ```
