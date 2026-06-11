@@ -18,6 +18,7 @@ the release and a new unreleased section is added.
    `minSdkVersion` to 21.
  - Upgraded toolchain: Android Gradle Plugin 8.13.0, Gradle 8.13.
  - Updated androidx test dependencies (`ext:junit` 1.2.1, `espresso-core` 3.6.1).
+ - Updated Nabto Client Api JNI libraries to version v4.9.3
 
 ### Removed
  - Stale unused vendored jars (`libs/junit-4.12.jar`, `libs/hamcrest-core-1.3.jar`).
