@@ -10,8 +10,9 @@ Guide: always keep an unreleased section which keeps track of current
 changes. When a release is made the unreleased section is renamed to
 the release and a new unreleased section is added.
 
+## 1.7.4 Unreleased
 
-## 1.7.0 Unreleased
+## 1.7.3 2026-06-11
 
 ### Changed
  - 2026 Google Play compliance: bumped `compileSdkVersion`/`targetSdkVersion` to 36 (Android 16) and
@@ -25,6 +26,39 @@ the release and a new unreleased section is added.
 
 ### Added
  - `LICENSE` file (Apache-2.0) and README note on preserving 16 KB native library alignment.
+
+## 1.7.2 2025-09-02
+
+### Changed
+ - Updated CI workflow to use `upload-artifact@v4`.
+
+### Added
+ - Android 16 KB native library page-size support (16 KB-aligned `.so` libraries).
+ - README now mentions the pre-built release `.aar` files and documents the git LFS
+   dependency (helps users running into the "bad elf magic" error).
+
+## 1.7.1 2023-10-04
+
+### Changed
+ - Removed file-exists check that prevented asset updates from being installed.
+
+### Added
+ - Updated README and added a test.
+
+## 1.7.0 2023-09-03
+
+### Changed
+ - Updated Nabto Client Api JNI libraries.
+ - Upgraded Gradle and made the code build with Java 17.
+ - Moved JNI java and native code (and its tests) to reside primarily in the svn repository.
+ - Replaced the legacy bintray/downloads.nabto.com distribution with GitHub releases.
+
+### Added
+ - GitHub Actions CI.
+ - Committed the native `.so` libraries (via git LFS) so the repository is self-contained.
+
+### Removed
+ - Unused legacy build scripts.
 
 ## 1.6.2 2021-05-19
 
