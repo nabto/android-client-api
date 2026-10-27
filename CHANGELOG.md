@@ -12,6 +12,9 @@ the release and a new unreleased section is added.
 
 ## 1.7.5 Unreleased
 
+### Changed
+ - Updated Nabto Client Api JNI libraries to version v4.9.11
+
 ## 1.7.4 2026-06-15
 
 ### Changed
