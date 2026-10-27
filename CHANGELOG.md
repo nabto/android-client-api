@@ -10,7 +10,12 @@ Guide: always keep an unreleased section which keeps track of current
 changes. When a release is made the unreleased section is renamed to
 the release and a new unreleased section is added.
 
-## 1.7.5 Unreleased
+## 1.7.6 Unreleased
+
+## 1.7.5 2026-10-27
+
+### Changed
+ - Updated Nabto Client Api JNI libraries to version v4.9.11
 
 ## 1.7.4 2026-06-15
 
